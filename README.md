@@ -14,10 +14,10 @@ https://github.com/MShawon/Truss-101/releases
 ## Members
 ![Members](Tutorial/Gif/member.gif)
 
-##Supports
+## Supports
 ![Members](Tutorial/Gif/supports.gif)
 
-##Loads
+## Loads
 ![Loads](Tutorial/Gif/loads.gif)
 
 Multiple load can also be applied at a point.
