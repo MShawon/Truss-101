@@ -2,8 +2,8 @@
 A desktop application to solve statically determinate and indeterminate 2D truss structures using Matrix Displacement Method (aka Finite Element Analysis).
 
 ## Where to download?
-Click download to get the latest version.
-[Download](https://github.com/MShawon/Truss-101/releases/download)
+Click [Download](https://github.com/MShawon/Truss-101/releases/download) to get the latest version.
+
 Or go to releases and download file named with setup.
 https://github.com/MShawon/Truss-101/releases
 
