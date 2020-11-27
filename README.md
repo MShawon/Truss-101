@@ -4,8 +4,8 @@ A desktop application to solve statically determinate and indeterminate 2D truss
 ## Where to download?
 Click [Download](https://github.com/MShawon/Truss-101/releases/download) to get the latest version.
 
-Or go to releases and download file named with setup.
-https://github.com/MShawon/Truss-101/releases
+Or go to [Releases](https://github.com/MShawon/Truss-101/releases) and download file named with setup.
+
 
 
 ## Nodes
