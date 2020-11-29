@@ -6,7 +6,13 @@ Click [Download](https://github.com/MShawon/Truss-101/releases/download/1.0.0/Tr
 
 Or go to [Releases](https://github.com/MShawon/Truss-101/releases) and download file named with setup.
 
-
+## Why Truss 101?
+* Easy to use
+* Unit conversion
+* Stability check
+* Individual property for members
+* Multiple projects
+* Report containing input-output data, matrices and graphs
 
 ## Nodes
 ![Nodes](Tutorial/Gif/node.gif)
