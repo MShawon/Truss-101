@@ -31,7 +31,11 @@ Multiple load can also be applied at a point.
 ![Multiple Loads](Tutorial/Gif/multipleLoad.gif)
 
 ## Properties
+
+If you define more than one property, you need to go back to member pages to assign properties to members according to your need.
+
 ![Properties](Tutorial/Gif/properties.gif)
+
 
 ## Change Unit
 You can change unit anytime from settings.
