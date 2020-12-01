@@ -15,10 +15,6 @@ Or go to [Releases](https://github.com/MShawon/Truss-101/releases) and download 
 * Report containing input-output data, matrices and graphs
 
 
-<div>
-<iframe width="560" height="315" src="https://www.youtube.com/embed/5yi33cXewrU" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-</div>
-
 ## Nodes
 ![Nodes](Tutorial/Gif/node.gif)
 
