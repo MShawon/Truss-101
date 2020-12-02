@@ -14,6 +14,8 @@ Or go to [Releases](https://github.com/MShawon/Truss-101/releases) and download 
 * Multiple projects
 * Report containing input-output data, matrices and graphs
 
+[![YouTube video](Tutorial/YouTube.png)](https://www.youtube.com/watch?v=5yi33cXewrU)
+
 
 ## Nodes
 ![Nodes](Tutorial/Gif/node.gif)
