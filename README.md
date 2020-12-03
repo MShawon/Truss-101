@@ -16,7 +16,7 @@ Or go to [Releases](https://github.com/MShawon/Truss-101/releases) and download 
 
 # Tutorial 
 
-[![YouTube video](Tutorial/YouTube.png)](https://www.youtube.com/watch?v=5yi33cXewrU)
+[![YouTube video](Tutorial/youtube.png)](https://www.youtube.com/watch?v=5yi33cXewrU)
 
 
 >Thanks for using Truss 101
