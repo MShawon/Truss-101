@@ -24,6 +24,13 @@ Or go to [Releases](https://github.com/MShawon/Truss-101/releases) and download 
 * Influence line for a unit load
 * 3D truss
 
+# Known Issue
+* Program works fine. Just two bugs in Report.
+* Constrained global stiffness matrix is not removing constrained rows in Report.
+* Force matrix shows wrong degrees of freedom in Report. Those dofs should be incremented by 1.
+
+These will be patched in the next update.
+
 > I welcome any feedback at as2robot143@gmail.com
 
 
