@@ -19,5 +19,11 @@ Or go to [Releases](https://github.com/MShawon/Truss-101/releases) and download 
 [![YouTube video](Tutorial/YouTube_photo.png)](https://www.youtube.com/watch?v=5yi33cXewrU)
 
 
->Thanks for using Truss 101
+# TO DO
+
+* Influence line for a unit load
+* 3D truss
+
+> I welcome any feedback from you at as2robot143@gmail.com
+
 
