@@ -24,6 +24,6 @@ Or go to [Releases](https://github.com/MShawon/Truss-101/releases) and download 
 * Influence line for a unit load
 * 3D truss
 
-> I welcome any feedback from you at as2robot143@gmail.com
+> I welcome any feedback at as2robot143@gmail.com
 
 
