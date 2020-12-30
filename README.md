@@ -28,6 +28,7 @@ Or go to [Releases](https://github.com/MShawon/Truss-101/releases) and download 
 * Program works fine. Just two bugs in Report.
 * Constrained global stiffness matrix is not removing constrained rows in Report.
 * Force matrix shows wrong degrees of freedom in Report. Those dofs should be incremented by 1.
+* Support nodes value greater than 10 is not reading correctly when opened from saved files.
 
 These will be patched in the next update.
 
