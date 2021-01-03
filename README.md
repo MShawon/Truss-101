@@ -1,10 +1,20 @@
+<p align="center">
+  <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/MShawon/Truss-101?color=success&style=plastic">
+  <img alt="GitHub Release Date" src="https://img.shields.io/github/release-date/MShawon/Truss-101?color=success&style=plastic">
+  <img alt="GitHub Total Download" src="https://img.shields.io/github/downloads/MShawon/Truss-101/total?label=GitHub%20downloads&color=success&style=plastic">
+  <img alt="SourceForge Total Download" src="https://img.shields.io/sourceforge/dt/truss-101?label=SourceForge%20downloads&color=success&style=plastic">
+  <img alt="Operating System" src="https://img.shields.io/badge/OS-Windows-success?style=plastic">
+</p>
+
 # Truss 101
 A desktop application to solve statically determinate and indeterminate 2D truss structures using Matrix Displacement Method (aka Finite Element Method).
 
 ## Where to download?
-Click [Download](https://github.com/MShawon/Truss-101/releases/download/1.0.2/Truss.101_win_Setup_v1.0.2.exe) to get the latest version.
-
-Or go to [Releases](https://github.com/MShawon/Truss-101/releases) and download file named with setup.
+<p align='left'>
+  <a href="https://github.com/MShawon/Truss-101/releases">
+  <img src="https://img.shields.io/badge/v1.0.2-Download%20Truss%20101-green?logo=github&logoWidth=10&flat&logoColor=black" width="450" height="55">
+  </a>
+</p>
 
 ## Why Truss 101?
 * Easy to use
