@@ -1,12 +1,12 @@
 <p align="center">
-  <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/MShawon/Truss-101?color=success&style=plastic">
-  <img alt="GitHub Release Date" src="https://img.shields.io/github/release-date/MShawon/Truss-101?color=success&style=plastic">
-  <img alt="GitHub Total Download" src="https://img.shields.io/github/downloads/MShawon/Truss-101/total?label=GitHub%20downloads&color=success&style=plastic">
-  <img alt="SourceForge Total Download" src="https://img.shields.io/sourceforge/dt/truss-101?label=SourceForge%20downloads&color=success&style=plastic">
-  <img alt="Operating System" src="https://img.shields.io/badge/OS-Windows-success?style=plastic">
+  <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/MShawon/Truss-101?color=success">
+  <img alt="GitHub Release Date" src="https://img.shields.io/github/release-date/MShawon/Truss-101?color=success">
+  <img alt="GitHub Total Download" src="https://img.shields.io/github/downloads/MShawon/Truss-101/total?label=GitHub%20downloads&color=success">
+  <img alt="SourceForge Total Download" src="https://img.shields.io/sourceforge/dt/truss-101?label=SourceForge%20downloads&color=success">
+  <img alt="Operating System" src="https://img.shields.io/badge/OS-Windows-success">
 </p>
 <p align="center">
-  <a href="https://github.com/MShawon/Truss-101/blob/main/LICENSE"><img alt="GitHub license" src="https://img.shields.io/github/license/MShawon/Truss-101?style=plastic&color=important"></a>
+  <a href="https://github.com/MShawon/Truss-101/blob/main/LICENSE"><img alt="GitHub license" src="https://img.shields.io/github/license/MShawon/Truss-101?color=important"></a>
   <a href="https://saythanks.io/to/as2robot143@gmail.com">
   <img alt="Operating System" src="https://img.shields.io/badge/Say-thanks!-1EAEDB.svg">
   </a>
