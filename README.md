@@ -5,6 +5,12 @@
   <img alt="SourceForge Total Download" src="https://img.shields.io/sourceforge/dt/truss-101?label=SourceForge%20downloads&color=success&style=plastic">
   <img alt="Operating System" src="https://img.shields.io/badge/OS-Windows-success?style=plastic">
 </p>
+<p align="center">
+  <a href="https://github.com/MShawon/Truss-101/blob/main/LICENSE"><img alt="GitHub license" src="https://img.shields.io/github/license/MShawon/Truss-101?style=plastic&color=important"></a>
+  <a href="https://saythanks.io/to/as2robot143@gmail.com">
+  <img alt="Operating System" src="https://img.shields.io/badge/Say-thanks!-1EAEDB.svg">
+  </a>
+</p>
 
 # Truss 101
 A desktop application to solve statically determinate and indeterminate 2D truss structures using Matrix Displacement Method (aka Finite Element Method).
@@ -34,7 +40,7 @@ A desktop application to solve statically determinate and indeterminate 2D truss
 * Influence line for a unit load
 * 3D truss
 
-# Known Issue
+# Known Issues
 * Program works fine. Just two bugs in Report.
 * Constrained global stiffness matrix is not removing constrained rows in Report.
 * Force matrix shows wrong degrees of freedom in Report. Those dofs should be incremented by 1.
