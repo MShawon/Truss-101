@@ -7,7 +7,7 @@
 </p>
 <p align="center">
   <a href="https://github.com/MShawon/Truss-101/blob/main/LICENSE"><img alt="GitHub license" src="https://img.shields.io/github/license/MShawon/Truss-101?color=important"></a>
-  <a href="http://hits.dwyl.com/MShawon/Truss-101"><img alt="HitCounter" src="https://hits.dwyl.com/MShawon/Truss-101.svg"></a>
+  <img alt="ViewCount" src="https://views.whatilearened.today/views/github/MShawon/Truss-101.svg">
   <a href="https://saythanks.io/to/as2robot143@gmail.com">
   <img alt="Operating System" src="https://img.shields.io/badge/Say-thanks!-1EAEDB.svg">
   </a>
