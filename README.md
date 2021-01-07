@@ -13,6 +13,10 @@
   </a>
 </p>
 
+<p align="center">
+  <img src="logo.png" width="150" height="150"
+</p>
+
 # Truss 101
 A desktop application to solve statically determinate and indeterminate 2D truss structures using Matrix Displacement Method (aka Finite Element Method).
 
@@ -26,11 +30,28 @@ A desktop application to solve statically determinate and indeterminate 2D truss
 
 ## Why Truss 101?
 * Easy to use
+* Develop Structures using Nodes and Members
 * Unit conversion
-* Stability check
-* Individual property for members
+* Supports
+  * Pinned and roller support 
+  * Stability check
+* Multiple loads at the same point
+* Individual property for members 
+  * Modulus of Elasticity (E)
+  * Area (A)
+* Nodal displacements
+  * Graphs
+  * Tabulated
+  * Animation
+* Member forces and support reactions
+  * Graphs showing members relative strength
+  * Tension, compression value in Tabulated form
 * Multiple projects
-* Report containing input-output data, matrices and graphs
+* Beautiful Report 
+  * Input-Output data
+  * Member Stiffness Matrices
+  * Global Stiffness Matrix
+  * Force Matrix
 
 # Tutorial 
 <a href="https://www.youtube.com/watch?v=5yi33cXewrU"><img src="https://img.shields.io/badge/-YouTube-blue?logo=youtube&color=red" width="95" height="30"></a>
@@ -43,7 +64,7 @@ A desktop application to solve statically determinate and indeterminate 2D truss
 * 3D truss
 
 # Known Issues
-* Program works fine. Just two bugs in Report.
+Program works fine. Just two bugs in Report.
 * Constrained global stiffness matrix is not removing constrained rows in Report.
 * Force matrix shows wrong degrees of freedom in Report. Those dofs should be incremented by 1.
 * Support nodes value greater than 10 is not reading correctly when opened from saved files.
