@@ -29,11 +29,10 @@ A desktop application to solve statically determinate and indeterminate 2D truss
 
 
 ## Why Truss 101?
-* Easy to use
 * Develop Structures using Nodes and Members
 * Unit conversion
 * Supports
-  * Pinned and roller support 
+  * Pinned and Roller support 
   * Stability check
 * Multiple loads at the same point
 * Individual property for members 
