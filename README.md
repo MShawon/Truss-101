@@ -54,7 +54,7 @@ A desktop application to solve statically determinate and indeterminate 2D truss
   * Force Matrix
 
 # Tutorial 
-<a href="https://www.youtube.com/watch?v=5yi33cXewrU"><img src="https://img.shields.io/badge/-YouTube-blue?logo=youtube&color=red" width="95" height="30"></a>
+<a href="https://www.youtube.com/watch?v=5yi33cXewrU"><img src="https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white"></a>
 [![YouTube video](Tutorial/YouTube_photo.png)](https://www.youtube.com/watch?v=5yi33cXewrU)
 
 
