@@ -1,4 +1,7 @@
 <p align="center">
+  <img src="Tutorial/logo.png" width="125" height="125"
+</p>
+<p align="center">
   <a href="https://github.com/MShawon/Truss-101/releases/latest"><img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/MShawon/Truss-101?color=success"></a>
   <a href="https://github.com/MShawon/Truss-101/releases/latest"><img alt="GitHub Release Date" src="https://img.shields.io/github/release-date/MShawon/Truss-101?color=success"></a>
   <a href="https://github.com/MShawon/Truss-101/"><img alt="GitHub Downloads" src="https://img.shields.io/github/downloads/MShawon/Truss-101/total?label=GitHub%20downloads&color=success"></a>
@@ -13,9 +16,7 @@
   </a>
 </p>
 
-<p align="center">
-  <img src="logo.png" width="150" height="150"
-</p>
+<p align='center'><img src='Tutorial/gif.gif' width='90%' height='90%' ></p>
 
 # Truss 101
 A desktop application to solve statically determinate and indeterminate 2D truss structures using Matrix Displacement Method (aka Finite Element Method).
