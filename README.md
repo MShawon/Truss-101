@@ -69,6 +69,4 @@ Program works fine. Just two bugs in Report.
 
 These will be patched in the next update.
 
-> I welcome any feedback at as2robot143@gmail.com
-
 
