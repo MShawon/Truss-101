@@ -10,12 +10,8 @@
 </p>
 <p align="center">
   <a href="https://github.com/MShawon/Truss-101/blob/main/LICENSE"><img alt="GitHub license" src="https://img.shields.io/github/license/MShawon/Truss-101?color=important"></a>
-  <a href="https://saythanks.io/to/as2robot143@gmail.com">
-  <img alt="SayThanks" src="https://img.shields.io/badge/Say-thanks!-1EAEDB.svg">
-  </a>
-  <a href="https://paypal.me/shawon107">
-    <img alt="Donate" src="https://img.shields.io/badge/Donate-PayPal-green.svg">
-  </a>
+  <a href="https://saythanks.io/to/as2robot143@gmail.com"><img alt="SayThanks" src="https://img.shields.io/badge/Say-thanks!-1EAEDB.svg"></a>
+  <a href="https://paypal.me/shawon107"><img alt="Donate" src="https://img.shields.io/badge/Donate-PayPal-green.svg"></a>
 </p>
 
 <p align='center'><img src='Tutorial/gif.gif' width='90%' height='90%' ></p>
