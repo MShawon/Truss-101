@@ -15,7 +15,7 @@
   </a>
   <a href="https://paypal.me/shawon107">
     <img alt="Donate" src="https://img.shields.io/badge/Donate-PayPal-green.svg">
-</a>
+  </a>
 </p>
 
 <p align='center'><img src='Tutorial/gif.gif' width='90%' height='90%' ></p>
