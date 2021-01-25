@@ -21,8 +21,8 @@ A desktop application to solve statically determinate and indeterminate 2D truss
 
 ## Where to download?
 <p align='left'>
-  <a href="https://github.com/MShawon/Truss-101/releases/download/1.0.2/Truss.101_win_Setup_v1.0.2.exe">
-  <img src="https://img.shields.io/badge/v1.0.2-Download%20Truss%20101-green?logo=github&logoWidth=10&flat&logoColor=black" width="450" height="55">
+  <a href="https://github.com/MShawon/Truss-101/releases/download/1.1.0/Truss.101_win_Setup_v1.1.0.exe">
+  <img src="https://img.shields.io/badge/v1.1.0-Download%20Truss%20101-green?logo=github&logoWidth=10&flat&logoColor=black" width="450" height="55">
   </a>
 </p>
 
@@ -44,6 +44,7 @@ A desktop application to solve statically determinate and indeterminate 2D truss
 * Member forces and support reactions
   * Graphs showing members relative strength
   * Tension, compression value in Tabulated form
+* Influence line for a unit load
 * Multiple projects
 * Beautiful Report 
   * Input-Output data
@@ -57,16 +58,8 @@ A desktop application to solve statically determinate and indeterminate 2D truss
 
 
 # TO DO
-
-* Influence line for a unit load
 * 3D truss
 
-# Known Issues
-Program works fine. Just two bugs in Report.
-* Constrained global stiffness matrix is not removing constrained rows in Report.
-* Force matrix shows wrong degrees of freedom in Report. Those dofs should be incremented by 1.
-* Support nodes value greater than 10 is not reading correctly when opened from saved files.
 
-These will be patched in the next update.
 
 

@@ -1,0 +1,12 @@
+<RCC>
+  <qresource prefix="newPrefix">
+    <file>logo@2x.png</file>
+    <file>Example/Screenshot 2020-11-19 021116.png</file>
+    <file>Example/assignment_2.svg</file>
+    <file>Example/assignment-1.svg</file>
+    <file>Example/bigtruss.svg</file>
+    <file>Example/cantilever.svg</file>
+    <file>Example/mathalino.svg</file>
+    <file>Example/metric.svg</file>
+  </qresource>
+</RCC>
