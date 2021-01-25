@@ -177,7 +177,7 @@ class MainWindow(QMainWindow):
         }
         """)
 
-        # self.updateApp(oninit=True)
+        self.updateApp(oninit=True)
 
         if len(sys.argv) > 1:
             openwith = (sys.argv[1], "")
