@@ -60,6 +60,7 @@ A desktop application to solve statically determinate and indeterminate 2D truss
 # TO DO
 * 3D truss
 
+# Support Truss 101 with a donation
 
-
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/donate?hosted_button_id=3DY38R3UC436U)
 
