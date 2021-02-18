@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainTrussYXdHQk.ui'
+## Form generated from reading UI file 'mainTrussEJGyIi.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.1
 ##
@@ -18,7 +18,7 @@ class Ui_WizardPage(object):
     def setupUi(self, WizardPage):
         if not WizardPage.objectName():
             WizardPage.setObjectName(u"WizardPage")
-        WizardPage.resize(1253, 625)
+        WizardPage.resize(1099, 544)
         palette = QPalette()
         brush = QBrush(QColor(0, 0, 0, 255))
         brush.setStyle(Qt.SolidPattern)
@@ -88,28 +88,37 @@ class Ui_WizardPage(object):
 #endif
         WizardPage.setPalette(palette)
         WizardPage.setStyleSheet(u"")
-        self.gridLayout_2 = QGridLayout(WizardPage)
-        self.gridLayout_2.setObjectName(u"gridLayout_2")
+        self.gridLayout_7 = QGridLayout(WizardPage)
+        self.gridLayout_7.setObjectName(u"gridLayout_7")
+        self.gridLayout_7.setVerticalSpacing(7)
         self.groupBox = QGroupBox(WizardPage)
         self.groupBox.setObjectName(u"groupBox")
+        self.groupBox.setMaximumSize(QSize(16777215, 16777215))
         self.groupBox.setStyleSheet(u"")
-        self.verticalLayout = QVBoxLayout(self.groupBox)
-        self.verticalLayout.setObjectName(u"verticalLayout")
-        self.pushbutton_nodes = QPushButton(self.groupBox)
-        self.pushbutton_nodes.setObjectName(u"pushbutton_nodes")
+        self.gridLayout_2 = QGridLayout(self.groupBox)
+        self.gridLayout_2.setObjectName(u"gridLayout_2")
+        self.gridLayout_2.setHorizontalSpacing(0)
+        self.gridLayout_2.setVerticalSpacing(1)
+        self.gridLayout_2.setContentsMargins(-1, 3, -1, 3)
+        self.verticalSpacer_7 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.gridLayout_2.addItem(self.verticalSpacer_7, 5, 0, 1, 1)
+
+        self.pushbutton_displacement = QPushButton(self.groupBox)
+        self.pushbutton_displacement.setObjectName(u"pushbutton_displacement")
         sizePolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.pushbutton_nodes.sizePolicy().hasHeightForWidth())
-        self.pushbutton_nodes.setSizePolicy(sizePolicy)
+        sizePolicy.setHeightForWidth(self.pushbutton_displacement.sizePolicy().hasHeightForWidth())
+        self.pushbutton_displacement.setSizePolicy(sizePolicy)
         font = QFont()
         font.setBold(True)
         font.setItalic(False)
         font.setWeight(75)
-        self.pushbutton_nodes.setFont(font)
-        self.pushbutton_nodes.setCursor(QCursor(Qt.PointingHandCursor))
-        self.pushbutton_nodes.setStyleSheet(u"QPushButton {\n"
-"	background-color: rgb(135, 177, 255);\n"
+        self.pushbutton_displacement.setFont(font)
+        self.pushbutton_displacement.setCursor(QCursor(Qt.PointingHandCursor))
+        self.pushbutton_displacement.setStyleSheet(u"QPushButton {\n"
+"	background-color: rgb(255, 152, 93);\n"
 "    border-style: outset;\n"
 "    border-width: 2px;\n"
 "    border-radius: 10px;\n"
@@ -118,37 +127,14 @@ class Ui_WizardPage(object):
 "    min-width: 10em;\n"
 "}\n"
 "QPushButton:hover {\n"
-"	background-color: rgb(55, 162, 255);\n"
+"	background-color: rgb(255, 135, 55);\n"
 "    border-style: inset;\n"
-"}\n"
-"")
-        self.pushbutton_nodes.setAutoDefault(False)
-        self.pushbutton_nodes.setFlat(False)
+"}")
+        icon = QIcon()
+        icon.addFile(u":/newPrefix/displacement.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pushbutton_displacement.setIcon(icon)
 
-        self.verticalLayout.addWidget(self.pushbutton_nodes)
-
-        self.pushbutton_members = QPushButton(self.groupBox)
-        self.pushbutton_members.setObjectName(u"pushbutton_members")
-        sizePolicy.setHeightForWidth(self.pushbutton_members.sizePolicy().hasHeightForWidth())
-        self.pushbutton_members.setSizePolicy(sizePolicy)
-        self.pushbutton_members.setFont(font)
-        self.pushbutton_members.setCursor(QCursor(Qt.PointingHandCursor))
-        self.pushbutton_members.setStyleSheet(u"QPushButton {\n"
-"	background-color: rgb(135, 177, 255);\n"
-"    border-style: outset;\n"
-"    border-width: 2px;\n"
-"    border-radius: 10px;\n"
-"    border-color: beige;\n"
-"    font: bold 14px;\n"
-"    min-width: 10em;\n"
-"}\n"
-"QPushButton:hover {\n"
-"	background-color: rgb(55, 162, 255);\n"
-"    border-style: inset;\n"
-"}\n"
-"")
-
-        self.verticalLayout.addWidget(self.pushbutton_members)
+        self.gridLayout_2.addWidget(self.pushbutton_displacement, 7, 0, 1, 1)
 
         self.pushbutton_supports = QPushButton(self.groupBox)
         self.pushbutton_supports.setObjectName(u"pushbutton_supports")
@@ -170,31 +156,11 @@ class Ui_WizardPage(object):
 "    border-style: inset;\n"
 "}\n"
 "")
+        icon1 = QIcon()
+        icon1.addFile(u":/newPrefix/support.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pushbutton_supports.setIcon(icon1)
 
-        self.verticalLayout.addWidget(self.pushbutton_supports)
-
-        self.pushbutton_loads = QPushButton(self.groupBox)
-        self.pushbutton_loads.setObjectName(u"pushbutton_loads")
-        sizePolicy.setHeightForWidth(self.pushbutton_loads.sizePolicy().hasHeightForWidth())
-        self.pushbutton_loads.setSizePolicy(sizePolicy)
-        self.pushbutton_loads.setFont(font)
-        self.pushbutton_loads.setCursor(QCursor(Qt.PointingHandCursor))
-        self.pushbutton_loads.setStyleSheet(u"QPushButton {\n"
-"	background-color: rgb(135, 177, 255);\n"
-"    border-style: outset;\n"
-"    border-width: 2px;\n"
-"    border-radius: 10px;\n"
-"    border-color: beige;\n"
-"    font: bold 14px;\n"
-"    min-width: 10em;\n"
-"}\n"
-"QPushButton:hover {\n"
-"	background-color: rgb(55, 162, 255);\n"
-"    border-style: inset;\n"
-"}\n"
-"")
-
-        self.verticalLayout.addWidget(self.pushbutton_loads)
+        self.gridLayout_2.addWidget(self.pushbutton_supports, 2, 0, 1, 1)
 
         self.pushbutton_properties = QPushButton(self.groupBox)
         self.pushbutton_properties.setObjectName(u"pushbutton_properties")
@@ -217,56 +183,15 @@ class Ui_WizardPage(object):
 "}\n"
 "\n"
 "")
+        icon2 = QIcon()
+        icon2.addFile(u":/newPrefix/property.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pushbutton_properties.setIcon(icon2)
 
-        self.verticalLayout.addWidget(self.pushbutton_properties)
+        self.gridLayout_2.addWidget(self.pushbutton_properties, 4, 0, 1, 1)
 
-        self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
-        self.verticalLayout.addItem(self.verticalSpacer_3)
-
-        self.pushbutton_displacement = QPushButton(self.groupBox)
-        self.pushbutton_displacement.setObjectName(u"pushbutton_displacement")
-        sizePolicy.setHeightForWidth(self.pushbutton_displacement.sizePolicy().hasHeightForWidth())
-        self.pushbutton_displacement.setSizePolicy(sizePolicy)
-        self.pushbutton_displacement.setFont(font)
-        self.pushbutton_displacement.setCursor(QCursor(Qt.PointingHandCursor))
-        self.pushbutton_displacement.setStyleSheet(u"QPushButton {\n"
-"	background-color: rgb(255, 152, 93);\n"
-"    border-style: outset;\n"
-"    border-width: 2px;\n"
-"    border-radius: 10px;\n"
-"    border-color: beige;\n"
-"    font: bold 14px;\n"
-"    min-width: 10em;\n"
-"}\n"
-"QPushButton:hover {\n"
-"	background-color: rgb(255, 135, 55);\n"
-"    border-style: inset;\n"
-"}")
-
-        self.verticalLayout.addWidget(self.pushbutton_displacement)
-
-        self.pushbutton_forces = QPushButton(self.groupBox)
-        self.pushbutton_forces.setObjectName(u"pushbutton_forces")
-        sizePolicy.setHeightForWidth(self.pushbutton_forces.sizePolicy().hasHeightForWidth())
-        self.pushbutton_forces.setSizePolicy(sizePolicy)
-        self.pushbutton_forces.setFont(font)
-        self.pushbutton_forces.setCursor(QCursor(Qt.PointingHandCursor))
-        self.pushbutton_forces.setStyleSheet(u"QPushButton {\n"
-"	background-color: rgb(255, 152, 93);\n"
-"    border-style: outset;\n"
-"    border-width: 2px;\n"
-"    border-radius: 10px;\n"
-"    border-color: beige;\n"
-"    font: bold 14px;\n"
-"    min-width: 10em;\n"
-"}\n"
-"QPushButton:hover {\n"
-"	background-color: rgb(255, 135, 55);\n"
-"    border-style: inset;\n"
-"}")
-
-        self.verticalLayout.addWidget(self.pushbutton_forces)
+        self.gridLayout_2.addItem(self.verticalSpacer_2, 6, 0, 1, 1)
 
         self.pushbutton_influenceLine = QPushButton(self.groupBox)
         self.pushbutton_influenceLine.setObjectName(u"pushbutton_influenceLine")
@@ -287,12 +212,94 @@ class Ui_WizardPage(object):
 "	background-color: rgb(255, 135, 55);\n"
 "    border-style: inset;\n"
 "}")
+        icon3 = QIcon()
+        icon3.addFile(u":/newPrefix/moving.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pushbutton_influenceLine.setIcon(icon3)
 
-        self.verticalLayout.addWidget(self.pushbutton_influenceLine)
+        self.gridLayout_2.addWidget(self.pushbutton_influenceLine, 9, 0, 1, 1)
 
-        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_6 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
-        self.verticalLayout.addItem(self.verticalSpacer_2)
+        self.gridLayout_2.addItem(self.verticalSpacer_6, 10, 0, 1, 1)
+
+        self.pushbutton_forces = QPushButton(self.groupBox)
+        self.pushbutton_forces.setObjectName(u"pushbutton_forces")
+        sizePolicy.setHeightForWidth(self.pushbutton_forces.sizePolicy().hasHeightForWidth())
+        self.pushbutton_forces.setSizePolicy(sizePolicy)
+        self.pushbutton_forces.setFont(font)
+        self.pushbutton_forces.setCursor(QCursor(Qt.PointingHandCursor))
+        self.pushbutton_forces.setStyleSheet(u"QPushButton {\n"
+"	background-color: rgb(255, 152, 93);\n"
+"    border-style: outset;\n"
+"    border-width: 2px;\n"
+"    border-radius: 10px;\n"
+"    border-color: beige;\n"
+"    font: bold 14px;\n"
+"    min-width: 10em;\n"
+"}\n"
+"QPushButton:hover {\n"
+"	background-color: rgb(255, 135, 55);\n"
+"    border-style: inset;\n"
+"}")
+        icon4 = QIcon()
+        icon4.addFile(u":/newPrefix/stress.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pushbutton_forces.setIcon(icon4)
+
+        self.gridLayout_2.addWidget(self.pushbutton_forces, 8, 0, 1, 1)
+
+        self.pushbutton_nodes = QPushButton(self.groupBox)
+        self.pushbutton_nodes.setObjectName(u"pushbutton_nodes")
+        sizePolicy.setHeightForWidth(self.pushbutton_nodes.sizePolicy().hasHeightForWidth())
+        self.pushbutton_nodes.setSizePolicy(sizePolicy)
+        self.pushbutton_nodes.setFont(font)
+        self.pushbutton_nodes.setCursor(QCursor(Qt.PointingHandCursor))
+        self.pushbutton_nodes.setStyleSheet(u"QPushButton {\n"
+"	background-color: rgb(135, 177, 255);\n"
+"    border-style: outset;\n"
+"    border-width: 2px;\n"
+"    border-radius: 10px;\n"
+"    border-color: beige;\n"
+"    font: bold 14px;\n"
+"    min-width: 10em;\n"
+"}\n"
+"QPushButton:hover {\n"
+"	background-color: rgb(55, 162, 255);\n"
+"    border-style: inset;\n"
+"}\n"
+"")
+        icon5 = QIcon()
+        icon5.addFile(u":/newPrefix/node.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pushbutton_nodes.setIcon(icon5)
+        self.pushbutton_nodes.setAutoDefault(False)
+        self.pushbutton_nodes.setFlat(False)
+
+        self.gridLayout_2.addWidget(self.pushbutton_nodes, 0, 0, 1, 1)
+
+        self.pushbutton_members = QPushButton(self.groupBox)
+        self.pushbutton_members.setObjectName(u"pushbutton_members")
+        sizePolicy.setHeightForWidth(self.pushbutton_members.sizePolicy().hasHeightForWidth())
+        self.pushbutton_members.setSizePolicy(sizePolicy)
+        self.pushbutton_members.setFont(font)
+        self.pushbutton_members.setCursor(QCursor(Qt.PointingHandCursor))
+        self.pushbutton_members.setStyleSheet(u"QPushButton {\n"
+"	background-color: rgb(135, 177, 255);\n"
+"    border-style: outset;\n"
+"    border-width: 2px;\n"
+"    border-radius: 10px;\n"
+"    border-color: beige;\n"
+"    font: bold 14px;\n"
+"    min-width: 10em;\n"
+"}\n"
+"QPushButton:hover {\n"
+"	background-color: rgb(55, 162, 255);\n"
+"    border-style: inset;\n"
+"}\n"
+"")
+        icon6 = QIcon()
+        icon6.addFile(u":/newPrefix/member.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pushbutton_members.setIcon(icon6)
+
+        self.gridLayout_2.addWidget(self.pushbutton_members, 1, 0, 1, 1)
 
         self.pushbutton_report = QPushButton(self.groupBox)
         self.pushbutton_report.setObjectName(u"pushbutton_report")
@@ -313,50 +320,72 @@ class Ui_WizardPage(object):
 "	background-color: rgb(4, 163, 121);\n"
 "    border-style: inset;\n"
 "}")
+        icon7 = QIcon()
+        icon7.addFile(u":/newPrefix/report.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pushbutton_report.setIcon(icon7)
 
-        self.verticalLayout.addWidget(self.pushbutton_report)
+        self.gridLayout_2.addWidget(self.pushbutton_report, 12, 0, 1, 1)
 
-        self.verticalSpacer = QSpacerItem(20, 50, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
-        self.verticalLayout.addItem(self.verticalSpacer)
+        self.gridLayout_2.addItem(self.verticalSpacer_3, 11, 0, 1, 1)
+
+        self.pushbutton_loads = QPushButton(self.groupBox)
+        self.pushbutton_loads.setObjectName(u"pushbutton_loads")
+        sizePolicy.setHeightForWidth(self.pushbutton_loads.sizePolicy().hasHeightForWidth())
+        self.pushbutton_loads.setSizePolicy(sizePolicy)
+        self.pushbutton_loads.setFont(font)
+        self.pushbutton_loads.setCursor(QCursor(Qt.PointingHandCursor))
+        self.pushbutton_loads.setStyleSheet(u"QPushButton {\n"
+"	background-color: rgb(135, 177, 255);\n"
+"    border-style: outset;\n"
+"    border-width: 2px;\n"
+"    border-radius: 10px;\n"
+"    border-color: beige;\n"
+"    font: bold 14px;\n"
+"    min-width: 10em;\n"
+"}\n"
+"QPushButton:hover {\n"
+"	background-color: rgb(55, 162, 255);\n"
+"    border-style: inset;\n"
+"}\n"
+"")
+        icon8 = QIcon()
+        icon8.addFile(u":/newPrefix/load.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pushbutton_loads.setIcon(icon8)
+
+        self.gridLayout_2.addWidget(self.pushbutton_loads, 3, 0, 1, 1)
+
+        self.verticalSpacer_8 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.gridLayout_2.addItem(self.verticalSpacer_8, 13, 0, 1, 1)
 
 
-        self.gridLayout_2.addWidget(self.groupBox, 0, 0, 1, 1)
+        self.gridLayout_7.addWidget(self.groupBox, 0, 0, 1, 1)
 
         self.stackedWidget = QStackedWidget(WizardPage)
         self.stackedWidget.setObjectName(u"stackedWidget")
         self.page_geometry = QWidget()
         self.page_geometry.setObjectName(u"page_geometry")
-        self.gridLayout_7 = QGridLayout(self.page_geometry)
-        self.gridLayout_7.setObjectName(u"gridLayout_7")
-        self.gridLayout_7.setContentsMargins(0, -1, -1, -1)
-        self.label_stabality = QLabel(self.page_geometry)
-        self.label_stabality.setObjectName(u"label_stabality")
-        self.label_stabality.setMinimumSize(QSize(100, 20))
-        self.label_stabality.setMaximumSize(QSize(61625, 20))
-        font1 = QFont()
-        font1.setPointSize(10)
-        font1.setBold(True)
-        font1.setWeight(75)
-        self.label_stabality.setFont(font1)
-        self.label_stabality.setStyleSheet(u"color: rgb(255, 85, 0);")
-        self.label_stabality.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
-
-        self.gridLayout_7.addWidget(self.label_stabality, 0, 4, 1, 1)
-
+        self.gridLayout_8 = QGridLayout(self.page_geometry)
+        self.gridLayout_8.setObjectName(u"gridLayout_8")
         self.stackedWidget_2 = QStackedWidget(self.page_geometry)
         self.stackedWidget_2.setObjectName(u"stackedWidget_2")
-        self.stackedWidget_2.setMinimumSize(QSize(330, 581))
+        self.stackedWidget_2.setMinimumSize(QSize(330, 500))
         self.stackedWidget_2.setMaximumSize(QSize(350, 16777215))
         self.page_node = QWidget()
         self.page_node.setObjectName(u"page_node")
         self.gridLayout = QGridLayout(self.page_node)
         self.gridLayout.setObjectName(u"gridLayout")
-        self.label_7 = QLabel(self.page_node)
-        self.label_7.setObjectName(u"label_7")
-        self.label_7.setFont(font1)
+        self.gridLayout.setContentsMargins(0, 5, -1, -1)
+        self.label_8 = QLabel(self.page_node)
+        self.label_8.setObjectName(u"label_8")
+        font1 = QFont()
+        font1.setPointSize(10)
+        self.label_8.setFont(font1)
+        self.label_8.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
 
-        self.gridLayout.addWidget(self.label_7, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.label_8, 2, 0, 2, 1)
 
         self.line_4 = QFrame(self.page_node)
         self.line_4.setObjectName(u"line_4")
@@ -365,45 +394,15 @@ class Ui_WizardPage(object):
 
         self.gridLayout.addWidget(self.line_4, 1, 0, 1, 3)
 
-        self.label_8 = QLabel(self.page_node)
-        self.label_8.setObjectName(u"label_8")
+        self.label_unit_node = QLabel(self.page_node)
+        self.label_unit_node.setObjectName(u"label_unit_node")
+        self.label_unit_node.setMinimumSize(QSize(291, 16))
+        self.label_unit_node.setMaximumSize(QSize(16777215, 40))
         font2 = QFont()
-        font2.setPointSize(10)
-        self.label_8.setFont(font2)
-        self.label_8.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+        font2.setPointSize(9)
+        self.label_unit_node.setFont(font2)
 
-        self.gridLayout.addWidget(self.label_8, 2, 0, 2, 1)
-
-        self.update_nodes = QPushButton(self.page_node)
-        self.update_nodes.setObjectName(u"update_nodes")
-        self.update_nodes.setMinimumSize(QSize(23, 35))
-        self.update_nodes.setCursor(QCursor(Qt.PointingHandCursor))
-        self.update_nodes.setStyleSheet(u"QPushButton {\n"
-"	background-color: rgb(123, 193, 255);\n"
-"    border-style: outset;\n"
-"    border-width: 2px;\n"
-"    border-radius: 10px;\n"
-"    border-color: beige;\n"
-"    font: bold 14px;\n"
-"    min-width: 1em;\n"
-"    padding: 1px;\n"
-"}\n"
-"QPushButton:hover {\n"
-"	background-color: rgb(85, 162, 255);\n"
-"    border-style: inset;\n"
-"}\n"
-"")
-
-        self.gridLayout.addWidget(self.update_nodes, 2, 2, 2, 1)
-
-        self.spinBox_nodes = QSpinBox(self.page_node)
-        self.spinBox_nodes.setObjectName(u"spinBox_nodes")
-        self.spinBox_nodes.setMinimumSize(QSize(0, 30))
-        self.spinBox_nodes.setMaximumSize(QSize(50, 16777215))
-        self.spinBox_nodes.setMinimum(2)
-        self.spinBox_nodes.setValue(2)
-
-        self.gridLayout.addWidget(self.spinBox_nodes, 3, 1, 1, 1)
+        self.gridLayout.addWidget(self.label_unit_node, 5, 0, 1, 3)
 
         self.tableWidget_nodes = QTableWidget(self.page_node)
         if (self.tableWidget_nodes.columnCount() < 2):
@@ -429,21 +428,53 @@ class Ui_WizardPage(object):
 
         self.gridLayout.addWidget(self.tableWidget_nodes, 4, 0, 1, 3)
 
-        self.label_unit_node = QLabel(self.page_node)
-        self.label_unit_node.setObjectName(u"label_unit_node")
-        self.label_unit_node.setMinimumSize(QSize(291, 16))
-        self.label_unit_node.setMaximumSize(QSize(16777215, 40))
-        font3 = QFont()
-        font3.setPointSize(9)
-        self.label_unit_node.setFont(font3)
+        self.update_nodes = QPushButton(self.page_node)
+        self.update_nodes.setObjectName(u"update_nodes")
+        self.update_nodes.setMinimumSize(QSize(23, 35))
+        self.update_nodes.setCursor(QCursor(Qt.PointingHandCursor))
+        self.update_nodes.setStyleSheet(u"QPushButton {\n"
+"	background-color: rgb(123, 193, 255);\n"
+"    border-style: outset;\n"
+"    border-width: 2px;\n"
+"    border-radius: 10px;\n"
+"    border-color: beige;\n"
+"    font: bold 14px;\n"
+"    min-width: 1em;\n"
+"    padding: 1px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"	background-color: rgb(85, 162, 255);\n"
+"    border-style: inset;\n"
+"}\n"
+"")
 
-        self.gridLayout.addWidget(self.label_unit_node, 5, 0, 1, 3)
+        self.gridLayout.addWidget(self.update_nodes, 2, 2, 2, 1)
+
+        self.label_7 = QLabel(self.page_node)
+        self.label_7.setObjectName(u"label_7")
+        font3 = QFont()
+        font3.setPointSize(10)
+        font3.setBold(True)
+        font3.setWeight(75)
+        self.label_7.setFont(font3)
+
+        self.gridLayout.addWidget(self.label_7, 0, 0, 1, 1)
+
+        self.spinBox_nodes = QSpinBox(self.page_node)
+        self.spinBox_nodes.setObjectName(u"spinBox_nodes")
+        self.spinBox_nodes.setMinimumSize(QSize(0, 30))
+        self.spinBox_nodes.setMaximumSize(QSize(50, 16777215))
+        self.spinBox_nodes.setMinimum(2)
+        self.spinBox_nodes.setValue(2)
+
+        self.gridLayout.addWidget(self.spinBox_nodes, 3, 1, 1, 1)
 
         self.stackedWidget_2.addWidget(self.page_node)
         self.page_member = QWidget()
         self.page_member.setObjectName(u"page_member")
         self.gridLayout_4 = QGridLayout(self.page_member)
         self.gridLayout_4.setObjectName(u"gridLayout_4")
+        self.gridLayout_4.setContentsMargins(0, 5, -1, -1)
         self.line_2 = QFrame(self.page_member)
         self.line_2.setObjectName(u"line_2")
         self.line_2.setFrameShape(QFrame.HLine)
@@ -453,7 +484,7 @@ class Ui_WizardPage(object):
 
         self.label_3 = QLabel(self.page_member)
         self.label_3.setObjectName(u"label_3")
-        self.label_3.setFont(font1)
+        self.label_3.setFont(font3)
 
         self.gridLayout_4.addWidget(self.label_3, 0, 0, 1, 1)
 
@@ -468,7 +499,7 @@ class Ui_WizardPage(object):
 
         self.label_4 = QLabel(self.page_member)
         self.label_4.setObjectName(u"label_4")
-        self.label_4.setFont(font2)
+        self.label_4.setFont(font1)
         self.label_4.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
 
         self.gridLayout_4.addWidget(self.label_4, 2, 0, 1, 1)
@@ -524,9 +555,10 @@ class Ui_WizardPage(object):
         self.page_supports.setObjectName(u"page_supports")
         self.gridLayout_5 = QGridLayout(self.page_supports)
         self.gridLayout_5.setObjectName(u"gridLayout_5")
+        self.gridLayout_5.setContentsMargins(0, 5, -1, -1)
         self.label_5 = QLabel(self.page_supports)
         self.label_5.setObjectName(u"label_5")
-        self.label_5.setFont(font1)
+        self.label_5.setFont(font3)
 
         self.gridLayout_5.addWidget(self.label_5, 0, 0, 1, 3)
 
@@ -539,7 +571,7 @@ class Ui_WizardPage(object):
 
         self.label_6 = QLabel(self.page_supports)
         self.label_6.setObjectName(u"label_6")
-        self.label_6.setFont(font2)
+        self.label_6.setFont(font1)
         self.label_6.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
 
         self.gridLayout_5.addWidget(self.label_6, 2, 0, 1, 1)
@@ -607,9 +639,10 @@ class Ui_WizardPage(object):
         self.page_loads.setObjectName(u"page_loads")
         self.gridLayout_3 = QGridLayout(self.page_loads)
         self.gridLayout_3.setObjectName(u"gridLayout_3")
+        self.gridLayout_3.setContentsMargins(0, 5, -1, -1)
         self.label_9 = QLabel(self.page_loads)
         self.label_9.setObjectName(u"label_9")
-        self.label_9.setFont(font1)
+        self.label_9.setFont(font3)
 
         self.gridLayout_3.addWidget(self.label_9, 0, 0, 1, 1)
 
@@ -622,7 +655,7 @@ class Ui_WizardPage(object):
 
         self.label_10 = QLabel(self.page_loads)
         self.label_10.setObjectName(u"label_10")
-        self.label_10.setFont(font2)
+        self.label_10.setFont(font1)
         self.label_10.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
 
         self.gridLayout_3.addWidget(self.label_10, 2, 0, 1, 1)
@@ -689,7 +722,7 @@ class Ui_WizardPage(object):
         self.label_unit_load.setObjectName(u"label_unit_load")
         self.label_unit_load.setMinimumSize(QSize(291, 16))
         self.label_unit_load.setMaximumSize(QSize(16777215, 40))
-        self.label_unit_load.setFont(font3)
+        self.label_unit_load.setFont(font2)
 
         self.gridLayout_3.addWidget(self.label_unit_load, 4, 0, 1, 3)
 
@@ -698,6 +731,7 @@ class Ui_WizardPage(object):
         self.page_properties.setObjectName(u"page_properties")
         self.gridLayout_6 = QGridLayout(self.page_properties)
         self.gridLayout_6.setObjectName(u"gridLayout_6")
+        self.gridLayout_6.setContentsMargins(0, 5, -1, -1)
         self.spinBox_property = QSpinBox(self.page_properties)
         self.spinBox_property.setObjectName(u"spinBox_property")
         self.spinBox_property.setMinimumSize(QSize(0, 30))
@@ -710,14 +744,14 @@ class Ui_WizardPage(object):
 
         self.label_12 = QLabel(self.page_properties)
         self.label_12.setObjectName(u"label_12")
-        self.label_12.setFont(font2)
+        self.label_12.setFont(font1)
         self.label_12.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
 
         self.gridLayout_6.addWidget(self.label_12, 3, 0, 1, 1)
 
         self.label = QLabel(self.page_properties)
         self.label.setObjectName(u"label")
-        self.label.setFont(font3)
+        self.label.setFont(font2)
 
         self.gridLayout_6.addWidget(self.label, 6, 0, 1, 3)
 
@@ -758,7 +792,7 @@ class Ui_WizardPage(object):
         self.label_unit_property.setObjectName(u"label_unit_property")
         self.label_unit_property.setMinimumSize(QSize(291, 16))
         self.label_unit_property.setMaximumSize(QSize(16777215, 40))
-        self.label_unit_property.setFont(font3)
+        self.label_unit_property.setFont(font2)
 
         self.gridLayout_6.addWidget(self.label_unit_property, 5, 0, 1, 3)
 
@@ -796,42 +830,24 @@ class Ui_WizardPage(object):
 
         self.label_11 = QLabel(self.page_properties)
         self.label_11.setObjectName(u"label_11")
-        self.label_11.setFont(font1)
+        self.label_11.setFont(font3)
 
         self.gridLayout_6.addWidget(self.label_11, 0, 0, 1, 3)
 
         self.stackedWidget_2.addWidget(self.page_properties)
 
-        self.gridLayout_7.addWidget(self.stackedWidget_2, 0, 0, 2, 1)
-
-        self.frame_geometry = QFrame(self.page_geometry)
-        self.frame_geometry.setObjectName(u"frame_geometry")
-        self.frame_geometry.setMinimumSize(QSize(664, 550))
-        self.frame_geometry.setFrameShape(QFrame.NoFrame)
-        self.frame_geometry.setFrameShadow(QFrame.Raised)
-        self.gridLayout_8 = QGridLayout(self.frame_geometry)
-        self.gridLayout_8.setSpacing(0)
-        self.gridLayout_8.setObjectName(u"gridLayout_8")
-        self.gridLayout_8.setContentsMargins(0, 0, 0, 0)
-        self.graphLayout_geometry = QVBoxLayout()
-        self.graphLayout_geometry.setSpacing(0)
-        self.graphLayout_geometry.setObjectName(u"graphLayout_geometry")
-        self.graphLayout_geometry.setContentsMargins(-1, -1, -1, 0)
-
-        self.gridLayout_8.addLayout(self.graphLayout_geometry, 0, 0, 1, 1)
-
-
-        self.gridLayout_7.addWidget(self.frame_geometry, 1, 1, 1, 4)
+        self.gridLayout_8.addWidget(self.stackedWidget_2, 0, 0, 2, 1)
 
         self.label_23 = QLabel(self.page_geometry)
         self.label_23.setObjectName(u"label_23")
+        self.label_23.setMaximumSize(QSize(300, 16777215))
         font5 = QFont()
         font5.setFamily(u"Segoe UI Semibold")
         font5.setPointSize(10)
         self.label_23.setFont(font5)
         self.label_23.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
 
-        self.gridLayout_7.addWidget(self.label_23, 0, 1, 1, 1)
+        self.gridLayout_8.addWidget(self.label_23, 0, 1, 1, 1)
 
         self.radioButtonDefault = QRadioButton(self.page_geometry)
         self.radioButtonDefault.setObjectName(u"radioButtonDefault")
@@ -839,27 +855,124 @@ class Ui_WizardPage(object):
         self.radioButtonDefault.setFont(font4)
         self.radioButtonDefault.setChecked(True)
 
-        self.gridLayout_7.addWidget(self.radioButtonDefault, 0, 2, 1, 1)
+        self.gridLayout_8.addWidget(self.radioButtonDefault, 0, 2, 1, 1)
 
         self.radioButtonBlack = QRadioButton(self.page_geometry)
         self.radioButtonBlack.setObjectName(u"radioButtonBlack")
         self.radioButtonBlack.setMaximumSize(QSize(100, 16777215))
         self.radioButtonBlack.setFont(font4)
 
-        self.gridLayout_7.addWidget(self.radioButtonBlack, 0, 3, 1, 1)
+        self.gridLayout_8.addWidget(self.radioButtonBlack, 0, 3, 1, 1)
+
+        self.label_stabality = QLabel(self.page_geometry)
+        self.label_stabality.setObjectName(u"label_stabality")
+        self.label_stabality.setMinimumSize(QSize(100, 20))
+        self.label_stabality.setMaximumSize(QSize(61625, 20))
+        self.label_stabality.setFont(font3)
+        self.label_stabality.setStyleSheet(u"color: rgb(255, 85, 0);")
+        self.label_stabality.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+
+        self.gridLayout_8.addWidget(self.label_stabality, 0, 4, 1, 1)
+
+        self.graphLayout_geometry = QVBoxLayout()
+        self.graphLayout_geometry.setSpacing(0)
+        self.graphLayout_geometry.setObjectName(u"graphLayout_geometry")
+        self.graphLayout_geometry.setContentsMargins(-1, -1, -1, 0)
+
+        self.gridLayout_8.addLayout(self.graphLayout_geometry, 1, 1, 1, 4)
 
         self.stackedWidget.addWidget(self.page_geometry)
         self.page_displacement = QWidget()
         self.page_displacement.setObjectName(u"page_displacement")
         self.gridLayout_9 = QGridLayout(self.page_displacement)
         self.gridLayout_9.setObjectName(u"gridLayout_9")
-        self.gridLayout_9.setHorizontalSpacing(7)
+        self.label_14 = QLabel(self.page_displacement)
+        self.label_14.setObjectName(u"label_14")
+        self.label_14.setMinimumSize(QSize(0, 35))
+        self.label_14.setFont(font3)
+
+        self.gridLayout_9.addWidget(self.label_14, 0, 0, 1, 1)
+
+        self.label_16 = QLabel(self.page_displacement)
+        self.label_16.setObjectName(u"label_16")
+        self.label_16.setFont(font5)
+        self.label_16.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+
+        self.gridLayout_9.addWidget(self.label_16, 0, 1, 1, 1)
+
+        self.pushButton_start = QPushButton(self.page_displacement)
+        self.pushButton_start.setObjectName(u"pushButton_start")
+        self.pushButton_start.setMinimumSize(QSize(35, 0))
+        self.pushButton_start.setMaximumSize(QSize(150, 35))
+        self.pushButton_start.setStyleSheet(u"QPushButton {\n"
+"	background-color: rgb(123, 193, 255);\n"
+"    border-style: outset;\n"
+"    border-width: 2px;\n"
+"    border-radius: 10px;\n"
+"    border-color: beige;\n"
+"    font: bold 14px;\n"
+"    min-width: 1em;\n"
+"    padding: 7px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"	background-color: rgb(85, 162, 255);\n"
+"    border-style: inset;\n"
+"}")
+
+        self.gridLayout_9.addWidget(self.pushButton_start, 0, 2, 1, 1)
+
+        self.pushButton_stop = QPushButton(self.page_displacement)
+        self.pushButton_stop.setObjectName(u"pushButton_stop")
+        self.pushButton_stop.setMinimumSize(QSize(35, 0))
+        self.pushButton_stop.setMaximumSize(QSize(149, 35))
+        self.pushButton_stop.setStyleSheet(u"QPushButton {\n"
+"	background-color: rgb(255, 101, 111);\n"
+"    border-style: outset;\n"
+"    border-width: 2px;\n"
+"    border-radius: 10px;\n"
+"    border-color: beige;\n"
+"    font: bold 14px;\n"
+"    min-width: 1em;\n"
+"    padding: 7px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"	background-color: rgb(255, 38, 49);\n"
+"    border-style: inset;\n"
+"}")
+
+        self.gridLayout_9.addWidget(self.pushButton_stop, 0, 3, 1, 1)
+
+        self.label_13 = QLabel(self.page_displacement)
+        self.label_13.setObjectName(u"label_13")
+        self.label_13.setMinimumSize(QSize(0, 0))
+        self.label_13.setFont(font1)
+        self.label_13.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+
+        self.gridLayout_9.addWidget(self.label_13, 0, 4, 1, 1)
+
+        self.horizontalSlider = QSlider(self.page_displacement)
+        self.horizontalSlider.setObjectName(u"horizontalSlider")
+        self.horizontalSlider.setMaximumSize(QSize(150, 16777215))
+        self.horizontalSlider.setMaximum(50)
+        self.horizontalSlider.setSingleStep(1)
+        self.horizontalSlider.setValue(10)
+        self.horizontalSlider.setOrientation(Qt.Horizontal)
+        self.horizontalSlider.setTickPosition(QSlider.NoTicks)
+
+        self.gridLayout_9.addWidget(self.horizontalSlider, 0, 5, 1, 1)
+
         self.line_7 = QFrame(self.page_displacement)
         self.line_7.setObjectName(u"line_7")
         self.line_7.setFrameShape(QFrame.HLine)
         self.line_7.setFrameShadow(QFrame.Sunken)
 
         self.gridLayout_9.addWidget(self.line_7, 1, 0, 1, 1)
+
+        self.label_15 = QLabel(self.page_displacement)
+        self.label_15.setObjectName(u"label_15")
+        self.label_15.setFont(font4)
+
+        self.gridLayout_9.addWidget(self.label_15, 2, 0, 1, 1)
 
         self.tableWidget_displacement = QTableWidget(self.page_displacement)
         if (self.tableWidget_displacement.columnCount() < 3):
@@ -890,90 +1003,13 @@ class Ui_WizardPage(object):
 
         self.gridLayout_9.addWidget(self.tableWidget_displacement, 3, 0, 1, 1)
 
-        self.label_16 = QLabel(self.page_displacement)
-        self.label_16.setObjectName(u"label_16")
-        self.label_16.setFont(font5)
-        self.label_16.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
-
-        self.gridLayout_9.addWidget(self.label_16, 0, 1, 1, 1)
-
-        self.label_14 = QLabel(self.page_displacement)
-        self.label_14.setObjectName(u"label_14")
-        self.label_14.setMinimumSize(QSize(0, 35))
-        self.label_14.setFont(font1)
-
-        self.gridLayout_9.addWidget(self.label_14, 0, 0, 1, 1)
-
-        self.label_15 = QLabel(self.page_displacement)
-        self.label_15.setObjectName(u"label_15")
-        self.label_15.setFont(font4)
-
-        self.gridLayout_9.addWidget(self.label_15, 2, 0, 1, 1)
-
-        self.label_13 = QLabel(self.page_displacement)
-        self.label_13.setObjectName(u"label_13")
-        self.label_13.setMinimumSize(QSize(0, 0))
-        self.label_13.setFont(font2)
-        self.label_13.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
-
-        self.gridLayout_9.addWidget(self.label_13, 0, 4, 1, 1)
-
-        self.pushButton_start = QPushButton(self.page_displacement)
-        self.pushButton_start.setObjectName(u"pushButton_start")
-        self.pushButton_start.setStyleSheet(u"QPushButton {\n"
-"	background-color: rgb(123, 193, 255);\n"
-"    border-style: outset;\n"
-"    border-width: 2px;\n"
-"    border-radius: 10px;\n"
-"    border-color: beige;\n"
-"    font: bold 14px;\n"
-"    min-width: 1em;\n"
-"    padding: 7px;\n"
-"}\n"
-"QPushButton:hover {\n"
-"	background-color: rgb(85, 162, 255);\n"
-"    border-style: inset;\n"
-"}")
-
-        self.gridLayout_9.addWidget(self.pushButton_start, 0, 2, 1, 1)
-
-        self.horizontalSlider = QSlider(self.page_displacement)
-        self.horizontalSlider.setObjectName(u"horizontalSlider")
-        self.horizontalSlider.setMaximumSize(QSize(150, 16777215))
-        self.horizontalSlider.setMaximum(50)
-        self.horizontalSlider.setSingleStep(1)
-        self.horizontalSlider.setValue(10)
-        self.horizontalSlider.setOrientation(Qt.Horizontal)
-        self.horizontalSlider.setTickPosition(QSlider.NoTicks)
-
-        self.gridLayout_9.addWidget(self.horizontalSlider, 0, 5, 1, 1)
-
         self.label_unit_displacement = QLabel(self.page_displacement)
         self.label_unit_displacement.setObjectName(u"label_unit_displacement")
         self.label_unit_displacement.setMinimumSize(QSize(291, 16))
         self.label_unit_displacement.setMaximumSize(QSize(16777215, 40))
-        self.label_unit_displacement.setFont(font3)
+        self.label_unit_displacement.setFont(font2)
 
         self.gridLayout_9.addWidget(self.label_unit_displacement, 4, 0, 1, 1)
-
-        self.pushButton_stop = QPushButton(self.page_displacement)
-        self.pushButton_stop.setObjectName(u"pushButton_stop")
-        self.pushButton_stop.setStyleSheet(u"QPushButton {\n"
-"	background-color: rgb(255, 101, 111);\n"
-"    border-style: outset;\n"
-"    border-width: 2px;\n"
-"    border-radius: 10px;\n"
-"    border-color: beige;\n"
-"    font: bold 14px;\n"
-"    min-width: 1em;\n"
-"    padding: 7px;\n"
-"}\n"
-"QPushButton:hover {\n"
-"	background-color: rgb(255, 38, 49);\n"
-"    border-style: inset;\n"
-"}")
-
-        self.gridLayout_9.addWidget(self.pushButton_stop, 0, 3, 1, 1)
 
         self.graphLayout_displacement = QVBoxLayout()
         self.graphLayout_displacement.setSpacing(0)
@@ -985,28 +1021,8 @@ class Ui_WizardPage(object):
         self.stackedWidget.addWidget(self.page_displacement)
         self.page_forces = QWidget()
         self.page_forces.setObjectName(u"page_forces")
-        self.line_8 = QFrame(self.page_forces)
-        self.line_8.setObjectName(u"line_8")
-        self.line_8.setGeometry(QRect(10, 40, 350, 21))
-        self.line_8.setFrameShape(QFrame.HLine)
-        self.line_8.setFrameShadow(QFrame.Sunken)
         self.gridLayout_10 = QGridLayout(self.page_forces)
         self.gridLayout_10.setObjectName(u"gridLayout_10")
-        self.checkBox_members = QCheckBox(self.page_forces)
-        self.checkBox_members.setObjectName(u"checkBox_members")
-        self.checkBox_members.setMinimumSize(QSize(100, 0))
-        self.checkBox_members.setMaximumSize(QSize(100, 16777215))
-        font6 = QFont()
-        font6.setFamily(u"Segoe UI Semibold")
-        self.checkBox_members.setFont(font6)
-        self.checkBox_members.setChecked(True)
-
-        self.gridLayout_10.addWidget(self.checkBox_members, 0, 3, 1, 1)
-
-        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.gridLayout_10.addItem(self.horizontalSpacer_2, 0, 6, 1, 1)
-
         self.tableWidget_result = QTableWidget(self.page_forces)
         if (self.tableWidget_result.columnCount() < 4):
             self.tableWidget_result.setColumnCount(4)
@@ -1037,7 +1053,26 @@ class Ui_WizardPage(object):
         self.tableWidget_result.horizontalHeader().setStretchLastSection(True)
         self.tableWidget_result.verticalHeader().setVisible(False)
 
-        self.gridLayout_10.addWidget(self.tableWidget_result, 2, 0, 1, 1)
+        self.gridLayout_10.addWidget(self.tableWidget_result, 3, 1, 1, 1)
+
+        self.label_unit_stress = QLabel(self.page_forces)
+        self.label_unit_stress.setObjectName(u"label_unit_stress")
+        self.label_unit_stress.setMinimumSize(QSize(291, 20))
+        self.label_unit_stress.setMaximumSize(QSize(16777215, 40))
+        self.label_unit_stress.setFont(font2)
+
+        self.gridLayout_10.addWidget(self.label_unit_stress, 4, 1, 1, 1)
+
+        self.checkBox_loads = QCheckBox(self.page_forces)
+        self.checkBox_loads.setObjectName(u"checkBox_loads")
+        self.checkBox_loads.setMinimumSize(QSize(80, 0))
+        self.checkBox_loads.setMaximumSize(QSize(100, 16777215))
+        font6 = QFont()
+        font6.setFamily(u"Segoe UI Semibold")
+        self.checkBox_loads.setFont(font6)
+        self.checkBox_loads.setChecked(True)
+
+        self.gridLayout_10.addWidget(self.checkBox_loads, 0, 5, 1, 1)
 
         self.checkBox_reactions = QCheckBox(self.page_forces)
         self.checkBox_reactions.setObjectName(u"checkBox_reactions")
@@ -1045,41 +1080,24 @@ class Ui_WizardPage(object):
         self.checkBox_reactions.setFont(font6)
         self.checkBox_reactions.setChecked(True)
 
-        self.gridLayout_10.addWidget(self.checkBox_reactions, 0, 5, 1, 1)
+        self.gridLayout_10.addWidget(self.checkBox_reactions, 0, 6, 1, 1)
 
-        self.checkBox_loads = QCheckBox(self.page_forces)
-        self.checkBox_loads.setObjectName(u"checkBox_loads")
-        self.checkBox_loads.setMinimumSize(QSize(80, 0))
-        self.checkBox_loads.setMaximumSize(QSize(100, 16777215))
-        self.checkBox_loads.setFont(font6)
-        self.checkBox_loads.setChecked(True)
+        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
-        self.gridLayout_10.addWidget(self.checkBox_loads, 0, 4, 1, 1)
+        self.gridLayout_10.addItem(self.horizontalSpacer_2, 0, 7, 1, 1)
+
+        self.label_18 = QLabel(self.page_forces)
+        self.label_18.setObjectName(u"label_18")
+        self.label_18.setMinimumSize(QSize(0, 35))
+        self.label_18.setFont(font3)
+
+        self.gridLayout_10.addWidget(self.label_18, 0, 1, 1, 1)
 
         self.label_17 = QLabel(self.page_forces)
         self.label_17.setObjectName(u"label_17")
         self.label_17.setFont(font4)
 
-        self.gridLayout_10.addWidget(self.label_17, 1, 0, 1, 1)
-
-        self.label_unit_stress = QLabel(self.page_forces)
-        self.label_unit_stress.setObjectName(u"label_unit_stress")
-        self.label_unit_stress.setMinimumSize(QSize(291, 20))
-        self.label_unit_stress.setMaximumSize(QSize(16777215, 40))
-        self.label_unit_stress.setFont(font3)
-
-        self.gridLayout_10.addWidget(self.label_unit_stress, 3, 0, 1, 1)
-
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.gridLayout_10.addItem(self.horizontalSpacer, 0, 1, 1, 1)
-
-        self.label_18 = QLabel(self.page_forces)
-        self.label_18.setObjectName(u"label_18")
-        self.label_18.setMinimumSize(QSize(0, 35))
-        self.label_18.setFont(font1)
-
-        self.gridLayout_10.addWidget(self.label_18, 0, 0, 1, 1)
+        self.gridLayout_10.addWidget(self.label_17, 2, 1, 1, 1)
 
         self.checkBox_nodes = QCheckBox(self.page_forces)
         self.checkBox_nodes.setObjectName(u"checkBox_nodes")
@@ -1088,54 +1106,67 @@ class Ui_WizardPage(object):
         self.checkBox_nodes.setFont(font6)
         self.checkBox_nodes.setChecked(True)
 
-        self.gridLayout_10.addWidget(self.checkBox_nodes, 0, 2, 1, 1)
+        self.gridLayout_10.addWidget(self.checkBox_nodes, 0, 3, 1, 1)
+
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.gridLayout_10.addItem(self.horizontalSpacer, 0, 2, 1, 1)
+
+        self.checkBox_members = QCheckBox(self.page_forces)
+        self.checkBox_members.setObjectName(u"checkBox_members")
+        self.checkBox_members.setMinimumSize(QSize(100, 0))
+        self.checkBox_members.setMaximumSize(QSize(100, 16777215))
+        self.checkBox_members.setFont(font6)
+        self.checkBox_members.setChecked(True)
+
+        self.gridLayout_10.addWidget(self.checkBox_members, 0, 4, 1, 1)
+
+        self.line_8 = QFrame(self.page_forces)
+        self.line_8.setObjectName(u"line_8")
+        self.line_8.setFrameShape(QFrame.HLine)
+        self.line_8.setFrameShadow(QFrame.Sunken)
+
+        self.gridLayout_10.addWidget(self.line_8, 1, 1, 1, 1)
 
         self.graphLayout_result = QVBoxLayout()
         self.graphLayout_result.setSpacing(0)
         self.graphLayout_result.setObjectName(u"graphLayout_result")
         self.graphLayout_result.setContentsMargins(-1, -1, -1, 0)
 
-        self.gridLayout_10.addLayout(self.graphLayout_result, 1, 1, 3, 6)
+        self.gridLayout_10.addLayout(self.graphLayout_result, 2, 2, 3, 6)
 
         self.stackedWidget.addWidget(self.page_forces)
         self.page_influenceLine = QWidget()
         self.page_influenceLine.setObjectName(u"page_influenceLine")
-        self.gridLayout_12 = QGridLayout(self.page_influenceLine)
-        self.gridLayout_12.setObjectName(u"gridLayout_12")
+        self.gridLayout_11 = QGridLayout(self.page_influenceLine)
+        self.gridLayout_11.setObjectName(u"gridLayout_11")
         self.label_25 = QLabel(self.page_influenceLine)
         self.label_25.setObjectName(u"label_25")
         self.label_25.setMinimumSize(QSize(0, 35))
-        self.label_25.setFont(font1)
+        self.label_25.setFont(font3)
 
-        self.gridLayout_12.addWidget(self.label_25, 0, 0, 2, 1)
+        self.gridLayout_11.addWidget(self.label_25, 0, 0, 2, 1)
 
         self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
-        self.gridLayout_12.addItem(self.horizontalSpacer_4, 0, 1, 1, 1)
+        self.gridLayout_11.addItem(self.horizontalSpacer_4, 0, 1, 1, 1)
 
         self.label_26 = QLabel(self.page_influenceLine)
         self.label_26.setObjectName(u"label_26")
         self.label_26.setMaximumSize(QSize(91, 20))
         self.label_26.setFont(font5)
 
-        self.gridLayout_12.addWidget(self.label_26, 0, 2, 1, 1)
+        self.gridLayout_11.addWidget(self.label_26, 0, 2, 1, 1)
 
         self.comboBox_influence = QComboBox(self.page_influenceLine)
         self.comboBox_influence.setObjectName(u"comboBox_influence")
         self.comboBox_influence.setMaximumSize(QSize(73, 22))
 
-        self.gridLayout_12.addWidget(self.comboBox_influence, 0, 3, 1, 1)
+        self.gridLayout_11.addWidget(self.comboBox_influence, 0, 3, 1, 1)
 
         self.horizontalSpacer_3 = QSpacerItem(273, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
-        self.gridLayout_12.addItem(self.horizontalSpacer_3, 0, 4, 1, 1)
-
-        self.graphLayout_influenceLine = QVBoxLayout()
-        self.graphLayout_influenceLine.setSpacing(0)
-        self.graphLayout_influenceLine.setObjectName(u"graphLayout_influenceLine")
-        self.graphLayout_influenceLine.setContentsMargins(-1, -1, -1, 0)
-
-        self.gridLayout_12.addLayout(self.graphLayout_influenceLine, 1, 1, 7, 4)
+        self.gridLayout_11.addItem(self.horizontalSpacer_3, 0, 4, 1, 1)
 
         self.line_10 = QFrame(self.page_influenceLine)
         self.line_10.setObjectName(u"line_10")
@@ -1143,13 +1174,13 @@ class Ui_WizardPage(object):
         self.line_10.setFrameShape(QFrame.HLine)
         self.line_10.setFrameShadow(QFrame.Sunken)
 
-        self.gridLayout_12.addWidget(self.line_10, 2, 0, 1, 1)
+        self.gridLayout_11.addWidget(self.line_10, 2, 0, 1, 1)
 
         self.label_24 = QLabel(self.page_influenceLine)
         self.label_24.setObjectName(u"label_24")
         self.label_24.setFont(font4)
 
-        self.gridLayout_12.addWidget(self.label_24, 3, 0, 1, 1)
+        self.gridLayout_11.addWidget(self.label_24, 3, 0, 1, 1)
 
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
@@ -1166,7 +1197,7 @@ class Ui_WizardPage(object):
         self.lineEdit_startingNode = QLineEdit(self.page_influenceLine)
         self.lineEdit_startingNode.setObjectName(u"lineEdit_startingNode")
         self.lineEdit_startingNode.setMaximumSize(QSize(50, 31))
-        self.lineEdit_startingNode.setFont(font2)
+        self.lineEdit_startingNode.setFont(font1)
 
         self.horizontalLayout.addWidget(self.lineEdit_startingNode)
 
@@ -1187,12 +1218,12 @@ class Ui_WizardPage(object):
         self.lineEdit_endingNode = QLineEdit(self.page_influenceLine)
         self.lineEdit_endingNode.setObjectName(u"lineEdit_endingNode")
         self.lineEdit_endingNode.setMaximumSize(QSize(50, 31))
-        self.lineEdit_endingNode.setFont(font2)
+        self.lineEdit_endingNode.setFont(font1)
 
         self.horizontalLayout.addWidget(self.lineEdit_endingNode)
 
 
-        self.gridLayout_12.addLayout(self.horizontalLayout, 4, 0, 1, 1)
+        self.gridLayout_11.addLayout(self.horizontalLayout, 4, 0, 1, 1)
 
         self.pushButton_calculate = QPushButton(self.page_influenceLine)
         self.pushButton_calculate.setObjectName(u"pushButton_calculate")
@@ -1213,7 +1244,7 @@ class Ui_WizardPage(object):
 "    border-style: inset;\n"
 "}")
 
-        self.gridLayout_12.addWidget(self.pushButton_calculate, 5, 0, 1, 1)
+        self.gridLayout_11.addWidget(self.pushButton_calculate, 5, 0, 1, 1)
 
         self.tableWidget_influenceLine = QTableWidget(self.page_influenceLine)
         if (self.tableWidget_influenceLine.columnCount() < 2):
@@ -1236,109 +1267,155 @@ class Ui_WizardPage(object):
         self.tableWidget_influenceLine.horizontalHeader().setStretchLastSection(True)
         self.tableWidget_influenceLine.verticalHeader().setVisible(False)
 
-        self.gridLayout_12.addWidget(self.tableWidget_influenceLine, 6, 0, 1, 1)
+        self.gridLayout_11.addWidget(self.tableWidget_influenceLine, 6, 0, 1, 1)
 
         self.label_unitLoad = QLabel(self.page_influenceLine)
         self.label_unitLoad.setObjectName(u"label_unitLoad")
         self.label_unitLoad.setMinimumSize(QSize(255, 20))
         self.label_unitLoad.setMaximumSize(QSize(255, 40))
-        self.label_unitLoad.setFont(font3)
+        self.label_unitLoad.setFont(font2)
 
-        self.gridLayout_12.addWidget(self.label_unitLoad, 7, 0, 1, 1)
+        self.gridLayout_11.addWidget(self.label_unitLoad, 7, 0, 1, 1)
+
+        self.graphLayout_influenceLine = QVBoxLayout()
+        self.graphLayout_influenceLine.setSpacing(0)
+        self.graphLayout_influenceLine.setObjectName(u"graphLayout_influenceLine")
+        self.graphLayout_influenceLine.setContentsMargins(-1, -1, -1, 0)
+
+        self.gridLayout_11.addLayout(self.graphLayout_influenceLine, 1, 1, 7, 4)
 
         self.stackedWidget.addWidget(self.page_influenceLine)
         self.page_report = QWidget()
         self.page_report.setObjectName(u"page_report")
-        self.gridLayout_11 = QGridLayout(self.page_report)
-        self.gridLayout_11.setObjectName(u"gridLayout_11")
-        self.projectName = QPlainTextEdit(self.page_report)
-        self.projectName.setObjectName(u"projectName")
-        self.projectName.setMaximumSize(QSize(16777215, 35))
-        font8 = QFont()
-        font8.setFamily(u"SansSerif")
-        font8.setPointSize(10)
-        self.projectName.setFont(font8)
+        self.page_report.setMaximumSize(QSize(165464, 16777215))
+        self.gridLayout_12 = QGridLayout(self.page_report)
+        self.gridLayout_12.setObjectName(u"gridLayout_12")
+        self.verticalSpacer_4 = QSpacerItem(20, 20, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
-        self.gridLayout_11.addWidget(self.projectName, 3, 1, 1, 2)
+        self.gridLayout_12.addItem(self.verticalSpacer_4, 5, 0, 1, 1)
 
-        self.label_19 = QLabel(self.page_report)
-        self.label_19.setObjectName(u"label_19")
-        self.label_19.setMaximumSize(QSize(991, 80))
-        self.label_19.setFont(font4)
-
-        self.gridLayout_11.addWidget(self.label_19, 2, 0, 1, 4)
-
-        self.verticalSpacer_4 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
-
-        self.gridLayout_11.addItem(self.verticalSpacer_4, 6, 1, 1, 1)
-
+        self.verticalLayout_2 = QVBoxLayout()
+        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.horizontalLayout_2 = QHBoxLayout()
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.label_21 = QLabel(self.page_report)
         self.label_21.setObjectName(u"label_21")
-        self.label_21.setMaximumSize(QSize(111, 31))
+        self.label_21.setMinimumSize(QSize(150, 0))
+        self.label_21.setMaximumSize(QSize(150, 31))
+        font8 = QFont()
+        font8.setPointSize(10)
+        font8.setBold(False)
+        font8.setWeight(50)
+        self.label_21.setFont(font8)
+        self.label_21.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+
+        self.horizontalLayout_2.addWidget(self.label_21)
+
+        self.projectName = QPlainTextEdit(self.page_report)
+        self.projectName.setObjectName(u"projectName")
+        self.projectName.setMinimumSize(QSize(300, 0))
+        self.projectName.setMaximumSize(QSize(630, 35))
         font9 = QFont()
+        font9.setFamily(u"SansSerif")
         font9.setPointSize(10)
-        font9.setBold(False)
-        font9.setWeight(50)
-        self.label_21.setFont(font9)
+        self.projectName.setFont(font9)
 
-        self.gridLayout_11.addWidget(self.label_21, 3, 0, 1, 1)
+        self.horizontalLayout_2.addWidget(self.projectName)
 
-        self.label_20 = QLabel(self.page_report)
-        self.label_20.setObjectName(u"label_20")
-        self.label_20.setMinimumSize(QSize(0, 35))
-        self.label_20.setFont(font1)
 
-        self.gridLayout_11.addWidget(self.label_20, 0, 0, 1, 4)
+        self.verticalLayout_2.addLayout(self.horizontalLayout_2)
+
+        self.horizontalLayout_3 = QHBoxLayout()
+        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
+        self.label_22 = QLabel(self.page_report)
+        self.label_22.setObjectName(u"label_22")
+        self.label_22.setMinimumSize(QSize(150, 0))
+        self.label_22.setMaximumSize(QSize(150, 31))
+        self.label_22.setFont(font8)
+        self.label_22.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+
+        self.horizontalLayout_3.addWidget(self.label_22)
+
+        self.userName = QPlainTextEdit(self.page_report)
+        self.userName.setObjectName(u"userName")
+        self.userName.setMinimumSize(QSize(100, 0))
+        self.userName.setMaximumSize(QSize(630, 35))
+        self.userName.setFont(font9)
+
+        self.horizontalLayout_3.addWidget(self.userName)
+
+
+        self.verticalLayout_2.addLayout(self.horizontalLayout_3)
 
         self.pushbutton_generate = QPushButton(self.page_report)
         self.pushbutton_generate.setObjectName(u"pushbutton_generate")
-        self.pushbutton_generate.setMinimumSize(QSize(172, 0))
+        self.pushbutton_generate.setMinimumSize(QSize(174, 0))
         self.pushbutton_generate.setMaximumSize(QSize(20, 40))
         self.pushbutton_generate.setStyleSheet(u"QPushButton {\n"
-"	background-color: rgb(200, 235, 190);\n"
+"	background-color: rgb(58, 192, 37);\n"
+"	color: rgb(255, 255, 255);\n"
+"    border-style: outset;\n"
+"    border-width: 2px;\n"
+"    border-radius: 10px;\n"
 "    border-color: beige;\n"
 "    font: bold 14px;\n"
 "    min-width: 10em;\n"
 "}\n"
 "QPushButton:hover {\n"
-"	background-color: rgb(168, 235, 153);\n"
+"	background-color: rgb(52, 165, 32);\n"
+"    border-style: inset;\n"
 "}\n"
 "")
 
-        self.gridLayout_11.addWidget(self.pushbutton_generate, 7, 1, 1, 1)
+        self.verticalLayout_2.addWidget(self.pushbutton_generate)
 
-        self.label_22 = QLabel(self.page_report)
-        self.label_22.setObjectName(u"label_22")
-        self.label_22.setMaximumSize(QSize(111, 31))
-        self.label_22.setFont(font9)
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
-        self.gridLayout_11.addWidget(self.label_22, 4, 0, 1, 1)
+        self.verticalLayout_2.addItem(self.verticalSpacer)
 
-        self.userName = QPlainTextEdit(self.page_report)
-        self.userName.setObjectName(u"userName")
-        self.userName.setMaximumSize(QSize(16777215, 35))
-        self.userName.setFont(font8)
 
-        self.gridLayout_11.addWidget(self.userName, 4, 1, 1, 2)
+        self.gridLayout_12.addLayout(self.verticalLayout_2, 4, 0, 1, 1)
+
+        self.verticalSpacer_5 = QSpacerItem(20, 20, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.gridLayout_12.addItem(self.verticalSpacer_5, 3, 0, 1, 1)
+
+        self.label_19 = QLabel(self.page_report)
+        self.label_19.setObjectName(u"label_19")
+        self.label_19.setMinimumSize(QSize(850, 100))
+        self.label_19.setMaximumSize(QSize(16777215, 100))
+        self.label_19.setFont(font4)
+
+        self.gridLayout_12.addWidget(self.label_19, 2, 0, 1, 2)
+
+        self.label_20 = QLabel(self.page_report)
+        self.label_20.setObjectName(u"label_20")
+        self.label_20.setMinimumSize(QSize(0, 35))
+        self.label_20.setMaximumSize(QSize(16777215, 35))
+        self.label_20.setFont(font3)
+
+        self.gridLayout_12.addWidget(self.label_20, 0, 0, 1, 1)
 
         self.line_9 = QFrame(self.page_report)
         self.line_9.setObjectName(u"line_9")
         self.line_9.setFrameShape(QFrame.HLine)
         self.line_9.setFrameShadow(QFrame.Sunken)
 
-        self.gridLayout_11.addWidget(self.line_9, 1, 0, 1, 4)
+        self.gridLayout_12.addWidget(self.line_9, 1, 0, 1, 2)
 
         self.widget = QWidget(self.page_report)
         self.widget.setObjectName(u"widget")
-        self.widget.setMinimumSize(QSize(420, 400))
+        self.widget.setMinimumSize(QSize(320, 300))
+        self.widget.setMaximumSize(QSize(16777215, 16777215))
+        self.widget.setSizeIncrement(QSize(0, 0))
         self.widget.setStyleSheet(u"\n"
 "border-image: url(:/newPrefix/Example/Screenshot 2020-11-19 021116.png)  0 0 0 0 stretch stretch;")
 
-        self.gridLayout_11.addWidget(self.widget, 3, 3, 5, 1)
+        self.gridLayout_12.addWidget(self.widget, 3, 1, 3, 1)
 
         self.stackedWidget.addWidget(self.page_report)
 
-        self.gridLayout_2.addWidget(self.stackedWidget, 0, 1, 1, 1)
+        self.gridLayout_7.addWidget(self.stackedWidget, 0, 1, 1, 1)
 
 
         self.retranslateUi(WizardPage)
@@ -1354,37 +1431,35 @@ class Ui_WizardPage(object):
     def retranslateUi(self, WizardPage):
         WizardPage.setWindowTitle(QCoreApplication.translate("WizardPage", u"WizardPage", None))
         self.groupBox.setTitle("")
-        self.pushbutton_nodes.setText(QCoreApplication.translate("WizardPage", u"\n"
-"Nodes\n"
-"", None))
-        self.pushbutton_members.setText(QCoreApplication.translate("WizardPage", u"\n"
-"Members\n"
+        self.pushbutton_displacement.setText(QCoreApplication.translate("WizardPage", u"\n"
+" Displacements\n"
 "", None))
         self.pushbutton_supports.setText(QCoreApplication.translate("WizardPage", u"\n"
-"Supports\n"
-"", None))
-        self.pushbutton_loads.setText(QCoreApplication.translate("WizardPage", u"\n"
-"Loads\n"
+" Supports\n"
 "", None))
         self.pushbutton_properties.setText(QCoreApplication.translate("WizardPage", u"\n"
-"Properties\n"
-"", None))
-        self.pushbutton_displacement.setText(QCoreApplication.translate("WizardPage", u"\n"
-"Displacements\n"
-"", None))
-        self.pushbutton_forces.setText(QCoreApplication.translate("WizardPage", u"\n"
-"Forces\n"
+" Properties\n"
 "", None))
         self.pushbutton_influenceLine.setText(QCoreApplication.translate("WizardPage", u"\n"
-"Influence Line\n"
+" Influence Line\n"
+"", None))
+        self.pushbutton_forces.setText(QCoreApplication.translate("WizardPage", u"\n"
+" Forces\n"
+"", None))
+        self.pushbutton_nodes.setText(QCoreApplication.translate("WizardPage", u"\n"
+" Nodes\n"
+"", None))
+        self.pushbutton_members.setText(QCoreApplication.translate("WizardPage", u"\n"
+" Members\n"
 "", None))
         self.pushbutton_report.setText(QCoreApplication.translate("WizardPage", u"\n"
-"Report\n"
+" Report\n"
 "", None))
-        self.label_stabality.setText(QCoreApplication.translate("WizardPage", u"Unstable", None))
-        self.label_7.setText(QCoreApplication.translate("WizardPage", u"Truss Nodes", None))
+        self.pushbutton_loads.setText(QCoreApplication.translate("WizardPage", u"\n"
+" Loads\n"
+"", None))
         self.label_8.setText(QCoreApplication.translate("WizardPage", u"Nodes : ", None))
-        self.update_nodes.setText(QCoreApplication.translate("WizardPage", u"Update", None))
+        self.label_unit_node.setText(QCoreApplication.translate("WizardPage", u"* Unit of x and y : foot (ft)", None))
         ___qtablewidgetitem = self.tableWidget_nodes.horizontalHeaderItem(0)
         ___qtablewidgetitem.setText(QCoreApplication.translate("WizardPage", u"X", None));
         ___qtablewidgetitem1 = self.tableWidget_nodes.horizontalHeaderItem(1)
@@ -1393,7 +1468,8 @@ class Ui_WizardPage(object):
         ___qtablewidgetitem2.setText(QCoreApplication.translate("WizardPage", u"1", None));
         ___qtablewidgetitem3 = self.tableWidget_nodes.verticalHeaderItem(1)
         ___qtablewidgetitem3.setText(QCoreApplication.translate("WizardPage", u"2", None));
-        self.label_unit_node.setText(QCoreApplication.translate("WizardPage", u"* Unit of x and y : foot (ft)", None))
+        self.update_nodes.setText(QCoreApplication.translate("WizardPage", u"Update", None))
+        self.label_7.setText(QCoreApplication.translate("WizardPage", u"Truss Nodes", None))
         self.label_3.setText(QCoreApplication.translate("WizardPage", u"Truss Members", None))
         self.label_4.setText(QCoreApplication.translate("WizardPage", u"Members : ", None))
         self.update_members.setText(QCoreApplication.translate("WizardPage", u"Update", None))
@@ -1477,6 +1553,14 @@ class Ui_WizardPage(object):
         self.label_23.setText(QCoreApplication.translate("WizardPage", u"Member colour : ", None))
         self.radioButtonDefault.setText(QCoreApplication.translate("WizardPage", u"Default", None))
         self.radioButtonBlack.setText(QCoreApplication.translate("WizardPage", u"Black", None))
+        self.label_stabality.setText(QCoreApplication.translate("WizardPage", u"Unstable", None))
+        self.label_14.setText(QCoreApplication.translate("WizardPage", u"Nodal Displacement", None))
+        self.label_16.setText(QCoreApplication.translate("WizardPage", u"Animation : ", None))
+        self.pushButton_start.setText(QCoreApplication.translate("WizardPage", u"Start", None))
+        self.pushButton_stop.setText(QCoreApplication.translate("WizardPage", u"Stop", None))
+        self.label_13.setText(QCoreApplication.translate("WizardPage", u"Magnifier : ", None))
+        self.label_15.setText(QCoreApplication.translate("WizardPage", u"The horizontal (x) and vertical (y) displacements \n"
+"are shown below.", None))
         ___qtablewidgetitem22 = self.tableWidget_displacement.horizontalHeaderItem(0)
         ___qtablewidgetitem22.setText(QCoreApplication.translate("WizardPage", u"Node\n"
 "Number", None));
@@ -1493,15 +1577,7 @@ class Ui_WizardPage(object):
         self.tableWidget_displacement.setSortingEnabled(False)
         self.tableWidget_displacement.setSortingEnabled(__sortingEnabled4)
 
-        self.label_16.setText(QCoreApplication.translate("WizardPage", u"Animation : ", None))
-        self.label_14.setText(QCoreApplication.translate("WizardPage", u"Nodal Displacement", None))
-        self.label_15.setText(QCoreApplication.translate("WizardPage", u"The horizontal (x) and vertical (y) displacements \n"
-"are shown below.", None))
-        self.label_13.setText(QCoreApplication.translate("WizardPage", u"Deflection Magnifier : ", None))
-        self.pushButton_start.setText(QCoreApplication.translate("WizardPage", u"Start", None))
         self.label_unit_displacement.setText(QCoreApplication.translate("WizardPage", u"* Unit of displacement : inch (in)", None))
-        self.pushButton_stop.setText(QCoreApplication.translate("WizardPage", u"Stop", None))
-        self.checkBox_members.setText(QCoreApplication.translate("WizardPage", u"Members", None))
         ___qtablewidgetitem26 = self.tableWidget_result.horizontalHeaderItem(0)
         ___qtablewidgetitem26.setText(QCoreApplication.translate("WizardPage", u"Member", None));
         ___qtablewidgetitem27 = self.tableWidget_result.horizontalHeaderItem(1)
@@ -1517,14 +1593,15 @@ class Ui_WizardPage(object):
         self.tableWidget_result.setSortingEnabled(False)
         self.tableWidget_result.setSortingEnabled(__sortingEnabled5)
 
-        self.checkBox_reactions.setText(QCoreApplication.translate("WizardPage", u"Reactions", None))
+        self.label_unit_stress.setText(QCoreApplication.translate("WizardPage", u"* Unit of force: kip (k)", None))
         self.checkBox_loads.setText(QCoreApplication.translate("WizardPage", u"Loads", None))
+        self.checkBox_reactions.setText(QCoreApplication.translate("WizardPage", u"Reactions", None))
+        self.label_18.setText(QCoreApplication.translate("WizardPage", u"Member Forces and Support Reactions", None))
         self.label_17.setText(QCoreApplication.translate("WizardPage", u"Member tension(T) and compression(C) are shown \n"
 "in the graph as well as support reactions. The \n"
 "brightness of colors shows their relative strength.", None))
-        self.label_unit_stress.setText(QCoreApplication.translate("WizardPage", u"* Unit of force: kip (k)", None))
-        self.label_18.setText(QCoreApplication.translate("WizardPage", u"Member Forces and Support Reactions", None))
         self.checkBox_nodes.setText(QCoreApplication.translate("WizardPage", u"Nodes", None))
+        self.checkBox_members.setText(QCoreApplication.translate("WizardPage", u"Members", None))
         self.label_25.setText(QCoreApplication.translate("WizardPage", u"Influence Line for a Unit Load", None))
         self.label_26.setText(QCoreApplication.translate("WizardPage", u"Member : ", None))
         self.label_24.setText(QCoreApplication.translate("WizardPage", u"Moving load only in a straight line is \n"
@@ -1541,15 +1618,15 @@ class Ui_WizardPage(object):
         ___qtablewidgetitem33 = self.tableWidget_influenceLine.verticalHeaderItem(0)
         ___qtablewidgetitem33.setText(QCoreApplication.translate("WizardPage", u"1", None));
         self.label_unitLoad.setText(QCoreApplication.translate("WizardPage", u"* Unit Load: 1 kip (k)", None))
-        self.label_19.setText(QCoreApplication.translate("WizardPage", u"A report can be generated containing input and output data as well as Stiffness Matrices which were used to solve this truss. Enter project name \n"
-"and user name to be displayed on the very first page of the report. Generated pdf will be placed in the current project's directory. Make sure to \n"
-"save your project before attempting to generate a report. Depending on the size of the project it will take a minute or two to generate a report.\n"
-"", None))
         self.label_21.setText(QCoreApplication.translate("WizardPage", u"Project Name : ", None))
-        self.label_20.setText(QCoreApplication.translate("WizardPage", u"Report (PDF)", None))
+        self.label_22.setText(QCoreApplication.translate("WizardPage", u"User Name : ", None))
         self.pushbutton_generate.setText(QCoreApplication.translate("WizardPage", u"\n"
 "Generate\n"
 "", None))
-        self.label_22.setText(QCoreApplication.translate("WizardPage", u"User Name : ", None))
+        self.label_19.setText(QCoreApplication.translate("WizardPage", u"A report can be generated containing input and output data as well as Stiffness Matrices which were used to solve this truss. \n"
+"Enter project's name and user name to be displayed on the very first page of the report. Generated pdf will be placed in the\n"
+"current project's directory. Make sure to  save your project before attempting to generate a report. Depending on the size of \n"
+"the project it will take a minute or two to generate a report.", None))
+        self.label_20.setText(QCoreApplication.translate("WizardPage", u"Report (PDF)", None))
     # retranslateUi
 

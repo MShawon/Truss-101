@@ -1,12 +1,29 @@
 <RCC>
   <qresource prefix="newPrefix">
+    <file>report.png</file>
+    <file>stress.png</file>
+    <file>displacement.png</file>
+    <file>load.png</file>
+    <file>support.png</file>
+    <file>member.png</file>
+    <file>property.png</file>
+    <file>console.png</file>
+    <file>node.png</file>
+    <file>open-envelope.png</file>
+    <file>new-file.png</file>
+    <file>message.png</file>
+    <file>moving.png</file>
+    <file>Example/Example 1.svg</file>
+    <file>Example/deflection.svg</file>
+    <file>open-file.png</file>
+    <file>Example/Petit_truss.svg</file>
+    <file>add-file.png</file>
+    <file>home.png</file>
+    <file>unit.png</file>
     <file>logo@2x.png</file>
     <file>Example/Screenshot 2020-11-19 021116.png</file>
     <file>Example/assignment_2.svg</file>
-    <file>Example/assignment-1.svg</file>
     <file>Example/bigtruss.svg</file>
     <file>Example/cantilever.svg</file>
-    <file>Example/mathalino.svg</file>
-    <file>Example/metric.svg</file>
   </qresource>
 </RCC>

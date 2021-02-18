@@ -1,25 +1,26 @@
 # ------------------------------------------------------------------------------
-## Copyright (C) 2021 Monirul Shawon
+# Copyright (C) 2020-2021 Monirul Shawon
 ##
-## This program is free software: you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation, either version 3 of the License, or
-## (at your option) any later version.
-## 
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 ##
-## You should have received a copy of the GNU General Public License
-## along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+##
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
 # ------------------------------------------------------------------------------
 
 
-from pyupdater.utils.compat import url_quote
 import ctypes
+import getpass
 import logging
 import os
+import platform
 import sys
 import time
 
@@ -29,6 +30,7 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 from pyupdater.client import Client, FileDownloader
+from pyupdater.utils.compat import url_quote
 
 from client_config import ClientConfig
 from mainTruss import MainPage
@@ -36,11 +38,16 @@ from supports import *
 from ui_finalMainPage import Ui_MainWindow
 from ui_units import Ui_MainWindow2
 
-#logging.basicConfig(filename='debug.log', level=logging.DEBUG)
 #logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger('Truss 101')
 
+date = '<span style="color:#b19a66;">%m/%d/%Y</span> <span style="color:#56a187;">%I:%M:%S</span> %p'
+
+my_system = platform.uname()
+user = getpass.getuser()
+
+log = logging.getLogger(__name__)
 
 def monkey_response(self):
     """
@@ -86,8 +93,91 @@ def monkey_response(self):
 
 FileDownloader._create_response = monkey_response
 
+class CustomFormatter(logging.Formatter):
+    """
+    Logging Formatter to add colors and count warning / errors
+    """
+
+    FORMATS = {
+        logging.DEBUG: '[%(asctime)s] [ %(filename)s:%(lineno)d ] <span style="color:#d4659d;">[ %(levelname)s ]</span>  %(message)s',
+        logging.INFO: '[%(asctime)s] [ %(filename)s:%(lineno)d ] <span style="color:#31aa6e;">[ %(levelname)s ]</span>  %(message)s',
+        logging.WARNING: '[%(asctime)s] [ %(filename)s:%(lineno)d ] <span style="color:#fd6152;">[ %(levelname)s ]</span>  %(message)s',
+        logging.ERROR: '[%(asctime)s] [ %(filename)s:%(lineno)d ] <span style="color:#ff0000;">[ %(levelname)s ]</span>  %(message)s',
+        logging.CRITICAL: '[%(asctime)s] [ %(filename)s:%(lineno)d ] <span style="color:#ffff00;">[ %(levelname)s ]</span>  %(message)s'
+    }
+
+
+    def format(self, record):
+        log_fmt = self.FORMATS.get(record.levelno)
+        formatter = logging.Formatter(log_fmt,datefmt=date)
+        return formatter.format(record)
+    
+class QTextEditLogger(logging.Handler):
+    """
+    Custom python logging handler to show log in
+    a QPlainTextEdit
+    """
+
+    def __init__(self, parent):
+        super().__init__()
+        self.widget = QPlainTextEdit(parent)
+        self.widget.setReadOnly(True)
+        
+        font = QFont("Monospace")
+        font.setStyleHint(QFont.TypeWriter)
+        self.widget.setFont(font)
+
+        self.widget.appendPlainText('#######################################\n')
+        self.widget.appendPlainText(f'System : {my_system.system}')
+        self.widget.appendPlainText(f'Computer Name : {my_system.node}-{user}')
+        self.widget.appendPlainText(f'Release : {my_system.release}')
+        self.widget.appendPlainText(f'Version : {my_system.version}')
+        self.widget.appendPlainText(f'Machine : {my_system.machine}')
+        self.widget.appendPlainText(f'Processor : {my_system.processor}')
+        self.widget.appendPlainText('\n#######################################\n')
+
+    def emit(self, record):
+        msg = self.format(record)
+        self.widget.appendHtml(msg)
+
+class AnotherWindow(QWidget):
+    """Show Python logging in debug window"""
+
+    def __init__(self):
+        super().__init__()
+        layout = QVBoxLayout()
+
+        self.logTextBox = QTextEditLogger(self)
+
+        formatter = CustomFormatter()
+        self.logTextBox.setFormatter(formatter)
+
+        logger.addHandler(self.logTextBox)
+
+        logger.setLevel(logging.DEBUG)
+
+        layout.addWidget(self.logTextBox.widget)
+        
+        savebutton = QPushButton('Save logs in a file')
+        layout.addWidget(savebutton)
+        self.setLayout(layout)
+
+        savebutton.clicked.connect(self.saveLog)
+
+    def saveLog(self):
+        logs = self.logTextBox.widget.toPlainText()
+        document = os.path.expanduser('~/Documents') + '\debug'
+        filename = QFileDialog.getSaveFileName(
+                self, 'Save file', document, "Log files (*.log)")
+
+        with open(filename[0],'w') as fh:
+            fh.writelines(str(logs))
 
 class MainWindow(QMainWindow):
+    """
+    This is where everything started
+    """
+    
     def __init__(self):
         super(MainWindow, self).__init__()
         self.ui = Ui_MainWindow()
@@ -103,18 +193,30 @@ class MainWindow(QMainWindow):
         self.imperialUnit = [[[0, 0, 0]]]
         self.ui.closeEvent = self.closeEvent
 
+        #Debug Window create
+        self.debug = AnotherWindow()
+        self.debug.resize(900,600)
+        self.debug.setWindowTitle('Debug')
+        icon = QIcon(":/newPrefix/logo@2x.png")
+        self.debug.setWindowIcon(icon)        
+        self.debug.setStyleSheet(u"background-color: rgb(58, 64, 76);\n"
+                "color: rgb(204, 204, 204);\n"
+                "font-size:9.5pt")
+
+
         "++++++++++++++++++++++++++++++++++++++++++++++++++++++"
         self.APP_NAME = 'Truss 101'
-        self.APP_VERSION = '1.1.0'
-        self.APP_UPDATE_TIME = 'January 2021'
+        self.APP_VERSION = '1.1.1'
+        self.APP_UPDATE_TIME = 'February 2021'
         "++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 
         self.ui.statusbar.showMessage('Welcome to Truss 101')
 
+        logger.info('Sys arguements : %s', str(sys.argv))
         file = os.path.basename(sys.argv[0])
         self.currentDirectory = sys.argv[0].replace(f'{file}', '')
         self.currentDirectory = self.currentDirectory.replace('\\', '/')
-        # print(self.currentDirectory)
+        logger.info('Current Directory : %s', self.currentDirectory)
 
         self.ui.pushButton_new.clicked.connect(self.new)
         self.ui.pushButton_open.clicked.connect(self.openfile)
@@ -137,6 +239,17 @@ class MainWindow(QMainWindow):
         self.ui.photo_example_6.clicked.connect(self.example_6)
         self.ui.pushButton_example_6.clicked.connect(self.example_6)
 
+        self.support_button = QPushButton('💝 Support Truss 101 With a Donation  ',self.ui.menubar)
+        self.ui.menubar.setCornerWidget(self.support_button)
+        self.support_button.setCursor(QCursor(Qt.PointingHandCursor))
+        self.support_button.setStyleSheet(
+            "QPushButton:pressed { background-color: red }"
+            "QPushButton:hover { background-color: rgb(121, 181, 255) }"
+            )
+        self.support_button.clicked.connect(self.openDonate)
+
+        self.ui.pushButton_sendNote.clicked.connect(self.sayThanks)
+
         self.ui.actionUnits.triggered.connect(self.unit)
         self.ui.actionNew.triggered.connect(
             lambda: self.ui.tabWidget.setCurrentIndex(0))
@@ -149,20 +262,21 @@ class MainWindow(QMainWindow):
         self.ui.actionCheck_for_updates.triggered.connect(self.updateApp)
         self.ui.actionAbout.triggered.connect(self.about)
         self.ui.actionAbout_Author.triggered.connect(self.aboutAuthor)
+        self.ui.actionView_License.triggered.connect(self.openLicense)
+        self.ui.actionDebug.triggered.connect(self.debugWindow)
 
-        self.ui.actionNew.setIcon(QApplication.style(
-        ).standardIcon(QStyle.SP_FileDialogNewFolder))
-        self.ui.actionOpen.setIcon(
-            QApplication.style().standardIcon(QStyle.SP_DirOpenIcon))
         self.ui.actionSave.setIcon(
             QApplication.style().standardIcon(QStyle.SP_DialogSaveButton))
         self.ui.actionClose.setIcon(
             QApplication.style().standardIcon(QStyle.SP_DialogCloseButton))
 
+        self.ui.plainTextMessage.setPlainText('')
+        self.ui.plainTextMessage.setPlaceholderText('Dear Monirul Shawon,\nThank you for ...')
+        self.ui.plainTextName.setPlaceholderText(user)
+        self.name = user
+
         self.ui.tabWidget.setTabsClosable(True)
         self.ui.tabWidget.tabBar().setTabButton(0, QTabBar.RightSide, None)
-        self.ui.tabWidget.setTabIcon(
-            0, QIcon(f'{self.currentDirectory}home.png'))
         self.ui.tabWidget.tabCloseRequested.connect(self.showDialog)
         self.ui.tabWidget.currentChanged.connect(self.unitWindowSet)
         self.ui.tabWidget.setStyleSheet("""
@@ -177,6 +291,7 @@ class MainWindow(QMainWindow):
         }
         """)
 
+
         self.updateApp(oninit=True)
 
         if len(sys.argv) > 1:
@@ -184,6 +299,21 @@ class MainWindow(QMainWindow):
             self.openfile(demopath=openwith)
         else:
             pass
+    
+    def debugWindow(self):
+        if self.debug.isVisible():
+            self.debug.hide()
+        else:
+            self.debug.show()
+
+
+    def openLicense(self):
+        QDesktopServices.openUrl(
+            "https://github.com/MShawon/Truss-101#license")
+
+    def openDonate(self):
+        QDesktopServices.openUrl(
+            'https://paypal.me/mshawon1')
 
     def openHelp(self):
         QDesktopServices.openUrl(
@@ -195,6 +325,7 @@ class MainWindow(QMainWindow):
         """
 
         self.oninit = oninit
+        logger.info('Checking for updates...')
         self.ui.statusbar.showMessage('Checking for updates...')
 
         try:
@@ -202,7 +333,7 @@ class MainWindow(QMainWindow):
             repository = 'Truss-101'
             github_link = f'https://api.github.com/repos/{username}/{repository}/releases/latest'
 
-            #url = 'http://127.0.0.1:8000/'
+            logger.info('GitHub api to parse latest version: %s', github_link)
 
             if self.oninit:
                 timeout = 5
@@ -214,18 +345,22 @@ class MainWindow(QMainWindow):
             x = requests.get(github_link, timeout=timeout)
             tag = x.json()['tag_name']
             body = x.json()['body']
-
+            logger.info('Latest version : %s , Current Version : %s', tag, self.APP_VERSION)
+            
             url = f'https://github.com/{username}/{repository}/releases/download/{tag}'
 
+            # url = 'http://127.0.0.1:8000/'
+
             ClientConfig.UPDATE_URLS = [url]
-            print(ClientConfig.UPDATE_URLS)
+            logger.info('Update download urls : %s', ClientConfig.UPDATE_URLS)
 
             def print_status_info(info):
                 total = info.get(u'total')
                 downloaded = info.get(u'downloaded')
                 status = info.get(u'status')
                 percentage = info.get(u'percent_complete')
-                print(downloaded, total, status, percentage)
+                logger.info('Downloaded : %s , Total : %s , Status : %s , Pecentage : %s ', str(
+                    downloaded), str(total), status, percentage)
                 self.ui.statusbar.showMessage(f"{status} {percentage}%")
                 if status == 'finished':
                     self.ui.statusbar.showMessage('Update finished')
@@ -234,11 +369,11 @@ class MainWindow(QMainWindow):
 
             client.refresh()
             client.add_progress_hook(print_status_info)
-            print(client.progress_hooks)
+            logger.info('Progress hooks %s', client.progress_hooks)
 
             self.app_update = client.update_check(
                 self.APP_NAME, self.APP_VERSION)
-            print(self.app_update)
+            logger.info('App update : %s', self.app_update)
 
             if self.app_update is not None:
                 self.ui.statusbar.showMessage(f'Update available!')
@@ -262,6 +397,7 @@ class MainWindow(QMainWindow):
                 ret = msgBox.exec_()
 
                 if ret == QMessageBox.Yes:
+                    logger.info('Version %s downloading...', tag)
                     self.app_update.download(background=True)
 
                     self.timer = QTimer()
@@ -269,13 +405,16 @@ class MainWindow(QMainWindow):
                     self.timer.timeout.connect(self.extractUpdate)
                     self.timer.start()
                 else:
+                    logging.warning('App update ignored by user.')
                     pass
 
             else:
                 if self.oninit:
+                    logger.info('There are currently no updates available.')
                     self.ui.statusbar.showMessage('Welcome to Truss 101')
                     pass
                 else:
+                    logger.info('There are currently no updates available.')
                     self.ui.statusbar.showMessage(
                         'There are currently no updates available.')
                     msgBox = QMessageBox()
@@ -287,7 +426,8 @@ class MainWindow(QMainWindow):
                         f"<font color='steelblue' size='5'>There are currently no updates available.</font>")
                     msgBox.exec_()
 
-        except:
+        except Exception as e:
+            logging.critical(str(e))
             if self.oninit:
                 self.ui.statusbar.showMessage('Welcome to Truss 101')
                 pass
@@ -322,8 +462,10 @@ class MainWindow(QMainWindow):
             ret = msgBox.exec_()
             if ret == QMessageBox.Yes:
                 self.timer.stop()
+                logger.info('New version downloaded. Extracting started...')
                 self.app_update.extract_restart()
             else:
+                logging.warning('New version downloaded. Extract ignored by user.')
                 self.timer.stop()
                 pass
 
@@ -342,7 +484,7 @@ class MainWindow(QMainWindow):
         Truss 101 has been developed for educational purposes only. Students or Educators are free to use this application.<br><br>
         GitHub : <a href="https://github.com/MShawon/Truss-101">https://github.com/MShawon/Truss-101</a><br><br>
         If you like my work, consider buying me a coffee ☕ <br>
-        <a href="https://paypal.me/shawon107">https://paypal.me/shawon107</a><br>""")
+        <a href="https://paypal.me/mshawon1">https://paypal.me/mshawon1</a><br>""")
         self.msgBox.setWindowTitle("About Truss 101")
         self.msgBox.exec_()
 
@@ -362,9 +504,11 @@ class MainWindow(QMainWindow):
         self.ui2 = Ui_MainWindow2()
         self.ui2.setupUi(self.window_unit)
         self.ui2.stackedWidget.setCurrentWidget(self.ui2.page_imperial)
+        self.window_unit.show()
 
         self.activateWindow()
         self.raise_()
+
         self.ui2.metricButton.clicked.connect(
             lambda: self.ui2.stackedWidget.setCurrentWidget(self.ui2.page_metric))
         self.ui2.radioButton_2.clicked.connect(
@@ -436,7 +580,6 @@ class MainWindow(QMainWindow):
         self.ui2.buttonBox.accepted.connect(self.unitSendForConverting)
         self.ui2.buttonBox.accepted.connect(self.tab_name_change)
 
-        self.window_unit.show()
 
     def updateCb(self):
         self.metric_index = []
@@ -452,6 +595,7 @@ class MainWindow(QMainWindow):
         index = self.ui.tabWidget.count()
         if index == 1:
             self.usedTime = (time.time() - start_time)/60
+            logger.info('Total used time : %s minute', self.usedTime)
             event.accept()
 
         elif index == 2:
@@ -462,6 +606,7 @@ class MainWindow(QMainWindow):
                 event.ignore()
             else:
                 self.usedTime = (time.time() - start_time)/60
+                logger.info('Total used time : %s minute', self.usedTime)
                 event.accept()
 
         else:
@@ -484,6 +629,7 @@ class MainWindow(QMainWindow):
             returnValue = self.msgBox.exec_()
             if returnValue == QMessageBox.Yes:
                 self.usedTime = (time.time() - start_time)/60
+                logger.info('Total used time : %s minute', self.usedTime)
                 event.accept()
 
             else:
@@ -535,6 +681,8 @@ class MainWindow(QMainWindow):
         self.windowList.pop(index-1)
         self.nameList.pop(index-1)
         self.pathList.pop(index-1)
+        logger.info('Path List after CLOSING tab: %s', self.pathList)
+        logger.info('Name List after CLOSING tab: %s', self.nameList)
 
         self.metricUnit.pop(index)
         self.imperialUnit.pop(index)
@@ -551,6 +699,8 @@ class MainWindow(QMainWindow):
 
             self.pathList[index-1] = path
             self.nameList[index-1] = name
+            logger.info('Path List after SAVING file: %s', self.pathList)
+            logger.info('Name List after SAVING file: %s', self.nameList)
             self.tab_name_change()
 
     def saveasfile(self):
@@ -562,13 +712,14 @@ class MainWindow(QMainWindow):
         demopath = demopath
         demo = isdemo
         #demopath= (f"{self.currentDirectory}Demo/Example 6.trs", "")
-        self.window = MainPage(open=True, filename=demopath, demo=demo)
+        self.window = MainPage(open=True, filename=demopath, demo=demo, logger=logger)
         path = self.window.filename[0]
         if '/' in path:
             name = path.split('/')[-1][:-4]
         else:
             name = path.split('\\')[-1][:-4]
 
+        logger.info('Opened file : %s', name)
         index = self.ui.tabWidget.count()
         self.ui.tabWidget.insertTab(index, self.window, name)
         self.ui.tabWidget.setCurrentIndex(index)
@@ -579,6 +730,8 @@ class MainWindow(QMainWindow):
         self.windowList.append(self.window)
         self.pathList.append(path)
         self.nameList.append(name)
+        logger.info('Path List : %s', self.pathList)
+        logger.info('Name List : %s', self.nameList)
 
         self.currentMetricIndex = self.window.currentMetricIndex
         self.currentImperialIndex = self.window.currentImperialIndex
@@ -618,7 +771,7 @@ class MainWindow(QMainWindow):
 
     def new(self):
         self.count += 1
-        self.window = MainPage()
+        self.window = MainPage(logger=logger)
         index = self.ui.tabWidget.count()
         name = f'Project Truss {self.count}'
         self.ui.tabWidget.insertTab(index, self.window, name)
@@ -630,6 +783,8 @@ class MainWindow(QMainWindow):
         self.windowList.append(self.window)
         self.pathList.append(name)
         self.nameList.append(name)
+        logger.info('Path List : %s', self.pathList)
+        logger.info('Name List : %s', self.nameList)
 
         self.metric_index = []
         self.imperial_index = [[0, 0, 0]]
@@ -718,6 +873,37 @@ class MainWindow(QMainWindow):
                 self.ui.tabWidget.setTabToolTip(
                     index, f'{self.pathList[index-1]}')
 
+    def sayThanks(self):
+        webhook_id = 'your webhook id'
+        webhook_token = 'your webhook token'
+        webhook_url = f'https://discord.com/api/webhooks/{webhook_id}/{webhook_token}'
+
+        if self.ui.plainTextMessage.toPlainText():
+            messeage = self.ui.plainTextMessage.toPlainText()
+        else:
+            messeage = 'Dear Monirul Shawon, Thank you for...'      
+
+        if self.ui.plainTextName.toPlainText():
+            user = self.ui.plainTextName.toPlainText()
+            note = {
+                "content" : f'{messeage}',
+                "username" : f'{user}'
+            }
+        else:
+            note = {
+                "content" : f'{messeage}',
+                "username" : f'{self.name}'
+            }
+
+        try:
+            requests.post(url=webhook_url, json=note, timeout=30)
+            self.ui.plainTextMessage.setPlaceholderText('Thank you for sending the notes. Your notes have been sent successfully.')
+            logger.info('Notes have been sent successfully')
+        except:
+            self.ui.plainTextMessage.setPlaceholderText('Oops! Something went wrong. Try again.')
+            pass
+
+
     def example_1(self):
         example_path = (f"{self.currentDirectory}Demo/Example 1.trs", "")
         self.openfile(demopath=example_path, isdemo=True)
@@ -747,17 +933,21 @@ if __name__ == "__main__":
     start_time = time.time()
     app = QApplication(sys.argv)
     app.setStyle('Fusion')
-
+    
     window = MainWindow()
     window.show()
 
     user32 = ctypes.windll.user32
     screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
-    # print(screensize)
-    window.resize(screensize[0]*.9, screensize[1]*.9)
-    x = screensize[0]-screensize[0]*.95
-    window.move(x, 3)
+    logger.info('Screen size : %s', screensize)
+    if screensize[0] == 1280:
+        pass
+    else:
+        window.resize(screensize[0]*.9, screensize[1]*.9)
+        x = screensize[0]*0.05
+        window.move(x, 3)
+
 
     startUpTime = time.time() - start_time
-    print(f"--- {startUpTime} seconds ---")
+    logger.info('Statup time : %.3f seconds' % startUpTime)
     sys.exit(app.exec_())

@@ -1,18 +1,18 @@
 # ------------------------------------------------------------------------------
-## Copyright (C) 2021 Monirul Shawon
+# Copyright (C) 2020-2021 Monirul Shawon
 ##
-## This program is free software: you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation, either version 3 of the License, or
-## (at your option) any later version.
-## 
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 ##
-## You should have received a copy of the GNU General Public License
-## along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+##
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
 # ------------------------------------------------------------------------------
 
 from ui_mainTruss import Ui_WizardPage
@@ -28,7 +28,6 @@ import datetime
 import os
 import pickle
 import re
-import sys
 import tempfile
 
 import matplotlib.pyplot as plt
@@ -163,13 +162,14 @@ class AlignDelegate(QStyledItemDelegate):
 
 
 class MainPage(QWizardPage):
-    def __init__(self, open=None, filename=None, demo=None):
+    def __init__(self, open=None, filename=None, demo=None, logger=None):
         super(MainPage, self).__init__()
         self.ui = Ui_WizardPage()
         self.ui.setupUi(self)
         self.open = open
         self.filename = filename
         self.demo = demo
+        self.logger = logger
         self.save = 0
         self.change = 0
         self.savedemo = None
@@ -244,7 +244,6 @@ class MainPage(QWizardPage):
         self.ui.graphLayout_influenceLine.addWidget(self.graph_widget4.canvas4)
         ax4 = self.graph_widget4.figure4.add_subplot(211)
         self.ax5 = self.graph_widget4.figure4.add_subplot(212)
-
 
         '''
         page changing by clicking pushButton and connecting them to stackedWidget
@@ -692,6 +691,10 @@ class MainPage(QWizardPage):
             except:
                 continue
         self.ndofs = 2*len(self.node_values)
+        self.logger.debug('Number of degrees of freedom : %s', self.ndofs)
+        self.logger.debug('Degrees of freedom : %s', self.degrees_of_freedom)
+        self.logger.debug('Node values : %s', self.node_values)
+
         try:
             self.max_X = max(self.X)
             self.max_Y = max(self.Y)
@@ -741,6 +744,12 @@ class MainPage(QWizardPage):
                 self.elements[row+1] = node1, node2
             except:
                 continue
+
+        self.logger.debug('Member values : %s', self.member_values)
+        self.logger.debug('Elements : %s', self.elements)
+        self.logger.debug('Member plot data : %s', self.plot_final)
+        self.logger.debug('Member displacement data : %s',
+                          self.plot_displacement_final)
 
         self.support()
 
@@ -823,7 +832,15 @@ class MainPage(QWizardPage):
                             p*self.reverse_unit, q*self.reverse_unit], 90
             except:
                 continue
-        # print(self.restrained_dofs)
+
+        self.restrained_dofs.sort()
+        self.logger.debug('Restrained dofs sorted: %s', self.restrained_dofs)
+        self.logger.debug('Support Node : %s', self.support_node)
+        self.logger.debug('Support graph : %s', self.support_graph)
+        self.logger.debug('Support displacement graph : %s',
+                          self.support_displacement_graph)
+        self.logger.debug('Support force : %s', self.support_force)
+
         support_report = self.support_graph
         self.force()
 
@@ -866,7 +883,9 @@ class MainPage(QWizardPage):
             except:
                 continue
 
-        # print(self.forces)
+        self.logger.debug('Forces : %s', self.forces)
+        self.logger.debug('Force graph : %s', self.force_graph)
+
         self.Property()
 
     def Property(self):
@@ -899,6 +918,9 @@ class MainPage(QWizardPage):
                                     1] = self.properties_list[number], number
                 except:
                     continue
+
+        self.logger.debug('Unique properties : %s', self.properties_list)
+        self.logger.debug('Member assigned properties : %s', self.properties)
 
         self.calculation()
         self.graph()
@@ -1000,7 +1022,8 @@ class MainPage(QWizardPage):
 
         self.type = type
         if self.type == 'metric':
-            print(f'metric: {self.currentMetricIndex}')
+            self.logger.debug('Metric unit : %s', self.currentMetricIndex)
+
             # Length
             if self.currentMetricIndex[0][0] == 0:
                 self.unit_node = 1
@@ -1059,7 +1082,8 @@ class MainPage(QWizardPage):
                 self.influence_line()
 
         else:
-            print(f'imperial: {self.currentImperialIndex}')
+            self.logger.debug('Imperial unit : %s', self.currentImperialIndex)
+
             # Length
             if self.currentImperialIndex[0][0] == 0:
                 self.unit_node = 1
@@ -1109,6 +1133,8 @@ class MainPage(QWizardPage):
 
     def calculation(self):
         if len(self.elements)+len(self.restrained_dofs) < self.ndofs:
+            self.logger.debug("Unstable structure : [bar : %s + reaction : %s less than 2*no of joints : %s]", len(
+                self.elements), len(self.restrained_dofs), self.ndofs)
             self.ui.label_stabality.setText('Unstable')
             self.ui.label_stabality.setStyleSheet("color: rgb(255,0,0);")
         else:
@@ -1180,19 +1206,22 @@ class MainPage(QWizardPage):
                 self.K_final = np.delete(self.K, self.remove_indices, axis=0)
                 self.K_final = np.delete(
                     self.K_final, self.remove_indices, axis=1)
-                # print(self.K_final)
-                # print(len(self.K_final))
+                self.logger.debug('Global stiffness matrix : %s',self.K_final)
+
 
                 self.F_final = np.delete(self.F, self.remove_indices)
-                # print(self.F_final)
+                self.logger.debug("Force calculated : %s", self.F_final)
+
 
                 # Deflectiion global
                 self.D_global = np.linalg.inv(self.K_final).dot(self.F_final)
+                self.logger.debug('Global deflection : %s',self.D_global)
 
                 self.ui.label_stabality.setText('Stable')
                 self.ui.label_stabality.setStyleSheet(
                     "color: rgb(255, 85, 0);")
             except:
+                self.logger.debug("Unstable structure")
                 self.ui.label_stabality.setText('Unstable')
                 self.ui.label_stabality.setStyleSheet("color: rgb(255,0,0);")
                 pass
@@ -1225,14 +1254,15 @@ class MainPage(QWizardPage):
                     self.reaction_indices.append(i)
             self.reaction_indices = np.array(
                 self.reaction_indices)-1     # -1 for indexing purposes
-            # print(self.reaction_indices)
+            self.logger.debug('Reaction indices : %s', self.reaction_indices)
 
             self.D_big = np.zeros((self.ndofs))
             for i, j in enumerate(self.reaction_indices):
                 self.D_big[j] = self.D_global[i]
 
             self.D_big = np.around(self.D_big*self.displacement_unit, 4)
-
+            self.logger.debug('Deflection with zeros : %s', self.D_big)
+            
             self.ui.tableWidget_displacement.setRowCount(len(self.node_values))
 
             for i in range(1, len(self.node_values)+1):
@@ -1249,6 +1279,8 @@ class MainPage(QWizardPage):
                 self.factored_D = [i/max_displacement for i in self.D_big]
             else:
                 self.factored_D = [0 for _ in range(self.ndofs)]
+
+            self.logger.debug('Factored deflection : %s', self.factored_D)
 
             self.displacement_graph()
             self.reaction_calculation()
@@ -1321,6 +1353,8 @@ class MainPage(QWizardPage):
 
             self.R_global = np.around(self.R_global-self.sort_support_force, 2)
 
+        self.logger.debug('Reaction global : %s', self.R_global)
+
         self.R_graph = {}
         for i, j in enumerate(self.restrained_dofs):
             if j % 2 == 0:
@@ -1329,6 +1363,8 @@ class MainPage(QWizardPage):
             else:
                 self.R_graph[i] = self.node_values[(
                     j+1)/2], 0, self.R_global[i], f'left'
+
+        self.logger.debug('Reaction graph : %s',self.R_graph)
 
         D_r = np.zeros(4)
         self.stress = []
@@ -1363,6 +1399,8 @@ class MainPage(QWizardPage):
             sigma = np.round((Ck*np.dot(tau, D_r))*self.stress_unit, 4)
             self.stress.append(sigma)
 
+        self.logger.debug('Stress : %s', self.stress)
+
         self.stress_table = []
         for i, j in enumerate(self.stress):
             if j > 0:
@@ -1394,6 +1432,8 @@ class MainPage(QWizardPage):
             self.ui.tableWidget_result.setItem(i, 3, item2)
 
         factoring = sorted([abs(i) for i in self.stress])
+        self.logger.debug('Factoring : %s', factoring)
+
         alpha = []
         if max(factoring) > 0:
             for i in np.linspace(0.3, 1, len(factoring)):
@@ -1402,6 +1442,8 @@ class MainPage(QWizardPage):
                 key, value) in zip(factoring, alpha)}
         else:
             self.factored_stress = {key: 0 for key in factoring}
+
+        self.logger.debug('Factored stress : %s', self.factored_stress)
 
         self.stress_graph()
 
@@ -1678,7 +1720,7 @@ class MainPage(QWizardPage):
             ax_r.annotate(i+1, (self.X[i], self.Y[i]),
                           zorder=10, ha='center', va='center', size='8')
 
-        fig.savefig(buf_node, format="png", dpi=150)
+        fig.savefig(buf_node, format="png", dpi=300)
         buf_node.seek(0)
         self.graph_widget.canvas1.draw()
 
@@ -1690,7 +1732,7 @@ class MainPage(QWizardPage):
         for k, v in self.plot_final.items():
             ax_r.plot(v[0], v[1], linewidth=2)
 
-        fig.savefig(buf_element, format="png", dpi=150)
+        fig.savefig(buf_element, format="png", dpi=300)
         buf_element.seek(0)
 
         global buf_support
@@ -1723,7 +1765,7 @@ class MainPage(QWizardPage):
                           textcoords='offset points',
                           ha=v[-1], va='center', zorder=20, color='r')
 
-        fig.savefig(buf_support, format="png", dpi=150)
+        fig.savefig(buf_support, format="png", dpi=300)
         buf_support.seek(0)
 
     def updateChangeValue(self):
@@ -1735,7 +1777,7 @@ class MainPage(QWizardPage):
         total_node = len(self.node_values)
         total_member = len(self.member_values)
 
-        print(self.filename[0])
+        self.logger.debug('Filename before: %s', self.filename[0])
 
         self.report = True
         if not self.demo:
@@ -1750,6 +1792,7 @@ class MainPage(QWizardPage):
 
         self.report_graph()
         date = datetime.datetime.now().strftime("%A, %B %d, %Y at %I:%M %p %Z")
+        self.logger.debug('Date : %s', date)
         
         banner_1 = """
         ..########..########....##..........##....######......######..<br/>
@@ -1782,14 +1825,16 @@ class MainPage(QWizardPage):
 
         self.pdfname = self.filename[0].replace('trs', 'pdf')
 
-        print(self.filename[0])
-        print(self.pdfname)
+
+        self.logger.debug('Filename after : %s', self.filename[0])
+        self.logger.debug('Pdfname : %s', self.pdfname)
+
         styles = getSampleStyleSheet()
         styleN = ParagraphStyle(styles['Normal'])
 
         doc = SimpleDocTemplate(self.pdfname)
 
-        #self.graph_widget.figure1.savefig(f'{self.pdfname}.svg', format='svg', dpi=1200)
+        #self.graph_widget4.figure4.savefig(f'{self.pdfname}.svg',bbox_inches='tight', format='svg', dpi=3000)
 
         story = []
         story.append(
@@ -1976,7 +2021,6 @@ class MainPage(QWizardPage):
             data[i] = d
 
         for value in data.values():
-            # print(value)
             t = Table(value, repeatRows=1)
             t.setStyle(TableStyle([
                 ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
@@ -2007,7 +2051,7 @@ class MainPage(QWizardPage):
         self.ui.checkBox_nodes.setChecked(False)
         self.ui.checkBox_loads.setChecked(False)
         self.ui.checkBox_reactions.setChecked(False)
-        self.graph_widget3.figure3.savefig(buf_stress, format='png', dpi=200)
+        self.graph_widget3.figure3.savefig(buf_stress, format='png', dpi=300)
         buf_stress.seek(0)
 
         global buf_reaction
@@ -2016,7 +2060,7 @@ class MainPage(QWizardPage):
         self.ui.checkBox_nodes.setChecked(False)
         self.ui.checkBox_members.setChecked(False)
         self.ui.checkBox_reactions.setChecked(True)
-        self.graph_widget3.figure3.savefig(buf_reaction, format='png', dpi=200)
+        self.graph_widget3.figure3.savefig(buf_reaction, format='png', dpi=300)
         buf_reaction.seek(0)
 
         self.ui.checkBox_loads.setChecked(True)
@@ -2069,7 +2113,7 @@ class MainPage(QWizardPage):
         buf_displacement = BytesIO()
         self.ui.horizontalSlider.setValue(30)
         self.graph_widget2.figure2.savefig(
-            buf_displacement, format='png', dpi=200)
+            buf_displacement, format='png', dpi=300)
         buf_displacement.seek(0)
 
         doc.build(story, canvasmaker=NumberedCanvas)
@@ -2106,9 +2150,11 @@ class MainPage(QWizardPage):
 
             slope_required = (self.ending_Y - self.starting_Y) / \
                 (self.ending_X - self.starting_X)
-            # print(self.starting_value)
-            # print(self.ending_value)
-            # print(slope_required)
+
+            self.logger.debug('Moving load starting node : %s', self.starting_value)
+            self.logger.debug('Moving node ending node : %s', self.ending_value)
+            self.logger.debug('Slope required : %s', slope_required)
+
 
             if self.starting_X < self.ending_X:
                 sorted_node = dict(
@@ -2122,7 +2168,7 @@ class MainPage(QWizardPage):
                 sorted_node_revised = {key: value for key, value in sorted_node.items(
                 ) if value[0] <= self.starting_X and value[0] >= self.ending_X}
 
-            # print(sorted_node_revised)
+            self.logger.debug('Sorted node revised : %s', sorted_node_revised)
 
             for key, value in sorted_node_revised.items():
                 if key == starting_node:
@@ -2134,8 +2180,10 @@ class MainPage(QWizardPage):
                     except:
                         continue
 
-            #print(self.moving_node)
+            self.logger.debug('Moving node : %s', self.moving_node)
+            
             self.moving_position = [key for key in self.moving_node.keys()]
+            self.logger.debug('Moving position : %s', self.moving_position)
 
         except KeyError:
             self.movingload_graph()
@@ -2210,6 +2258,8 @@ class MainPage(QWizardPage):
             for i in self.influence_list:
                 for j in range(len(self.member_values)):
                     self.force_influence[j+1].append(i[j])
+                    
+            self.logger.debug('Force influence : %s', self.force_influence)
 
             self.ui.comboBox_influence.clear()
             item = [str(key) for key in self.member_values.keys()]
@@ -2250,7 +2300,6 @@ class MainPage(QWizardPage):
             ax4 = self.graph_widget4.figure4.add_subplot(211)
             self.ax5 = self.graph_widget4.figure4.add_subplot(212)
 
-            self.graph_widget4.figure4.tight_layout()
             ax4.axis('off')
             self.ax5.axis('off')
 
@@ -2288,6 +2337,7 @@ class MainPage(QWizardPage):
             #         textcoords='offset points',
             #         ha='center',va='center',zorder=20,color='r')
             # self.graph_widget4.canvas4.draw()
+            self.graph_widget4.figure4.tight_layout()
 
         except:
             pass
@@ -2392,7 +2442,7 @@ class MainPage(QWizardPage):
 #     app.setStyle('Fusion')
 
 #     #window = MainPage(open=True, filename=("E:\Truss 101 Development\Demo\Example 4.trs",""))
-#     window = MainPage()
+#     window = MainPage(open=True)
 #     window.show()
 
 #     sys.exit(app.exec_())

@@ -60,3 +60,7 @@ A desktop application to solve statically determinate and indeterminate 2D truss
 # TO DO
 * 3D truss
 
+# License
+* This software is under GNU v3 license. See more https://github.com/MShawon/Truss-101/blob/main/LICENSE
+* Some icons are from icons8.  https://icons8.com
+* This program uses Qt Version 5.15.1. Please see http://qt.io/licensing/ for an overview of Qt licensing.
