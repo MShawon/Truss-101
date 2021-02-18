@@ -21,8 +21,8 @@ A desktop application to solve statically determinate and indeterminate 2D truss
 
 ## Where to download?
 <p align='left'>
-  <a href="https://github.com/MShawon/Truss-101/releases/download/1.1.0/Truss.101_win_Setup_v1.1.0.exe">
-  <img src="https://img.shields.io/badge/v1.1.0-Download%20Truss%20101-green?logo=github&logoWidth=10&flat&logoColor=black" width="450" height="55">
+  <a href="https://github.com/MShawon/Truss-101/releases/download/1.1.1/Truss.101_win_Setup_v1.1.1.exe">
+  <img src="https://img.shields.io/badge/v1.1.1-Download%20Truss%20101-green?logo=github&logoWidth=10&flat&logoColor=black" width="450" height="55">
   </a>
 </p>
 
