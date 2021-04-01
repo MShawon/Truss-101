@@ -13,7 +13,7 @@
   <a href="https://github.com/MShawon/Truss-101/blob/main/DONATE.md"><img alt="Donate" src="https://img.shields.io/badge/Donate-PayPal / Crypto-green.svg"></a>
 </p>
 
-<p align='center'><img src='Tutorial/gif.gif' width='90%' height='90%' ></p>
+<p align='center'><img src='https://github.com/MShawon/Truss-101/blob/gh-pages/gif.gif' width='90%' height='90%' ></p>
 
 # Truss 101
 A desktop application to solve statically determinate and indeterminate 2D truss structures using Matrix Displacement Method (aka Finite Element Method).
