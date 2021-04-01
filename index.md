@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/MShawon/Truss-101/blob/main/Tutorial/logo.png?raw=True" width="125" height="125"
+  <img src="https://github.com/MShawon/Truss-101/blob/main/Tutorial/logo.png" width="125" height="125"
 </p>
 <p align="center">
   <a href="https://github.com/MShawon/Truss-101/releases/latest"><img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/MShawon/Truss-101?color=success"></a>
