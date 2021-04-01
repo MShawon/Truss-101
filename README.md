@@ -54,11 +54,11 @@ A desktop application to solve statically determinate and indeterminate 2D truss
 # Tutorial 
 **1) Analysis of Truss Structures**
 
-[![YouTube video](https://github.com/MShawon/Truss-101/blob/gh-pages/tutorial.png)](https://www.youtube.com/watch?v=5yi33cXewrU)
+[![YouTube video](https://github.com/MShawon/Truss-101/blob/gh-pages/tutorial.png?raw=True)](https://www.youtube.com/watch?v=5yi33cXewrU)
 
 **2) Truss Influence Line**
 
-[![YouTube video 2](https://github.com/MShawon/Truss-101/blob/gh-pages/tutorial2.png)](https://www.youtube.com/watch?v=7H7eLLeZys8)
+[![YouTube video 2](https://github.com/MShawon/Truss-101/blob/gh-pages/tutorial2.png?raw=True)](https://www.youtube.com/watch?v=7H7eLLeZys8)
 
 # TO DO
 * 3D truss
