@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/MShawon/Truss-101/blob/main/Tutorial/logo.png" width="125" height="125">
+  <img src="https://github.com/MShawon/Truss-101/blob/gh-pages/logo.png" width="125" height="125">
 </p>
 <p align="center">
   <a href="https://github.com/MShawon/Truss-101/releases/latest"><img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/MShawon/Truss-101?color=success"></a>
@@ -54,16 +54,16 @@ A desktop application to solve statically determinate and indeterminate 2D truss
 # Tutorial 
 **1) Analysis of Truss Structures**
 
-[![YouTube video](Tutorial/YouTube_photo.png)](https://www.youtube.com/watch?v=5yi33cXewrU)
+[![YouTube video](https://github.com/MShawon/Truss-101/blob/gh-pages/tutorial.png)](https://www.youtube.com/watch?v=5yi33cXewrU)
 
 **2) Truss Influence Line**
 
-[![YouTube video 2](Tutorial/tutorial2.png)](https://www.youtube.com/watch?v=7H7eLLeZys8)
+[![YouTube video 2](https://github.com/MShawon/Truss-101/blob/gh-pages/tutorial2.png)](https://www.youtube.com/watch?v=7H7eLLeZys8)
 
 # TO DO
 * 3D truss
 
 # License
-* This software is under GPL v3 license. See more https://github.com/MShawon/Truss-101/blob/main/LICENSE
-* Some icons are from icons8.  https://icons8.com
-* This program uses Qt Version 5.15.1. Please see http://qt.io/licensing/ for an overview of Qt licensing.
+* This software is under GPL v3 license. See more <a href="https://github.com/MShawon/Truss-101/blob/main/LICENSE">https://github.com/MShawon/Truss-101/blob/main/LICENSE</a>
+* Some icons are from icons8.  <a href="https://icons8.com">https://icons8.com</a>
+* This program uses Qt Version 5.15.1. Please see <a href="https://www.qt.io/licensing/">https://www.qt.io/licensing/</a> for an overview of Qt licensing.
