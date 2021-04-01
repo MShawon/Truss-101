@@ -1,37 +1,69 @@
-## Welcome to GitHub Pages
+<p align="center">
+  <img src="https://github.com/MShawon/Truss-101/blob/main/Tutorial/logo.png?raw=True" width="125" height="125"
+</p>
+<p align="center">
+  <a href="https://github.com/MShawon/Truss-101/releases/latest"><img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/MShawon/Truss-101?color=success"></a>
+  <a href="https://github.com/MShawon/Truss-101/releases/latest"><img alt="GitHub Release Date" src="https://img.shields.io/github/release-date/MShawon/Truss-101?color=success"></a>
+  <a href="https://github.com/MShawon/Truss-101/"><img alt="GitHub Downloads" src="https://img.shields.io/github/downloads/MShawon/Truss-101/total?label=GitHub%20downloads&color=success"></a>
+  <a href="https://sourceforge.net/projects/truss-101/"><img alt="SourceForge Downloads" src="https://img.shields.io/sourceforge/dt/truss-101?label=SourceForge%20downloads&color=success"></a>
+  <img alt="OS" src="https://img.shields.io/badge/OS-Windows-success">
+</p>
+<p align="center">
+  <a href="https://github.com/MShawon/Truss-101/blob/main/LICENSE"><img alt="GitHub license" src="https://img.shields.io/github/license/MShawon/Truss-101?color=important"></a>
+  <a href="https://github.com/MShawon/Truss-101/blob/main/DONATE.md"><img alt="Donate" src="https://img.shields.io/badge/Donate-PayPal / Crypto-green.svg"></a>
+</p>
 
-You can use the [editor on GitHub](https://github.com/MShawon/Truss-101/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+<p align='center'><img src='Tutorial/gif.gif' width='90%' height='90%' ></p>
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+# Truss 101
+A desktop application to solve statically determinate and indeterminate 2D truss structures using Matrix Displacement Method (aka Finite Element Method).
 
-### Markdown
+## Where to download?
+<p align='left'>
+  <a href="https://github.com/MShawon/Truss-101/releases/download/1.1.1/Truss.101_win_Setup_v1.1.1.exe">
+  <img src="https://img.shields.io/badge/v1.1.1-Download%20Truss%20101-green?logo=github&logoWidth=10&flat&logoColor=black" width="450" height="55">
+  </a>
+</p>
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
 
-```markdown
-Syntax highlighted code block
+## Why Truss 101?
+* Develop Structures using Nodes and Members
+* Unit conversion
+* Supports
+  * Pinned and Roller support 
+  * Stability check
+* Multiple loads at the same point
+* Individual property for members 
+  * Modulus of Elasticity (E)
+  * Area (A)
+* Nodal displacements
+  * Graphs
+  * Tabulated
+  * Animation
+* Member forces and support reactions
+  * Graphs showing members relative strength
+  * Tension, compression value in Tabulated form
+* Influence line for a unit load
+* Multiple projects
+* Beautiful Report 
+  * Input-Output data
+  * Member Stiffness Matrices
+  * Global Stiffness Matrix
+  * Force Matrix
 
-# Header 1
-## Header 2
-### Header 3
+# Tutorial 
+**1) Analysis of Truss Structures**
 
-- Bulleted
-- List
+[![YouTube video](Tutorial/YouTube_photo.png)](https://www.youtube.com/watch?v=5yi33cXewrU)
 
-1. Numbered
-2. List
+**2) Truss Influence Line**
 
-**Bold** and _Italic_ and `Code` text
+[![YouTube video 2](Tutorial/tutorial2.png)](https://www.youtube.com/watch?v=7H7eLLeZys8)
 
-[Link](url) and ![Image](src)
-```
+# TO DO
+* 3D truss
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/MShawon/Truss-101/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+# License
+* This software is under GPL v3 license. See more https://github.com/MShawon/Truss-101/blob/main/LICENSE
+* Some icons are from icons8.  https://icons8.com
+* This program uses Qt Version 5.15.1. Please see http://qt.io/licensing/ for an overview of Qt licensing.
