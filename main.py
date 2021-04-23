@@ -213,7 +213,7 @@ class MainWindow(QMainWindow):
 
         "++++++++++++++++++++++++++++++++++++++++++++++++++++++"
         self.APP_NAME = 'Truss 101'
-        self.APP_VERSION = '1.1.2'
+        self.APP_VERSION = '1.1.3'
         self.APP_UPDATE_TIME = 'April 2021'
         "++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 

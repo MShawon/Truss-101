@@ -20,8 +20,8 @@ A desktop application to solve statically determinate and indeterminate 2D truss
 
 ## Where to download?
 <p align='left'>
-  <a href="https://github.com/MShawon/Truss-101/releases/download/1.1.2/Truss.101_win_Setup_v1.1.2.exe">
-  <img src="https://img.shields.io/badge/v1.1.2-Download%20Truss%20101-green?logo=github&logoWidth=10&flat&logoColor=black" width="450" height="55">
+  <a href="https://github.com/MShawon/Truss-101/releases/download/1.1.3/Truss.101_win_Setup_v1.1.3.exe">
+  <img src="https://img.shields.io/badge/v1.1.3-Download%20Truss%20101-green?logo=github&logoWidth=10&flat&logoColor=black" width="450" height="55">
   </a>
 </p>
 
@@ -63,6 +63,38 @@ A desktop application to solve statically determinate and indeterminate 2D truss
 
 # TO DO
 * Release cross-platform compatible code
+
+# Changelog
+## v1.0.0
+Initial release
+
+## v1.0.2
+Application startup time is improved
+
+## v1.1.0
+* Influence line for a unit load is added.
+* Automatic table update due to spinbox value change is deprecated. Now the update button must be used.
+* Matrices bug in Report is fixed. 
+* Application startup and closing time is improved.
+* Few other bug fixes.
+
+## v1.1.1
+* wrong reaction calculation fixes
+* UI improved for 1280*720 resolution
+* overall UI improvement
+* debug window is added
+* Added few other features
+
+## v1.1.2
+* up to 1000 nodes, members, supports, loads, and properties are now possible
+* setting unit before creating a new file
+* stress calculation is now available on the force page
+* showing force or stress value directly on the graph instead of a number is available by force checkbox
+* better font in debug window and naming convention in code
+* report bug fixes
+
+## v1.1.3
+* fix large truss report bug
 
 # License
 * This software is under GPL v3 license. See more https://github.com/MShawon/Truss-101/blob/main/LICENSE

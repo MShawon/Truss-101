@@ -127,13 +127,13 @@ class NumberedCanvas(canvas.Canvas):
             t.wrapOn(self, 400, 100)
             t.drawOn(self, inch*4.5, inch*5)
 
-        elif self._pageNumber == page_count - 2 - stress_page:
+        elif self._pageNumber == page_count - stress_page:
             im = ImageReader(buf_bar_force)
             self.drawImage(im, inch*0.1, inch*3.5, width=8*inch, height=6*inch)
             im = ImageReader(buf_reaction)
             self.drawImage(im, inch*1, inch*0.1, width=6*inch, height=4*inch)
 
-        elif self._pageNumber == page_count:
+        elif self._pageNumber == page_count - displacement_page:
             im = ImageReader(buf_displacement)
             self.drawImage(im, inch*3.8, inch*6,
                            width=4.5*inch, height=3.5*inch)
@@ -1881,20 +1881,27 @@ class MainPage(QWizardPage):
         global member_page
         global support_page
         global stress_page
+        global displacement_page
+        
         total_node = len(self.node_values)
         total_member = len(self.member_values)
         
         if total_node < 27:
-            member_page = int(total_node / 27) + 3
+            member_page = 3
         else:
             member_page = int((total_node - 27) / 37) + 4
 
         if total_member < 33:
-            support_page = int(total_member / 33) + member_page + 1
+            support_page = member_page + 1
         else:
             support_page = int((total_member - 33) / 37) + member_page + 2
 
-        stress_page = int(total_member / 37)
+        if total_node < 34:
+            displacement_page = 0
+        else:
+            displacement_page = int((total_node - 33) / 37) + 1
+
+        stress_page = int(total_member / 37) + displacement_page + 2
 
         self.report = True
         if not self.demo:
