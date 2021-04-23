@@ -1,27 +1,29 @@
-# ------------------------------------------------------------------------------
-# Copyright (C) 2020-2021 Monirul Shawon
-##
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-##
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-##
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
-# ------------------------------------------------------------------------------
+"""
+GPL-3.0 License
 
-from ui_mainTruss import Ui_WizardPage
+Copyright (C) 2020-2021 Monirul Shawon
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
+
+from ui_truss import Ui_WizardPage
 from reportlab.platypus import (PageBreak, Paragraph, SimpleDocTemplate,
                                 Spacer, Table, TableStyle)
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
 from reportlab.lib.units import inch
-from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 from io import BytesIO
 import datetime
@@ -46,14 +48,18 @@ from supports import *
 plt.style.use('seaborn-bright')
 
 
+
 class NumberedCanvas(canvas.Canvas):
+
     def __init__(self, *args, **kwargs):
         canvas.Canvas.__init__(self, *args, **kwargs)
         self._saved_page_states = []
 
+
     def showPage(self):
         self._saved_page_states.append(dict(self.__dict__))
         self._startPage()
+
 
     def save(self):
         """add page info to each page (page x of y)"""
@@ -63,6 +69,7 @@ class NumberedCanvas(canvas.Canvas):
             self.draw_page_number(num_pages)
             canvas.Canvas.showPage(self)
         canvas.Canvas.save(self)
+
 
     def draw_page_number(self, page_count):
         if self._pageNumber == 1:
@@ -97,11 +104,11 @@ class NumberedCanvas(canvas.Canvas):
         elif self._pageNumber == 2:
             im = ImageReader(buf_node)
             self.drawImage(im, inch*2.8, inch*4, width=5.1*inch, height=4*inch)
-        elif self._pageNumber == int(total_node/27) + 3:
+        elif self._pageNumber == member_page:
             im = ImageReader(buf_element)
             self.drawImage(im, inch*3.0, inch*6,
                            width=4.8*inch, height=3.7*inch)
-        elif self._pageNumber == int(total_node/27) + int(total_member/33) + 4:
+        elif self._pageNumber == support_page:
             im = ImageReader(buf_support)
             self.drawImage(im, inch*3.4, inch*6.2,
                            width=4.5*inch, height=3.5*inch)
@@ -120,11 +127,12 @@ class NumberedCanvas(canvas.Canvas):
             t.wrapOn(self, 400, 100)
             t.drawOn(self, inch*4.5, inch*5)
 
-        elif self._pageNumber == page_count - 1 - int(total_member/31):
-            im = ImageReader(buf_stress)
-            self.drawImage(im, inch*4, inch*6, width=4.5*inch, height=3.5*inch)
+        elif self._pageNumber == page_count - 2 - stress_page:
+            im = ImageReader(buf_bar_force)
+            self.drawImage(im, inch*0.1, inch*3.5, width=8*inch, height=6*inch)
             im = ImageReader(buf_reaction)
-            self.drawImage(im, inch*4, inch*3, width=4*inch, height=3.1*inch)
+            self.drawImage(im, inch*1, inch*0.1, width=6*inch, height=4*inch)
+
         elif self._pageNumber == page_count:
             im = ImageReader(buf_displacement)
             self.drawImage(im, inch*3.8, inch*6,
@@ -132,6 +140,7 @@ class NumberedCanvas(canvas.Canvas):
         self.setFont("Helvetica", 7)
         self.drawRightString(inch, 0.75 * inch,
                              "Page %d of %d" % (self._pageNumber, page_count))
+
 
 
 class NavigationToolbar(NavigationToolbar):
@@ -155,10 +164,12 @@ class NavigationToolbar(NavigationToolbar):
     )
 
 
+
 class AlignDelegate(QStyledItemDelegate):
     def initStyleOption(self, option, index):
         super(AlignDelegate, self).initStyleOption(option, index)
         option.displayAlignment = Qt.AlignCenter
+
 
 
 class MainPage(QWizardPage):
@@ -182,15 +193,16 @@ class MainPage(QWizardPage):
                 self.name = self.filename[0].split("\\")[-1]
 
         'Unit conversion'
-        self.currentMetricIndex = []
-        self.currentImperialIndex = [[0, 0, 0]]
+        self.current_metric_index = []
+        self.current_imperial_index = [[0, 0, 0]]
 
         self.unit_node = 1
         self.displacement_unit = 12
         self.reverse_unit = 1
         self.displacement_factor = 0.1
         self.force_unit = 1
-        self.stress_unit = 1
+        self.bar_force_unit = 1
+        self.stress_unit = 1000
         self.force_unit_name = 'k'
         self.unit_report = [
             'ft', 'kip (k)', 'kip (k)', 'ksi', 'in<super size=6>2</super>', 'in']
@@ -296,7 +308,7 @@ class MainPage(QWizardPage):
         self.ui.pushbutton_members.clicked.connect(self.member)
         self.ui.pushbutton_supports.clicked.connect(self.support)
         self.ui.pushbutton_loads.clicked.connect(self.force)
-        self.ui.pushbutton_properties.clicked.connect(self.Property)
+        self.ui.pushbutton_properties.clicked.connect(self.assign_property)
 
         self.ui.pushbutton_displacement.clicked.connect(self.node)
         self.ui.pushbutton_displacement.clicked.connect(self.displacement)
@@ -304,7 +316,7 @@ class MainPage(QWizardPage):
         self.ui.pushbutton_forces.clicked.connect(self.node)
         self.ui.pushbutton_forces.clicked.connect(self.displacement)
 
-        self.ui.pushbutton_influenceLine.clicked.connect(self.influenceTable)
+        self.ui.pushbutton_influenceLine.clicked.connect(self.influence_table)
         self.ui.pushButton_calculate.clicked.connect(self.influence_line)
 
         'Supports combo add in support table'
@@ -316,7 +328,7 @@ class MainPage(QWizardPage):
             supports_cb.currentIndexChanged.connect(self.support)
 
         if self.open:
-            self.openFromFile()
+            self.open_from_file()
 
         '''table update'''
         self.ui.update_loads.clicked.connect(
@@ -330,26 +342,26 @@ class MainPage(QWizardPage):
 
         self.ui.update_nodes.clicked.connect(self.node)
         self.ui.tableWidget_nodes.cellChanged.connect(self.node)
-        self.ui.tableWidget_nodes.cellChanged.connect(self.updateChangeValue)
+        self.ui.tableWidget_nodes.cellChanged.connect(self.update_change)
 
         self.ui.update_members.clicked.connect(self.member)
         self.ui.tableWidget_members.cellChanged.connect(self.member)
-        self.ui.tableWidget_members.cellChanged.connect(self.updateChangeValue)
+        self.ui.tableWidget_members.cellChanged.connect(self.update_change)
 
         self.ui.update_supports.clicked.connect(self.support)
         self.ui.tableWidget_supports.cellChanged.connect(self.support)
         self.ui.tableWidget_supports.cellChanged.connect(
-            self.updateChangeValue)
+            self.update_change)
 
         self.ui.update_loads.clicked.connect(self.force)
         self.ui.tableWidget_loads.cellChanged.connect(self.force)
-        self.ui.tableWidget_loads.cellChanged.connect(self.updateChangeValue)
+        self.ui.tableWidget_loads.cellChanged.connect(self.update_change)
 
-        self.ui.update_property.clicked.connect(self.Property)
-        self.ui.tableWidget_property.cellChanged.connect(self.Property)
-        self.ui.pushbutton_properties.clicked.connect(self.Property)
+        self.ui.update_property.clicked.connect(self.assign_property)
+        self.ui.tableWidget_property.cellChanged.connect(self.assign_property)
+        self.ui.pushbutton_properties.clicked.connect(self.assign_property)
         self.ui.tableWidget_property.cellChanged.connect(
-            self.updateChangeValue)
+            self.update_change)
 
         'Member colour change in graph'
         self.ui.radioButtonDefault.toggled.connect(self.graph)
@@ -360,11 +372,15 @@ class MainPage(QWizardPage):
         self.ui.pushButton_stop.clicked.connect(self.stop_animation)
         self.ui.horizontalSlider.valueChanged.connect(self.displacement_graph)
 
+        'Force, stress radio button'
+        self.ui.radioButton_force.toggled.connect(self.force_or_stress)
+
         'Nodes,loads,reactions and members checkbox in stress graph'
         self.ui.checkBox_nodes.stateChanged.connect(self.stress_graph)
+        self.ui.checkBox_members.stateChanged.connect(self.stress_graph)
+        self.ui.checkBox_forces.stateChanged.connect(self.stress_graph)
         self.ui.checkBox_loads.stateChanged.connect(self.stress_graph)
         self.ui.checkBox_reactions.stateChanged.connect(self.stress_graph)
-        self.ui.checkBox_members.stateChanged.connect(self.stress_graph)
 
         'Report generate'
         self.ui.pushbutton_generate.clicked.connect(self.generate_report)
@@ -413,21 +429,21 @@ class MainPage(QWizardPage):
         self.ui.tableWidget_influenceLine.setItemDelegate(delegate)
 
         self.ui.comboBox_influence.currentIndexChanged.connect(
-            self.influenceTable)
+            self.influence_table)
 
     '''
     opening from a file
     '''
 
-    def openFromFile(self):
+    def open_from_file(self):
         currentdirectory = os.path.expanduser('~/Documents')
         if not self.filename:
             self.filename = QFileDialog.getOpenFileName(
                 self, 'Open file', currentdirectory, "Truss101 files (*.trs)")
         with open(self.filename[0], 'rb') as outfile:
             try:
-                self.currentMetricIndex = pickle.load(outfile)
-                self.currentImperialIndex = pickle.load(outfile)
+                self.current_metric_index = pickle.load(outfile)
+                self.current_imperial_index = pickle.load(outfile)
                 self.ndofs = pickle.load(outfile)
                 self.X = pickle.load(outfile)
                 self.Y = pickle.load(outfile)
@@ -542,13 +558,13 @@ class MainPage(QWizardPage):
 
         except:
             pass
-        if self.currentImperialIndex:
+        if self.current_imperial_index:
             self.change_unit_label(
-                unit=self.currentImperialIndex, type='imperial')
-            self.unitConvert(type='imperial')
-        elif self.currentMetricIndex:
-            self.change_unit_label(unit=self.currentMetricIndex, type='metric')
-            self.unitConvert(type='metric')
+                unit=self.current_imperial_index, type='imperial')
+            self.unit_convert(type='imperial')
+        elif self.current_metric_index:
+            self.change_unit_label(unit=self.current_metric_index, type='metric')
+            self.unit_convert(type='metric')
         self.change = 0
         self.save += 1
 
@@ -556,7 +572,7 @@ class MainPage(QWizardPage):
     save into a file
     '''
 
-    def saveToFile(self, saveas=None):
+    def save_to_file(self, saveas=None):
         self.saveas = saveas
         currentdirectory = os.path.expanduser('~/Documents')
 
@@ -574,8 +590,8 @@ class MainPage(QWizardPage):
             self.change = 0
             self.save += 1
             try:
-                pickle.dump(self.currentMetricIndex, outfile)
-                pickle.dump(self.currentImperialIndex, outfile)
+                pickle.dump(self.current_metric_index, outfile)
+                pickle.dump(self.current_imperial_index, outfile)
                 pickle.dump(self.ndofs, outfile)
                 pickle.dump(self.X, outfile)
                 pickle.dump(self.Y, outfile)
@@ -620,10 +636,11 @@ class MainPage(QWizardPage):
                 property_cb.addItems(item)
                 self.ui.tableWidget_members.setCellWidget(
                     row+previous, 2, property_cb)
-                property_cb.currentIndexChanged.connect(self.Property)
+                property_cb.currentIndexChanged.connect(self.assign_property)
 
             self.ui.tableWidget_members.setColumnWidth(0, 80)
             self.ui.tableWidget_members.setColumnWidth(1, 80)
+
 
     def support_table(self):
         previous = self.ui.tableWidget_supports.rowCount()
@@ -638,6 +655,7 @@ class MainPage(QWizardPage):
             self.ui.tableWidget_supports.setCellWidget(
                 row+previous, 1, supports_cb)
             supports_cb.currentIndexChanged.connect(self.support)
+
 
     def property_table(self):
 
@@ -657,7 +675,7 @@ class MainPage(QWizardPage):
                 property_cb.addItems(item)
 
                 self.ui.tableWidget_members.setCellWidget(row, 2, property_cb)
-                property_cb.currentIndexChanged.connect(self.Property)
+                property_cb.currentIndexChanged.connect(self.assign_property)
 
         elif self.ui.spinBox_property.value() == 1:
             self.ui.tableWidget_members.setColumnCount(2)
@@ -708,6 +726,7 @@ class MainPage(QWizardPage):
 
         self.member()
 
+
     def member(self):
         self.ui.tableWidget_members.setRowCount(
             self.ui.spinBox_members.value())
@@ -752,6 +771,7 @@ class MainPage(QWizardPage):
                           self.plot_displacement_final)
 
         self.support()
+
 
     def support(self):
         self.ui.tableWidget_supports.setRowCount(
@@ -844,6 +864,7 @@ class MainPage(QWizardPage):
         support_report = self.support_graph
         self.force()
 
+
     def force(self):
         self.forces = {}
         self.force_graph = {}
@@ -886,9 +907,10 @@ class MainPage(QWizardPage):
         self.logger.debug('Forces : %s', self.forces)
         self.logger.debug('Force graph : %s', self.force_graph)
 
-        self.Property()
+        self.assign_property()
 
-    def Property(self):
+
+    def assign_property(self):
         self.properties_list = {}
         self.properties = {}
         properties_number = int(self.ui.spinBox_property.value())
@@ -925,13 +947,14 @@ class MainPage(QWizardPage):
         self.calculation()
         self.graph()
 
+
     def change_unit_label(self, unit=None, type=None):
         self.unit = unit
         self.type = type
-        self.currentMetricIndex = []
-        self.currentImperialIndex = []
+        self.current_metric_index = []
+        self.current_imperial_index = []
         if self.type == 'metric':
-            self.currentMetricIndex = self.unit
+            self.current_metric_index = self.unit
             self.unit_report = [
                 'm', 'kilo newton (kN)', 'kilo newton (kN)', 'GPa', 'mm<super size=6>2</super>', 'mm']
 
@@ -942,39 +965,39 @@ class MainPage(QWizardPage):
             self.ui.label_unit_displacement.setText(
                 '* Unit of displacement : milimeter (mm)')
 
-            if self.currentMetricIndex[0][0] == 0:
+            if self.current_metric_index[0][0] == 0:
                 self.ui.label_unit_node.setText(
                     '* Unit of x and y : meter (m)')
-            if self.currentMetricIndex[0][0] == 1:
+            if self.current_metric_index[0][0] == 1:
                 self.unit_report[0] = 'mm'
                 self.ui.label_unit_node.setText(
                     '* Unit of x and y : milimeter (mm)')
-            if self.currentMetricIndex[0][1] == 0:
+            if self.current_metric_index[0][1] == 0:
                 self.ui.label_unit_load.setText(
                     '* Unit of load : kilo Newton (kN)')
                 self.ui.label_unitLoad.setText(
                     '* Unit Load : 1 kilo Newton (kN)')
-            if self.currentMetricIndex[0][1] == 1:
+            if self.current_metric_index[0][1] == 1:
                 self.unit_report[1] = 'Newton (N)'
                 self.ui.label_unit_load.setText('* Unit of load : Newton (N)')
                 self.ui.label_unitLoad.setText('* Unit Load : 1 Newton (N)')
-            if self.currentMetricIndex[0][1] == 2:
+            if self.current_metric_index[0][1] == 2:
                 self.unit_report[1] = 'kilogram (kg)'
                 self.ui.label_unit_load.setText(
                     '* Unit of load : kilogram (kg)')
                 self.ui.label_unitLoad.setText('* Unit Load : 1 kilogram (kg)')
-            if self.currentMetricIndex[0][2] == 0:
+            if self.current_metric_index[0][2] == 0:
                 self.ui.label_unit_stress.setText(
                     '* Unit of force : kilo Newton (kN)')
                 self.ui.tableWidget_influenceLine.setHorizontalHeaderLabels(
                     ['Load\nPosition', 'Force\n(kN)'])
-            if self.currentMetricIndex[0][2] == 1:
+            if self.current_metric_index[0][2] == 1:
                 self.unit_report[2] = 'Newton (N)'
                 self.ui.label_unit_stress.setText(
                     '* Unit of force :  Newton (N)')
                 self.ui.tableWidget_influenceLine.setHorizontalHeaderLabels(
                     ['Load\nPosition', 'Force\n(N)'])
-            if self.currentMetricIndex[0][2] == 2:
+            if self.current_metric_index[0][2] == 2:
                 self.unit_report[2] = 'kilogram (kg)'
                 self.ui.label_unit_stress.setText(
                     '* Unit of force : kilogram (kg)')
@@ -982,7 +1005,7 @@ class MainPage(QWizardPage):
                     ['Load\nPosition', 'Force\n(kg)'])
 
         else:
-            self.currentImperialIndex = self.unit
+            self.current_imperial_index = self.unit
             self.unit_report = [
                 'ft', 'kip (k)', 'kip (k)', 'ksi', 'in<super size=6>2</super>', 'in']
 
@@ -992,144 +1015,160 @@ class MainPage(QWizardPage):
             self.ui.label_unit_displacement.setText(
                 '* Unit of displacement : inch (in)')
 
-            if self.currentImperialIndex[0][0] == 0:
+            if self.current_imperial_index[0][0] == 0:
                 self.ui.label_unit_node.setText(
                     '* Unit of x and y : foot (ft)')
-            if self.currentImperialIndex[0][0] == 1:
+            if self.current_imperial_index[0][0] == 1:
                 self.unit_report[0] = 'in'
                 self.ui.label_unit_node.setText(
                     '* Unit of x and y : inch (in)')
-            if self.currentImperialIndex[0][1] == 0:
+            if self.current_imperial_index[0][1] == 0:
                 self.ui.label_unit_load.setText('* Unit of load : kip (k)')
                 self.ui.label_unitLoad.setText('* Unit Load : 1  kip (k)')
-            if self.currentImperialIndex[0][1] == 1:
+            if self.current_imperial_index[0][1] == 1:
                 self.unit_report[1] = 'pound (lb)'
                 self.ui.label_unit_load.setText('* Unit of load : pound (lb)')
                 self.ui.label_unitLoad.setText('* Unit Load : 1 pound (lb)')
-            if self.currentImperialIndex[0][2] == 0:
+            if self.current_imperial_index[0][2] == 0:
                 self.ui.label_unit_stress.setText('* Unit of force : kip (k)')
                 self.ui.tableWidget_influenceLine.setHorizontalHeaderLabels(
                     ['Load\nPosition', 'Force\n(kip)'])
-            if self.currentImperialIndex[0][2] == 1:
+            if self.current_imperial_index[0][2] == 1:
                 self.unit_report[2] = 'pound (lb)'
                 self.ui.label_unit_stress.setText(
                     '* Unit of force : pound (lb)')
                 self.ui.tableWidget_influenceLine.setHorizontalHeaderLabels(
                     ['Load\nPosition', 'Force\n(lb)'])
 
-    def unitConvert(self, type=None):
+        self.old_label_unit_stress = self.ui.label_unit_stress.text()
+
+
+    def unit_convert(self, type=None):
         self.change += 1
 
         self.type = type
         if self.type == 'metric':
-            self.logger.debug('Metric unit : %s', self.currentMetricIndex)
+            self.logger.debug('Metric unit : %s', self.current_metric_index)
 
             # Length
-            if self.currentMetricIndex[0][0] == 0:
+            if self.current_metric_index[0][0] == 0:
                 self.unit_node = 1
                 self.displacement_unit = 1000
                 self.reverse_unit = 1
                 self.displacement_factor = 0.01
                 # Load
-                if self.currentMetricIndex[0][1] == 0:
+                if self.current_metric_index[0][1] == 0:
                     self.force_unit = 1
                     self.force_unit_name = 'kN'
-                elif self.currentMetricIndex[0][1] == 1:
+                elif self.current_metric_index[0][1] == 1:
                     self.force_unit = 0.001
                     self.force_unit_name = 'N'
-                elif self.currentMetricIndex[0][1] == 2:
+                elif self.current_metric_index[0][1] == 2:
                     self.force_unit = 0.00980665
                     self.force_unit_name = 'kg'
 
                 # Force
-                if self.currentMetricIndex[0][2] == 0:
-                    self.stress_unit = 1/1000  # (1/1000)/1
-                elif self.currentMetricIndex[0][2] == 1:
-                    self.stress_unit = 1  # (1/1000)/0.001
-                elif self.currentMetricIndex[0][2] == 2:
-                    self.stress_unit = (1/1000)/0.00980665
+                if self.current_metric_index[0][2] == 0:
+                    self.bar_force_unit = 1/1000  # (1/1000)/1
+                    self.stress_unit = 1000
+                elif self.current_metric_index[0][2] == 1:
+                    self.bar_force_unit = 1  # (1/1000)/0.001
+                    self.stress_unit = 1
+                elif self.current_metric_index[0][2] == 2:
+                    self.bar_force_unit = (1/1000)/0.00980665
+                    self.stress_unit = 9.80665
 
                 self.node()
                 self.displacement()
                 self.influence_line()
 
-            elif self.currentMetricIndex[0][0] == 1:
+            elif self.current_metric_index[0][0] == 1:
                 self.unit_node = 0.001
                 self.displacement_unit = 1
                 self.reverse_unit = 1000
                 self.displacement_factor = 0.01
                 # Load
-                if self.currentMetricIndex[0][1] == 0:
+                if self.current_metric_index[0][1] == 0:
                     self.force_unit = 1000
                     self.force_unit_name = 'kN'
-                elif self.currentMetricIndex[0][1] == 1:
+                elif self.current_metric_index[0][1] == 1:
                     self.force_unit = 1
                     self.force_unit_name = 'N'
-                elif self.currentMetricIndex[0][1] == 2:
+                elif self.current_metric_index[0][1] == 2:
                     self.force_unit = 9.80665
                     self.force_unit_name = 'kg'
 
                 # Force
-                if self.currentMetricIndex[0][2] == 0:
-                    self.stress_unit = 1/1000  # (1/1000)/1
-                elif self.currentMetricIndex[0][2] == 1:
-                    self.stress_unit = 1  # (1/1000)/0.001
-                elif self.currentMetricIndex[0][2] == 2:
-                    self.stress_unit = (1/1000)/0.00980665
+                if self.current_metric_index[0][2] == 0:
+                    self.bar_force_unit = 1/1000  # (1/1000)/1
+                    self.stress_unit = 1000
+                elif self.current_metric_index[0][2] == 1:
+                    self.bar_force_unit = 1  # (1/1000)/0.001
+                    self.stress_unit = 1
+                elif self.current_metric_index[0][2] == 2:
+                    self.bar_force_unit = (1/1000)/0.00980665
+                    self.stress_unit = 9.80665
 
                 self.node()
                 self.displacement()
                 self.influence_line()
 
         else:
-            self.logger.debug('Imperial unit : %s', self.currentImperialIndex)
+            self.logger.debug('Imperial unit : %s', self.current_imperial_index)
 
             # Length
-            if self.currentImperialIndex[0][0] == 0:
+            if self.current_imperial_index[0][0] == 0:
                 self.unit_node = 1
                 self.displacement_unit = 12
                 self.reverse_unit = 1
                 self.displacement_factor = 0.1
                 # Load
-                if self.currentImperialIndex[0][1] == 0:
+                if self.current_imperial_index[0][1] == 0:
                     self.force_unit = 1
                     self.force_unit_name = 'k'
-                elif self.currentImperialIndex[0][1] == 1:
+                elif self.current_imperial_index[0][1] == 1:
                     self.force_unit = 0.001
                     self.force_unit_name = 'lb'
 
                 # Force
-                if self.currentImperialIndex[0][2] == 0:
-                    self.stress_unit = 1/12
-                elif self.currentImperialIndex[0][2] == 1:
-                    self.stress_unit = (1/12)*1000
+                if self.current_imperial_index[0][2] == 0:
+                    self.bar_force_unit = 1/12
+                    self.stress_unit = 1000
+                elif self.current_imperial_index[0][2] == 1:
+                    self.bar_force_unit = (1/12)*1000
+                    self.stress_unit = 1
 
                 self.node()
                 self.displacement()
                 self.influence_line()
 
-            elif self.currentImperialIndex[0][0] == 1:
+            elif self.current_imperial_index[0][0] == 1:
                 self.unit_node = 1/12
                 self.displacement_unit = 1
                 self.reverse_unit = 12
                 self.displacement_factor = 0.1
                 # Load
-                if self.currentImperialIndex[0][1] == 0:
+                if self.current_imperial_index[0][1] == 0:
                     self.force_unit = 12
                     self.force_unit_name = 'k'
-                elif self.currentImperialIndex[0][1] == 1:
+                elif self.current_imperial_index[0][1] == 1:
                     self.force_unit = 0.012
                     self.force_unit_name = 'lb'
 
                 # Force
-                if self.currentImperialIndex[0][2] == 0:
-                    self.stress_unit = 1/12
-                elif self.currentImperialIndex[0][2] == 1:
-                    self.stress_unit = (1/12)*1000
+                if self.current_imperial_index[0][2] == 0:
+                    self.bar_force_unit = 1/12
+                    self.stress_unit = 1000
+                elif self.current_imperial_index[0][2] == 1:
+                    self.bar_force_unit = (1/12)*1000
+                    self.stress_unit = 1
 
                 self.node()
                 self.displacement()
                 self.influence_line()
+
+        self.force_or_stress()
+
 
     def calculation(self):
         if len(self.elements)+len(self.restrained_dofs) < self.ndofs:
@@ -1226,6 +1265,7 @@ class MainPage(QWizardPage):
                 self.ui.label_stabality.setStyleSheet("color: rgb(255,0,0);")
                 pass
 
+
     def displacement(self):
         if self.ui.label_stabality.text() == 'Stable':
             self.ui.label_15.setText("The horizontal (x) and vertical (y) displacements \n"
@@ -1238,10 +1278,11 @@ class MainPage(QWizardPage):
                                      "in the graph as well as support reactions. The \n"
                                      "brightness of colors shows their relative strength.")
             self.ui.label_17.setFont(QFont('Segoe UI Semibold', 9))
+            self.ui.checkBox_nodes.setVisible(True)
             self.ui.checkBox_members.setVisible(True)
+            self.ui.checkBox_forces.setVisible(True)
             self.ui.checkBox_loads.setVisible(True)
             self.ui.checkBox_reactions.setVisible(True)
-            self.ui.checkBox_nodes.setVisible(True)
 
             self.dofs_list = []
             for i in self.degrees_of_freedom.values():
@@ -1295,10 +1336,12 @@ class MainPage(QWizardPage):
             self.ui.label_17.setText(
                 "<font color='orange' size='10'>The truss is unstable, it <br>cannot be analyzed.</font>")
             self.ui.tableWidget_result.setRowCount(0)
+            self.ui.checkBox_nodes.setVisible(False)
             self.ui.checkBox_members.setVisible(False)
+            self.ui.checkBox_forces.setVisible(False)
             self.ui.checkBox_loads.setVisible(False)
             self.ui.checkBox_reactions.setVisible(False)
-            self.ui.checkBox_nodes.setVisible(False)
+
 
     def animation(self):
         self.count = 1
@@ -1309,8 +1352,10 @@ class MainPage(QWizardPage):
         self.timer.timeout.connect(self.animation_mechanism)
         self.timer.start()
 
+
     def stop_animation(self):
         self.timer.stop()
+
 
     def animation_mechanism(self):
         self.done += 1
@@ -1331,6 +1376,7 @@ class MainPage(QWizardPage):
         else:
             self.ui.stackedWidget.currentChanged.connect(
                 lambda: self.timer.stop())
+
 
     def reaction_calculation(self):
         self.K_reaction = np.delete(self.K, self.reaction_indices, axis=0)
@@ -1367,7 +1413,7 @@ class MainPage(QWizardPage):
         self.logger.debug('Reaction graph : %s',self.R_graph)
 
         D_r = np.zeros(4)
-        self.stress = []
+        self.bar_force = []
         for k, v in self.member_values.items():
             fromPoint = np.array(v[0])
             toPoint = np.array(v[1])
@@ -1396,13 +1442,22 @@ class MainPage(QWizardPage):
             D_r[2] = self.D_big[toNode*2-2]
             D_r[3] = self.D_big[toNode*2-1]
 
-            sigma = np.round((Ck*np.dot(tau, D_r))*self.stress_unit, 4)
-            self.stress.append(sigma)
+            sigma = np.round((Ck*np.dot(tau, D_r))*self.bar_force_unit, 4)
+            self.bar_force.append(sigma)
 
-        self.logger.debug('Stress : %s', self.stress)
+        self.logger.debug('bar_force : %s', self.bar_force)
+
+        self.bar_stress = []
+        for key,value in self.properties.items():
+            force = self.bar_force[key-1]
+            area = value[0][1]
+            stress  = round(((force/area) * self.stress_unit), 4)
+            self.bar_stress.append(stress)
+
+        self.logger.debug('Stress : %s', self.bar_stress)
 
         self.stress_table = []
-        for i, j in enumerate(self.stress):
+        for i, j in enumerate(self.bar_force):
             if j > 0:
                 self.stress_table.append(
                     (i+1, f"{self.elements[i+1][0]}-{self.elements[i+1][1]}", abs(j), 'tension'))
@@ -1431,21 +1486,57 @@ class MainPage(QWizardPage):
             self.ui.tableWidget_result.setItem(i, 2, item1)
             self.ui.tableWidget_result.setItem(i, 3, item2)
 
-        factoring = sorted([abs(i) for i in self.stress])
+        factoring = sorted([abs(i) for i in self.bar_force])
         self.logger.debug('Factoring : %s', factoring)
 
         alpha = []
         if max(factoring) > 0:
             for i in np.linspace(0.3, 1, len(factoring)):
                 alpha.append(i)
-            self.factored_stress = {key: value for (
+            self.factored_bar_force = {key: value for (
                 key, value) in zip(factoring, alpha)}
         else:
-            self.factored_stress = {key: 0 for key in factoring}
+            self.factored_bar_force = {key: 0 for key in factoring}
 
-        self.logger.debug('Factored stress : %s', self.factored_stress)
+        self.logger.debug('Factored bar_force : %s', self.factored_bar_force)
 
         self.stress_graph()
+
+
+    def force_or_stress(self):
+        try:
+            if self.ui.radioButton_stress.isChecked():
+                self.ui.tableWidget_result.setHorizontalHeaderLabels(
+                        ['Member', 'Node', 'Stress', 'Direction'])
+
+                if self.type == 'metric':
+                    self.ui.label_unit_stress.setText(
+                        '* Unit of stress : Megapascal (MPa)')
+                else:
+                    self.ui.label_unit_stress.setText(
+                        '* Unit of stress : Pound per square inch (psi)')
+                showme = self.bar_stress
+            
+            else:
+                self.ui.tableWidget_result.setHorizontalHeaderLabels(
+                    ['Member', 'Node', 'Force', 'Direction'])
+                        
+                self.ui.label_unit_stress.setText(self.old_label_unit_stress)
+                showme = self.bar_force
+
+            for i, j in enumerate(showme):
+                value = QTableWidgetItem(str(abs(j)))
+                if j > 0 :
+                    value.setTextColor(QColor(10, 54, 157))
+                elif j < 0 :
+                    value.setTextColor(QColor(255, 36, 0))
+                self.ui.tableWidget_result.setItem(i, 2, value)
+
+            self.stress_graph()
+
+        except:
+            pass
+
 
     def graph(self):
         try:
@@ -1518,6 +1609,7 @@ class MainPage(QWizardPage):
 
         except:
             pass
+
 
     def displacement_graph(self):
         self.scale = self.ui.horizontalSlider.value()*self.displacement_factor
@@ -1603,6 +1695,7 @@ class MainPage(QWizardPage):
         except:
             pass
 
+
     def stress_graph(self):
         try:
             self.graph_widget3.figure3.clear()
@@ -1635,18 +1728,28 @@ class MainPage(QWizardPage):
             if self.ui.checkBox_members.isChecked():
                 # member plot
                 for k, v in self.plot_final.items():
-                    stressvalue = self.stress[k-1]
-                    if stressvalue < 0:
-                        ax3.plot(v[0], v[1], color='crimson', alpha=self.factored_stress[abs(
-                            stressvalue)], linewidth=2)
-                    elif stressvalue > 0:
-                        ax3.plot(v[0], v[1], color='dodgerblue', alpha=self.factored_stress[abs(
-                            stressvalue)], linewidth=2)
+                    bar_force_value = self.bar_force[k-1]
+                    if bar_force_value < 0:
+                        ax3.plot(v[0], v[1], color='crimson', alpha=self.factored_bar_force[abs(
+                            bar_force_value)], linewidth=2)
+                    elif bar_force_value > 0:
+                        ax3.plot(v[0], v[1], color='dodgerblue', alpha=self.factored_bar_force[abs(
+                            bar_force_value)], linewidth=2)
                     else:
                         ax3.plot(v[0], v[1], color='k', alpha=0.5, linewidth=2)
 
-                    ax3.annotate(k, (np.mean(v[0]), np.mean(
-                        v[1])), zorder=50, ha='center', va='center', size='10')
+                    if self.ui.checkBox_forces.isChecked():
+                        if self.ui.radioButton_stress.isChecked():
+                            ax3.annotate(abs(self.bar_stress[k-1]), (np.mean(v[0]), np.mean(
+                                v[1])), zorder=50, ha='center', va='center', size='10')
+                        else:
+                            ax3.annotate(abs(bar_force_value), (np.mean(v[0]), np.mean(
+                                v[1])), zorder=50, ha='center', va='center', size='10')
+
+                    else:
+                        ax3.annotate(k, (np.mean(v[0]), np.mean(
+                            v[1])), zorder=50, ha='center', va='center', size='10')
+                            
                 self.graph_widget3.canvas3.draw()
 
             # support draw
@@ -1700,6 +1803,7 @@ class MainPage(QWizardPage):
         except:
             pass
 
+
     def report_graph(self):
         fig, ax_r = plt.subplots()
         fig.tight_layout()
@@ -1720,7 +1824,7 @@ class MainPage(QWizardPage):
             ax_r.annotate(i+1, (self.X[i], self.Y[i]),
                           zorder=10, ha='center', va='center', size='8')
 
-        fig.savefig(buf_node, format="png", dpi=300)
+        fig.savefig(buf_node, format="png", bbox_inches='tight', dpi=300)
         buf_node.seek(0)
         self.graph_widget.canvas1.draw()
 
@@ -1732,7 +1836,7 @@ class MainPage(QWizardPage):
         for k, v in self.plot_final.items():
             ax_r.plot(v[0], v[1], linewidth=2)
 
-        fig.savefig(buf_element, format="png", dpi=300)
+        fig.savefig(buf_element, format="png", bbox_inches='tight', dpi=300)
         buf_element.seek(0)
 
         global buf_support
@@ -1765,29 +1869,42 @@ class MainPage(QWizardPage):
                           textcoords='offset points',
                           ha=v[-1], va='center', zorder=20, color='r')
 
-        fig.savefig(buf_support, format="png", dpi=300)
+        fig.savefig(buf_support, format="png", bbox_inches='tight', dpi=300)
         buf_support.seek(0)
 
-    def updateChangeValue(self):
+
+    def update_change(self):
         self.change += 1
 
+
     def generate_report(self):
-        global total_node
-        global total_member
+        global member_page
+        global support_page
+        global stress_page
         total_node = len(self.node_values)
         total_member = len(self.member_values)
+        
+        if total_node < 27:
+            member_page = int(total_node / 27) + 3
+        else:
+            member_page = int((total_node - 27) / 37) + 4
 
-        self.logger.debug('Filename before: %s', self.filename[0])
+        if total_member < 33:
+            support_page = int(total_member / 33) + member_page + 1
+        else:
+            support_page = int((total_member - 33) / 37) + member_page + 2
+
+        stress_page = int(total_member / 37)
 
         self.report = True
         if not self.demo:
-            self.saveToFile()
+            self.save_to_file()
         else:
             self.savedemo = None
             self.filename = list(self.filename)
             self.filename[0] = f'{tempfile.gettempdir()}'+f'\\{self.name}'
             self.filename = tuple(self.filename)
-            self.saveToFile()
+            self.save_to_file()
             self.savedemo = True
 
         self.report_graph()
@@ -1826,11 +1943,10 @@ class MainPage(QWizardPage):
         self.pdfname = self.filename[0].replace('trs', 'pdf')
 
 
-        self.logger.debug('Filename after : %s', self.filename[0])
+        self.logger.debug('Saved Filename : %s', self.filename[0])
         self.logger.debug('Pdfname : %s', self.pdfname)
 
         styles = getSampleStyleSheet()
-        styleN = ParagraphStyle(styles['Normal'])
 
         doc = SimpleDocTemplate(self.pdfname)
 
@@ -2046,48 +2162,49 @@ class MainPage(QWizardPage):
         story.append(t)
         story.append(PageBreak())
 
-        global buf_stress
-        buf_stress = BytesIO()
+        global buf_bar_force
+        buf_bar_force = BytesIO()
         self.ui.checkBox_nodes.setChecked(False)
+        self.ui.checkBox_forces.setChecked(False)
         self.ui.checkBox_loads.setChecked(False)
         self.ui.checkBox_reactions.setChecked(False)
-        self.graph_widget3.figure3.savefig(buf_stress, format='png', dpi=300)
-        buf_stress.seek(0)
+        self.graph_widget3.figure3.savefig(buf_bar_force, format='png', bbox_inches='tight', dpi=300)
+        buf_bar_force.seek(0)
 
         global buf_reaction
         buf_reaction = BytesIO()
-        self.ui.checkBox_loads.setChecked(False)
-        self.ui.checkBox_nodes.setChecked(False)
         self.ui.checkBox_members.setChecked(False)
         self.ui.checkBox_reactions.setChecked(True)
         self.graph_widget3.figure3.savefig(buf_reaction, format='png', dpi=300)
         buf_reaction.seek(0)
 
-        self.ui.checkBox_loads.setChecked(True)
         self.ui.checkBox_nodes.setChecked(True)
         self.ui.checkBox_members.setChecked(True)
+        self.ui.checkBox_forces.setChecked(True)
+        self.ui.checkBox_loads.setChecked(True)
         self.ui.checkBox_reactions.setChecked(True)
 
-        # Page 10 stress0
-        story.append(Paragraph("""<font size='20' color='steelblue'>Stresses and Support Reactions</font><br/>
-            <br/>&sigma; = E/L {-c&nbsp; -s &nbsp;c &nbsp;s} q  <br/>We use this equation to compute the stress 
-             each element.Support reactions are shown in the diagram.<br/><br/><br/>
+        # Page 10 Member Force
+        story.append(Paragraph("""<font size='20' color='steelblue'>Member Forces and Support Reactions</font><br/>
+            <br/>&sigma; = E/L {-c&nbsp; -s &nbsp;c &nbsp;s} q  <br/>We use this equation to compute the member Force of 
+            each element.Support reactions are shown in the diagram.<br/><br/><br/>
         """))
+        story.append(PageBreak())
 
-        data = [('Member', 'Node', 'Force\n(kip)', 'Direction')]
-        for i, j in enumerate(self.stress):
+        data = [('Member', 'Node', 'Force', 'Stress', 'Direction')]
+        for i, j in enumerate(self.bar_force):
             if j > 0:
                 data.append(
-                    (i+1, f"{self.elements[i+1][0]}-{self.elements[i+1][1]}", j, 'tension'))
+                    (i+1, f"{self.elements[i+1][0]}-{self.elements[i+1][1]}", j, self.bar_stress[i], 'tension'))
             else:
                 data.append(
-                    (i+1, f"{self.elements[i+1][0]}-{self.elements[i+1][1]}", j, 'compression'))
+                    (i+1, f"{self.elements[i+1][0]}-{self.elements[i+1][1]}", j, self.bar_stress[i], 'compression'))
         t = Table(data, hAlign='LEFT', repeatRows=1)
         t.setStyle(TableStyle([
             ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
             ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
             ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
-            ('LINEBELOW', (0, 0), (3, 0), 2, colors.black),
+            ('LINEBELOW', (0, 0), (4, 0), 2, colors.black),
             #('NOSPLIT',(0, 0), (-1, -1))
         ]))
 
@@ -2113,12 +2230,13 @@ class MainPage(QWizardPage):
         buf_displacement = BytesIO()
         self.ui.horizontalSlider.setValue(30)
         self.graph_widget2.figure2.savefig(
-            buf_displacement, format='png', dpi=300)
+            buf_displacement, format='png', bbox_inches='tight', dpi=300)
         buf_displacement.seek(0)
 
         doc.build(story, canvasmaker=NumberedCanvas)
 
         os.startfile(self.pdfname)
+
 
     """
     Influence line
@@ -2126,7 +2244,7 @@ class MainPage(QWizardPage):
 
     def movingload(self):
         """
-        THis will create moving node dictionary from load startig and ending position
+        THis will create moving node dictionary from load starting and ending position
         """
         try:
             self.load_path = []
@@ -2249,7 +2367,7 @@ class MainPage(QWizardPage):
                     D_r[2] = self.D_big_unit[toNode*2-2]
                     D_r[3] = self.D_big_unit[toNode*2-1]
 
-                    sigma = np.round((Ck*np.dot(tau, D_r))*self.stress_unit, 4)
+                    sigma = np.round((Ck*np.dot(tau, D_r))*self.bar_force_unit, 4)
 
                     self.influence.append(sigma)
 
@@ -2268,7 +2386,8 @@ class MainPage(QWizardPage):
         except:
             pass
 
-    def influenceTable(self):
+
+    def influence_table(self):
         """
         for member selected from combobox influence line will be 
         shown in table
@@ -2290,6 +2409,7 @@ class MainPage(QWizardPage):
         except:
             self.movingload_graph()
             pass
+
 
     def movingload_graph(self):
         """
@@ -2326,21 +2446,11 @@ class MainPage(QWizardPage):
                      zorder=10, linewidth=2, c='red')
             self.graph_widget4.canvas4.draw()
 
-            # # Unit load plot
-            # arrow=ownArrow()
-            # arrow=arrow.transformed(matplotlib.transforms.Affine2D().rotate_deg(270))
-            # ax4.plot(self.starting_value[0],self.starting_value[1],marker=arrow,color='r',  markersize=60,markeredgewidth=1)
-
-            # ax4.annotate(f'1 {self.force_unit_name}',
-            #         xy=(self.starting_value[0],self.starting_value[1]),xycoords='data',
-            #         xytext=(32*np.cos(np.radians(90)), 35*np.sin(np.radians(90))),
-            #         textcoords='offset points',
-            #         ha='center',va='center',zorder=20,color='r')
-            # self.graph_widget4.canvas4.draw()
             self.graph_widget4.figure4.tight_layout()
 
         except:
             pass
+
 
     def influence_graph(self, member):
         """
@@ -2423,6 +2533,7 @@ class MainPage(QWizardPage):
         except:
             pass
 
+
     def closeEvent(self):
         try:
             if self.demo and self.report:
@@ -2441,7 +2552,7 @@ class MainPage(QWizardPage):
 #     app = QApplication(sys.argv)
 #     app.setStyle('Fusion')
 
-#     #window = MainPage(open=True, filename=("E:\Truss 101 Development\Demo\Example 4.trs",""))
+#     #window = MainPage(open=True, filename=(filepath,""))
 #     window = MainPage(open=True)
 #     window.show()
 

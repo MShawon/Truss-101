@@ -459,9 +459,6 @@
    <string notr="true"/>
   </property>
   <layout class="QGridLayout" name="gridLayout_7">
-   <property name="verticalSpacing">
-    <number>7</number>
-   </property>
    <item row="0" column="0">
     <widget class="QGroupBox" name="groupBox">
      <property name="maximumSize">
@@ -1159,7 +1156,7 @@ QPushButton:hover {
             <widget class="QSpinBox" name="spinBox_nodes">
              <property name="minimumSize">
               <size>
-               <width>0</width>
+               <width>55</width>
                <height>30</height>
               </size>
              </property>
@@ -1171,6 +1168,9 @@ QPushButton:hover {
              </property>
              <property name="minimum">
               <number>2</number>
+             </property>
+             <property name="maximum">
+              <number>1000</number>
              </property>
              <property name="value">
               <number>2</number>
@@ -1212,7 +1212,7 @@ QPushButton:hover {
             <widget class="QSpinBox" name="spinBox_members">
              <property name="minimumSize">
               <size>
-               <width>0</width>
+               <width>55</width>
                <height>30</height>
               </size>
              </property>
@@ -1224,6 +1224,9 @@ QPushButton:hover {
              </property>
              <property name="minimum">
               <number>1</number>
+             </property>
+             <property name="maximum">
+              <number>1000</number>
              </property>
              <property name="value">
               <number>1</number>
@@ -1382,7 +1385,7 @@ Node</string>
             <widget class="QSpinBox" name="spinBox_supports">
              <property name="minimumSize">
               <size>
-               <width>0</width>
+               <width>55</width>
                <height>30</height>
               </size>
              </property>
@@ -1394,6 +1397,9 @@ Node</string>
              </property>
              <property name="minimum">
               <number>2</number>
+             </property>
+             <property name="maximum">
+              <number>1000</number>
              </property>
              <property name="value">
               <number>2</number>
@@ -1543,7 +1549,7 @@ QPushButton:hover {
             <widget class="QSpinBox" name="spinBox_loads">
              <property name="minimumSize">
               <size>
-               <width>0</width>
+               <width>55</width>
                <height>30</height>
               </size>
              </property>
@@ -1555,6 +1561,9 @@ QPushButton:hover {
              </property>
              <property name="minimum">
               <number>1</number>
+             </property>
+             <property name="maximum">
+              <number>1000</number>
              </property>
              <property name="value">
               <number>1</number>
@@ -1697,7 +1706,7 @@ QPushButton:hover {
             <widget class="QSpinBox" name="spinBox_property">
              <property name="minimumSize">
               <size>
-               <width>0</width>
+               <width>55</width>
                <height>30</height>
               </size>
              </property>
@@ -1712,6 +1721,9 @@ QPushButton:hover {
              </property>
              <property name="minimum">
               <number>1</number>
+             </property>
+             <property name="maximum">
+              <number>1000</number>
              </property>
              <property name="value">
               <number>1</number>
@@ -2307,7 +2319,246 @@ Displacement</string>
      </widget>
      <widget class="QWidget" name="page_forces">
       <layout class="QGridLayout" name="gridLayout_10">
-       <item row="3" column="1">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_18">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>35</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Member Forces and Support Reactions</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="0" column="2">
+        <widget class="QCheckBox" name="checkBox_nodes">
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI Semibold</family>
+          </font>
+         </property>
+         <property name="text">
+          <string>Nodes</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QCheckBox" name="checkBox_members">
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI Semibold</family>
+          </font>
+         </property>
+         <property name="text">
+          <string>Members</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="4">
+        <widget class="QCheckBox" name="checkBox_forces">
+         <property name="minimumSize">
+          <size>
+           <width>75</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI Semibold</family>
+          </font>
+         </property>
+         <property name="text">
+          <string>Forces</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="5">
+        <widget class="QCheckBox" name="checkBox_loads">
+         <property name="minimumSize">
+          <size>
+           <width>75</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI Semibold</family>
+          </font>
+         </property>
+         <property name="text">
+          <string>Loads</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="6">
+        <widget class="QCheckBox" name="checkBox_reactions">
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI Semibold</family>
+          </font>
+         </property>
+         <property name="text">
+          <string>Reactions</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="7">
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="0">
+        <widget class="Line" name="line_8">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_17">
+         <property name="font">
+          <font>
+           <family>Segoe UI Semibold</family>
+           <pointsize>9</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Member tension(T) and compression(C) are shown 
+in the graph as well as support reactions. The 
+brightness of colors shows their relative strength.</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QSplitter" name="splitter">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="opaqueResize">
+          <bool>true</bool>
+         </property>
+         <property name="childrenCollapsible">
+          <bool>false</bool>
+         </property>
+         <widget class="QRadioButton" name="radioButton_force">
+          <property name="font">
+           <font>
+            <family>Perpetua Titling MT</family>
+            <pointsize>8</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Force</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+         <widget class="QRadioButton" name="radioButton_stress">
+          <property name="font">
+           <font>
+            <family>Perpetua Titling MT</family>
+            <pointsize>8</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Stress</string>
+          </property>
+         </widget>
+        </widget>
+       </item>
+       <item row="4" column="0">
         <widget class="QTableWidget" name="tableWidget_result">
          <property name="minimumSize">
           <size>
@@ -2396,7 +2647,7 @@ Displacement</string>
          </item>
         </widget>
        </item>
-       <item row="4" column="1">
+       <item row="5" column="0">
         <widget class="QLabel" name="label_unit_stress">
          <property name="minimumSize">
           <size>
@@ -2420,177 +2671,7 @@ Displacement</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="5">
-        <widget class="QCheckBox" name="checkBox_loads">
-         <property name="minimumSize">
-          <size>
-           <width>80</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>100</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI Semibold</family>
-          </font>
-         </property>
-         <property name="text">
-          <string>Loads</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="6">
-        <widget class="QCheckBox" name="checkBox_reactions">
-         <property name="minimumSize">
-          <size>
-           <width>80</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI Semibold</family>
-          </font>
-         </property>
-         <property name="text">
-          <string>Reactions</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="7">
-        <spacer name="horizontalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="0" column="1">
-        <widget class="QLabel" name="label_18">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>35</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Member Forces and Support Reactions</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLabel" name="label_17">
-         <property name="font">
-          <font>
-           <family>Segoe UI Semibold</family>
-           <pointsize>9</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Member tension(T) and compression(C) are shown 
-in the graph as well as support reactions. The 
-brightness of colors shows their relative strength.</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="3">
-        <widget class="QCheckBox" name="checkBox_nodes">
-         <property name="minimumSize">
-          <size>
-           <width>80</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>100</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI Semibold</family>
-          </font>
-         </property>
-         <property name="text">
-          <string>Nodes</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2">
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="0" column="4">
-        <widget class="QCheckBox" name="checkBox_members">
-         <property name="minimumSize">
-          <size>
-           <width>100</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>100</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI Semibold</family>
-          </font>
-         </property>
-         <property name="text">
-          <string>Members</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="Line" name="line_8">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="2" rowspan="3" colspan="6">
+       <item row="2" column="1" rowspan="4" colspan="7">
         <layout class="QVBoxLayout" name="graphLayout_result">
          <property name="spacing">
           <number>0</number>

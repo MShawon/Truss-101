@@ -1,19 +1,21 @@
-# ------------------------------------------------------------------------------
-# Copyright (C) 2020-2021 Monirul Shawon
-##
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-##
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-##
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
-# ------------------------------------------------------------------------------
+"""
+GPL-3.0 License
+
+Copyright (C) 2020-2021 Monirul Shawon
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
 
 
 import ctypes
@@ -30,12 +32,12 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 from pyupdater.client import Client, FileDownloader
-from pyupdater.utils.compat import url_quote
+from pyupdater.client.downloader import url_quote
 
 from client_config import ClientConfig
-from mainTruss import MainPage
 from supports import *
-from ui_finalMainPage import Ui_MainWindow
+from truss import MainPage
+from ui_main import Ui_MainWindow
 from ui_units import Ui_MainWindow2
 
 #logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
@@ -48,6 +50,7 @@ my_system = platform.uname()
 user = getpass.getuser()
 
 log = logging.getLogger(__name__)
+
 
 def monkey_response(self):
     """
@@ -93,6 +96,7 @@ def monkey_response(self):
 
 FileDownloader._create_response = monkey_response
 
+
 class CustomFormatter(logging.Formatter):
     """
     Logging Formatter to add colors and count warning / errors
@@ -106,12 +110,12 @@ class CustomFormatter(logging.Formatter):
         logging.CRITICAL: '[%(asctime)s] [ %(filename)s:%(lineno)d ] <span style="color:#ffff00;">[ %(levelname)s ]</span>  %(message)s'
     }
 
-
     def format(self, record):
         log_fmt = self.FORMATS.get(record.levelno)
-        formatter = logging.Formatter(log_fmt,datefmt=date)
+        formatter = logging.Formatter(log_fmt, datefmt=date)
         return formatter.format(record)
-    
+
+
 class QTextEditLogger(logging.Handler):
     """
     Custom python logging handler to show log in
@@ -122,23 +126,26 @@ class QTextEditLogger(logging.Handler):
         super().__init__()
         self.widget = QPlainTextEdit(parent)
         self.widget.setReadOnly(True)
-        
-        font = QFont("Monospace")
+
+        font = QFont("Consolas")
         font.setStyleHint(QFont.TypeWriter)
         self.widget.setFont(font)
 
-        self.widget.appendPlainText('#######################################\n')
+        self.widget.appendPlainText(
+            '#######################################\n')
         self.widget.appendPlainText(f'System : {my_system.system}')
         self.widget.appendPlainText(f'Computer Name : {my_system.node}-{user}')
         self.widget.appendPlainText(f'Release : {my_system.release}')
         self.widget.appendPlainText(f'Version : {my_system.version}')
         self.widget.appendPlainText(f'Machine : {my_system.machine}')
         self.widget.appendPlainText(f'Processor : {my_system.processor}')
-        self.widget.appendPlainText('\n#######################################\n')
+        self.widget.appendPlainText(
+            '\n#######################################\n')
 
     def emit(self, record):
         msg = self.format(record)
         self.widget.appendHtml(msg)
+
 
 class AnotherWindow(QWidget):
     """Show Python logging in debug window"""
@@ -157,57 +164,57 @@ class AnotherWindow(QWidget):
         logger.setLevel(logging.DEBUG)
 
         layout.addWidget(self.logTextBox.widget)
-        
+
         savebutton = QPushButton('Save logs in a file')
         layout.addWidget(savebutton)
         self.setLayout(layout)
 
-        savebutton.clicked.connect(self.saveLog)
+        savebutton.clicked.connect(self.save_log)
 
-    def saveLog(self):
+    def save_log(self):
         logs = self.logTextBox.widget.toPlainText()
         document = os.path.expanduser('~/Documents') + '\debug'
         filename = QFileDialog.getSaveFileName(
-                self, 'Save file', document, "Log files (*.log)")
+            self, 'Save file', document, "Log files (*.log)")
 
-        with open(filename[0],'w') as fh:
+        with open(filename[0], 'w') as fh:
             fh.writelines(str(logs))
+
 
 class MainWindow(QMainWindow):
     """
     This is where everything started
     """
-    
+
     def __init__(self):
         super(MainWindow, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-        self.windowList = []
-        self.nameList = []
-        self.pathList = []
+        self.window_list = []
+        self.name_list = []
+        self.path_list = []
         self.count = 0
         self.metric_index = []
         self.imperial_index = [[0, 0, 0]]
-        self.metricUnit = [[]]
-        self.imperialUnit = [[[0, 0, 0]]]
+        self.metric_unit = [[]]
+        self.imperial_unit = [[[0, 0, 0]]]
         self.ui.closeEvent = self.closeEvent
 
-        #Debug Window create
+        # Debug Window create
         self.debug = AnotherWindow()
-        self.debug.resize(900,600)
+        self.debug.resize(900, 600)
         self.debug.setWindowTitle('Debug')
         icon = QIcon(":/newPrefix/logo@2x.png")
-        self.debug.setWindowIcon(icon)        
+        self.debug.setWindowIcon(icon)
         self.debug.setStyleSheet(u"background-color: rgb(58, 64, 76);\n"
-                "color: rgb(204, 204, 204);\n"
-                "font-size:9.5pt")
-
+                                 "color: rgb(204, 204, 204);\n"
+                                 "font-size:9.5pt")
 
         "++++++++++++++++++++++++++++++++++++++++++++++++++++++"
         self.APP_NAME = 'Truss 101'
-        self.APP_VERSION = '1.1.1'
-        self.APP_UPDATE_TIME = 'February 2021'
+        self.APP_VERSION = '1.1.2'
+        self.APP_UPDATE_TIME = 'April 2021'
         "++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 
         self.ui.statusbar.showMessage('Welcome to Truss 101')
@@ -218,8 +225,8 @@ class MainWindow(QMainWindow):
         self.currentDirectory = self.currentDirectory.replace('\\', '/')
         logger.info('Current Directory : %s', self.currentDirectory)
 
-        self.ui.pushButton_new.clicked.connect(self.new)
-        self.ui.pushButton_open.clicked.connect(self.openfile)
+        self.ui.pushButton_new.clicked.connect(self.new_file)
+        self.ui.pushButton_open.clicked.connect(self.open_file)
 
         self.ui.photo_example.clicked.connect(self.example_1)
         self.ui.pushButton_example.clicked.connect(self.example_1)
@@ -239,31 +246,32 @@ class MainWindow(QMainWindow):
         self.ui.photo_example_6.clicked.connect(self.example_6)
         self.ui.pushButton_example_6.clicked.connect(self.example_6)
 
-        self.support_button = QPushButton('💝 Support Truss 101 With a Donation  ',self.ui.menubar)
+        self.support_button = QPushButton(
+            '💝 Support Truss 101 With a Donation  ', self.ui.menubar)
         self.ui.menubar.setCornerWidget(self.support_button)
         self.support_button.setCursor(QCursor(Qt.PointingHandCursor))
         self.support_button.setStyleSheet(
             "QPushButton:pressed { background-color: red }"
             "QPushButton:hover { background-color: rgb(121, 181, 255) }"
-            )
-        self.support_button.clicked.connect(self.openDonate)
+        )
+        self.support_button.clicked.connect(self.open_donate)
 
-        self.ui.pushButton_sendNote.clicked.connect(self.sayThanks)
+        self.ui.pushButton_sendNote.clicked.connect(self.say_thanks)
 
         self.ui.actionUnits.triggered.connect(self.unit)
         self.ui.actionNew.triggered.connect(
             lambda: self.ui.tabWidget.setCurrentIndex(0))
-        self.ui.actionClose.triggered.connect(self.showDialog)
+        self.ui.actionClose.triggered.connect(self.show_dialog)
         self.ui.actionQuit.triggered.connect(self.close)
-        self.ui.actionOpen.triggered.connect(self.openfile)
-        self.ui.actionSave.triggered.connect(self.savefile)
-        self.ui.actionSave_as.triggered.connect(self.saveasfile)
-        self.ui.actionHelp.triggered.connect(self.openHelp)
-        self.ui.actionCheck_for_updates.triggered.connect(self.updateApp)
+        self.ui.actionOpen.triggered.connect(self.open_file)
+        self.ui.actionSave.triggered.connect(self.save_file)
+        self.ui.actionSave_as.triggered.connect(self.save_as_file)
+        self.ui.actionHelp.triggered.connect(self.open_help)
+        self.ui.actionCheck_for_updates.triggered.connect(self.update_app)
         self.ui.actionAbout.triggered.connect(self.about)
-        self.ui.actionAbout_Author.triggered.connect(self.aboutAuthor)
-        self.ui.actionView_License.triggered.connect(self.openLicense)
-        self.ui.actionDebug.triggered.connect(self.debugWindow)
+        self.ui.actionAbout_Author.triggered.connect(self.about_author)
+        self.ui.actionView_License.triggered.connect(self.open_license)
+        self.ui.actionDebug.triggered.connect(self.debug_window)
 
         self.ui.actionSave.setIcon(
             QApplication.style().standardIcon(QStyle.SP_DialogSaveButton))
@@ -271,14 +279,15 @@ class MainWindow(QMainWindow):
             QApplication.style().standardIcon(QStyle.SP_DialogCloseButton))
 
         self.ui.plainTextMessage.setPlainText('')
-        self.ui.plainTextMessage.setPlaceholderText('Dear Monirul Shawon,\nThank you for ...')
+        self.ui.plainTextMessage.setPlaceholderText(
+            'Dear Monirul Shawon,\nThank you for ...')
         self.ui.plainTextName.setPlaceholderText(user)
         self.name = user
 
         self.ui.tabWidget.setTabsClosable(True)
         self.ui.tabWidget.tabBar().setTabButton(0, QTabBar.RightSide, None)
-        self.ui.tabWidget.tabCloseRequested.connect(self.showDialog)
-        self.ui.tabWidget.currentChanged.connect(self.unitWindowSet)
+        self.ui.tabWidget.tabCloseRequested.connect(self.show_dialog)
+        self.ui.tabWidget.currentChanged.connect(self.unit_window_set)
         self.ui.tabWidget.setStyleSheet("""
         QTabBar
         {
@@ -291,35 +300,33 @@ class MainWindow(QMainWindow):
         }
         """)
 
-
-        self.updateApp(oninit=True)
+        self.update_app(oninit=True)
 
         if len(sys.argv) > 1:
             openwith = (sys.argv[1], "")
-            self.openfile(demopath=openwith)
+            self.open_file(demopath=openwith)
         else:
             pass
-    
-    def debugWindow(self):
+
+    def debug_window(self):
         if self.debug.isVisible():
             self.debug.hide()
         else:
             self.debug.show()
 
-
-    def openLicense(self):
+    def open_license(self):
         QDesktopServices.openUrl(
             "https://github.com/MShawon/Truss-101#license")
 
-    def openDonate(self):
+    def open_donate(self):
         QDesktopServices.openUrl(
             'https://paypal.me/mshawon1')
 
-    def openHelp(self):
+    def open_help(self):
         QDesktopServices.openUrl(
             'https://github.com/MShawon/Truss-101#tutorial')
 
-    def updateApp(self, oninit=False):
+    def update_app(self, oninit=False):
         """
         Update application from GitHub repository
         """
@@ -345,8 +352,9 @@ class MainWindow(QMainWindow):
             x = requests.get(github_link, timeout=timeout)
             tag = x.json()['tag_name']
             body = x.json()['body']
-            logger.info('Latest version : %s , Current Version : %s', tag, self.APP_VERSION)
-            
+            logger.info('Latest version : %s , Current Version : %s',
+                        tag, self.APP_VERSION)
+
             url = f'https://github.com/{username}/{repository}/releases/download/{tag}'
 
             # url = 'http://127.0.0.1:8000/'
@@ -402,7 +410,7 @@ class MainWindow(QMainWindow):
 
                     self.timer = QTimer()
                     self.timer.setInterval(40000)
-                    self.timer.timeout.connect(self.extractUpdate)
+                    self.timer.timeout.connect(self.extract_update)
                     self.timer.start()
                 else:
                     logging.warning('App update ignored by user.')
@@ -444,7 +452,7 @@ class MainWindow(QMainWindow):
                 msgBox.setInformativeText('Check your internet connections.')
                 msgBox.exec_()
 
-    def extractUpdate(self):
+    def extract_update(self):
         if self.app_update.is_downloaded():
             msgBox = QMessageBox()
             msgBox.setWindowFlags(
@@ -465,7 +473,8 @@ class MainWindow(QMainWindow):
                 logger.info('New version downloaded. Extracting started...')
                 self.app_update.extract_restart()
             else:
-                logging.warning('New version downloaded. Extract ignored by user.')
+                logging.warning(
+                    'New version downloaded. Extract ignored by user.')
                 self.timer.stop()
                 pass
 
@@ -488,7 +497,7 @@ class MainWindow(QMainWindow):
         self.msgBox.setWindowTitle("About Truss 101")
         self.msgBox.exec_()
 
-    def aboutAuthor(self):
+    def about_author(self):
         self.msgBox = QMessageBox()
         self.msgBox.setWindowFlags(
             Qt.Dialog | Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.WindowCloseButtonHint)
@@ -499,7 +508,7 @@ class MainWindow(QMainWindow):
         self.msgBox.setWindowTitle("About Author")
         self.msgBox.exec_()
 
-    def unit(self):
+    def unit(self, change=True):
         self.window_unit = QMainWindow(parent=self)
         self.ui2 = Ui_MainWindow2()
         self.ui2.setupUi(self.window_unit)
@@ -556,32 +565,35 @@ class MainWindow(QMainWindow):
         self.setLayout(self.ui2.layout_displacement_imperial)
         self.cb_displacement_i.model().item(0).setEnabled(False)
         try:
-            if len(self.currentMetricIndex) > 0:
+            if len(self.current_metric_index) > 0:
                 self.ui2.metricButton.setChecked(True)
                 self.ui2.stackedWidget.setCurrentWidget(self.ui2.page_metric)
-                self.cb_length_m.setCurrentIndex(self.currentMetricIndex[0][0])
-                self.cb_load_m.setCurrentIndex(self.currentMetricIndex[0][1])
-                self.cb_force_m.setCurrentIndex(self.currentMetricIndex[0][2])
-            elif len(self.currentImperialIndex) > 0:
+                self.cb_length_m.setCurrentIndex(
+                    self.current_metric_index[0][0])
+                self.cb_load_m.setCurrentIndex(self.current_metric_index[0][1])
+                self.cb_force_m.setCurrentIndex(
+                    self.current_metric_index[0][2])
+            elif len(self.current_imperial_index) > 0:
                 self.ui2.radioButton_2.setChecked(True)
                 self.ui2.stackedWidget.setCurrentWidget(self.ui2.page_imperial)
                 self.cb_length_i.setCurrentIndex(
-                    self.currentImperialIndex[0][0])
-                self.cb_load_i.setCurrentIndex(self.currentImperialIndex[0][1])
+                    self.current_imperial_index[0][0])
+                self.cb_load_i.setCurrentIndex(
+                    self.current_imperial_index[0][1])
                 self.cb_force_i.setCurrentIndex(
-                    self.currentImperialIndex[0][2])
+                    self.current_imperial_index[0][2])
         except:
             pass
 
-        self.ui2.buttonBox.accepted.connect(self.updateCb)
-        self.ui2.buttonBox.accepted.connect(self.unitPerPage)
-        self.ui2.buttonBox.accepted.connect(self.unitWindowSet)
-        self.ui2.buttonBox.accepted.connect(self.unitSendToPage)
-        self.ui2.buttonBox.accepted.connect(self.unitSendForConverting)
-        self.ui2.buttonBox.accepted.connect(self.tab_name_change)
+        self.ui2.buttonBox.accepted.connect(self.update_combo)
+        self.ui2.buttonBox.accepted.connect(self.unit_per_page)
+        self.ui2.buttonBox.accepted.connect(self.unit_window_set)
+        self.ui2.buttonBox.accepted.connect(self.unit_send_to_page)
+        self.ui2.buttonBox.accepted.connect(self.unit_send_for_converting)
+        if change:
+            self.ui2.buttonBox.accepted.connect(self.tab_name_change)
 
-
-    def updateCb(self):
+    def update_combo(self):
         self.metric_index = []
         self.imperial_index = []
         if self.ui2.stackedWidget.currentIndex() == 0:
@@ -600,7 +612,7 @@ class MainWindow(QMainWindow):
 
         elif index == 2:
             self.returnValue = None
-            self.showDialog(value=1)
+            self.show_dialog(value=1)
 
             if self.returnValue == QMessageBox.Cancel:
                 event.ignore()
@@ -635,13 +647,13 @@ class MainWindow(QMainWindow):
             else:
                 event.ignore()
 
-    def showDialog(self, value):
+    def show_dialog(self, value):
         if value:
             index = value
         else:
             index = self.ui.tabWidget.currentIndex()
         if index > 0:
-            if self.windowList[index-1].change > 0:
+            if self.window_list[index-1].change > 0:
                 self.msgBox = QMessageBox()
                 self.msgBox.setWindowFlags(
                     Qt.Dialog | Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.WindowCloseButtonHint)
@@ -667,52 +679,53 @@ class MainWindow(QMainWindow):
                 self.msgBox.setEscapeButton(QMessageBox.Cancel)
                 self.returnValue = self.msgBox.exec_()
                 if self.returnValue == QMessageBox.Yes:
-                    self.savefile()
-                    self.closeTab(index=index)
+                    self.save_file()
+                    self.close_tab(index=index)
                 elif self.returnValue == QMessageBox.No:
-                    self.closeTab(index=index)
+                    self.close_tab(index=index)
             else:
-                self.closeTab(index=index)
+                self.close_tab(index=index)
 
-    def closeTab(self, index=None):
+    def close_tab(self, index=None):
         index = index
-        self.windowList[index-1].closeEvent()
+        self.window_list[index-1].closeEvent()
         self.ui.tabWidget.removeTab(index)
-        self.windowList.pop(index-1)
-        self.nameList.pop(index-1)
-        self.pathList.pop(index-1)
-        logger.info('Path List after CLOSING tab: %s', self.pathList)
-        logger.info('Name List after CLOSING tab: %s', self.nameList)
+        self.window_list.pop(index-1)
+        self.name_list.pop(index-1)
+        self.path_list.pop(index-1)
+        logger.info('Path List after CLOSING tab: %s', self.path_list)
+        logger.info('Name List after CLOSING tab: %s', self.name_list)
 
-        self.metricUnit.pop(index)
-        self.imperialUnit.pop(index)
+        self.metric_unit.pop(index)
+        self.imperial_unit.pop(index)
 
-    def savefile(self):
+    def save_file(self):
         index = self.ui.tabWidget.currentIndex()
         if index > 0:
-            self.windowList[index-1].saveToFile()
-            path = self.windowList[index-1].filename[0]
+            self.window_list[index-1].save_to_file()
+            path = self.window_list[index-1].filename[0]
             if '/' in path:
                 name = path.split('/')[-1][:-4]
             else:
                 name = path.split('\\')[-1][:-4]
 
-            self.pathList[index-1] = path
-            self.nameList[index-1] = name
-            logger.info('Path List after SAVING file: %s', self.pathList)
-            logger.info('Name List after SAVING file: %s', self.nameList)
+            self.path_list[index-1] = path
+            self.name_list[index-1] = name
+            logger.info('Path List after SAVING file: %s', self.path_list)
+            logger.info('Name List after SAVING file: %s', self.name_list)
             self.tab_name_change()
 
-    def saveasfile(self):
+    def save_as_file(self):
         index = self.ui.tabWidget.currentIndex()
         if index > 0:
-            self.windowList[index-1].saveToFile(saveas=True)
+            self.window_list[index-1].save_to_file(saveas=True)
 
-    def openfile(self, demopath=None, isdemo=None):
+    def open_file(self, demopath=None, isdemo=None):
         demopath = demopath
         demo = isdemo
         #demopath= (f"{self.currentDirectory}Demo/Example 6.trs", "")
-        self.window = MainPage(open=True, filename=demopath, demo=demo, logger=logger)
+        self.window = MainPage(
+            open=True, filename=demopath, demo=demo, logger=logger)
         path = self.window.filename[0]
         if '/' in path:
             name = path.split('/')[-1][:-4]
@@ -723,30 +736,28 @@ class MainWindow(QMainWindow):
         index = self.ui.tabWidget.count()
         self.ui.tabWidget.insertTab(index, self.window, name)
         self.ui.tabWidget.setCurrentIndex(index)
-        # self.ui.tabWidget.setTabIcon(index,QIcon('Artboard 1@4x-8.png'))
-        # self.ui.tabWidget.setIconSize(QSize(24,24))
         self.ui.tabWidget.setTabToolTip(index, path)
 
-        self.windowList.append(self.window)
-        self.pathList.append(path)
-        self.nameList.append(name)
-        logger.info('Path List : %s', self.pathList)
-        logger.info('Name List : %s', self.nameList)
+        self.window_list.append(self.window)
+        self.path_list.append(path)
+        self.name_list.append(name)
+        logger.info('Path List : %s', self.path_list)
+        logger.info('Name List : %s', self.name_list)
 
-        self.currentMetricIndex = self.window.currentMetricIndex
-        self.currentImperialIndex = self.window.currentImperialIndex
-        self.metricUnit.append(self.currentMetricIndex)
-        self.imperialUnit.append(self.currentImperialIndex)
+        self.current_metric_index = self.window.current_metric_index
+        self.current_imperial_index = self.window.current_imperial_index
+        self.metric_unit.append(self.current_metric_index)
+        self.imperial_unit.append(self.current_imperial_index)
 
-        self.windowList[self.ui.tabWidget.currentIndex(
+        self.window_list[self.ui.tabWidget.currentIndex(
         )-1].ui.tableWidget_nodes.cellChanged.connect(self.tab_name_change)
-        self.windowList[self.ui.tabWidget.currentIndex(
+        self.window_list[self.ui.tabWidget.currentIndex(
         )-1].ui.tableWidget_members.cellChanged.connect(self.tab_name_change)
-        self.windowList[self.ui.tabWidget.currentIndex(
+        self.window_list[self.ui.tabWidget.currentIndex(
         )-1].ui.tableWidget_supports.cellChanged.connect(self.tab_name_change)
-        self.windowList[self.ui.tabWidget.currentIndex(
+        self.window_list[self.ui.tabWidget.currentIndex(
         )-1].ui.tableWidget_loads.cellChanged.connect(self.tab_name_change)
-        self.windowList[self.ui.tabWidget.currentIndex(
+        self.window_list[self.ui.tabWidget.currentIndex(
         )-1].ui.tableWidget_property.cellChanged.connect(self.tab_name_change)
         self.ui.statusbar.showMessage(
             'Nodes are the points in (x,y) co-ordinate. Input (x,y) points in nodes table.')
@@ -769,37 +780,32 @@ class MainWindow(QMainWindow):
         self.window.ui.pushbutton_report.clicked.connect(lambda: self.ui.statusbar.showMessage(
             'Once the pdf has been generated, it will be opened automatically.'))
 
-    def new(self):
+    def new_file(self):
         self.count += 1
         self.window = MainPage(logger=logger)
         index = self.ui.tabWidget.count()
         name = f'Project Truss {self.count}'
         self.ui.tabWidget.insertTab(index, self.window, name)
         self.ui.tabWidget.setCurrentIndex(index)
-        # self.ui.tabWidget.setTabIcon(index,QIcon('truss.png'))
-        # self.ui.tabWidget.setIconSize(QSize(24,24))
         self.ui.tabWidget.setTabToolTip(index, name)
 
-        self.windowList.append(self.window)
-        self.pathList.append(name)
-        self.nameList.append(name)
-        logger.info('Path List : %s', self.pathList)
-        logger.info('Name List : %s', self.nameList)
+        self.window_list.append(self.window)
+        self.path_list.append(name)
+        self.name_list.append(name)
+        logger.info('Path List : %s', self.path_list)
+        logger.info('Name List : %s', self.name_list)
 
-        self.metric_index = []
-        self.imperial_index = [[0, 0, 0]]
-        self.unitPerPage()
-        self.unitSendToPage()
+        self.unit(change=False)
 
-        self.windowList[self.ui.tabWidget.currentIndex(
+        self.window_list[self.ui.tabWidget.currentIndex(
         )-1].ui.tableWidget_nodes.cellChanged.connect(self.tab_name_change)
-        self.windowList[self.ui.tabWidget.currentIndex(
+        self.window_list[self.ui.tabWidget.currentIndex(
         )-1].ui.tableWidget_members.cellChanged.connect(self.tab_name_change)
-        self.windowList[self.ui.tabWidget.currentIndex(
+        self.window_list[self.ui.tabWidget.currentIndex(
         )-1].ui.tableWidget_supports.cellChanged.connect(self.tab_name_change)
-        self.windowList[self.ui.tabWidget.currentIndex(
+        self.window_list[self.ui.tabWidget.currentIndex(
         )-1].ui.tableWidget_loads.cellChanged.connect(self.tab_name_change)
-        self.windowList[self.ui.tabWidget.currentIndex(
+        self.window_list[self.ui.tabWidget.currentIndex(
         )-1].ui.tableWidget_property.cellChanged.connect(self.tab_name_change)
         self.ui.statusbar.showMessage(
             'Nodes are the points in (x,y) co-ordinate. Input (x,y) points in nodes table.')
@@ -822,58 +828,59 @@ class MainWindow(QMainWindow):
         self.window.ui.pushbutton_report.clicked.connect(lambda: self.ui.statusbar.showMessage(
             'Once the pdf has been generated, it will be opened automatically.'))
 
-    def unitPerPage(self):
+    def unit_per_page(self):
         index = self.ui.tabWidget.currentIndex()
         try:
-            self.metricUnit[index] = self.metric_index
-            self.imperialUnit[index] = self.imperial_index
+            self.metric_unit[index] = self.metric_index
+            self.imperial_unit[index] = self.imperial_index
         except:
-            self.metricUnit.append(self.metric_index)
-            self.imperialUnit.append(self.imperial_index)
+            self.metric_unit.append(self.metric_index)
+            self.imperial_unit.append(self.imperial_index)
 
-    def unitWindowSet(self):
+    def unit_window_set(self):
         index = self.ui.tabWidget.currentIndex()
         try:
-            self.currentMetricIndex = self.metricUnit[index]
-            self.currentImperialIndex = self.imperialUnit[index]
+            self.current_metric_index = self.metric_unit[index]
+            self.current_imperial_index = self.imperial_unit[index]
         except:
-            self.currentMetricIndex = []
-            self.currentImperialIndex = [[0, 0, 0]]
+            self.current_metric_index = []
+            self.current_imperial_index = [[0, 0, 0]]
         if index == 0:
             self.ui.statusbar.showMessage('Welcome to Truss 101')
 
-    def unitSendToPage(self):
+    def unit_send_to_page(self):
         index = self.ui.tabWidget.currentIndex()
         if index > 0:
-            if self.currentMetricIndex:
-                self.windowList[index-1].change_unit_label(
-                    unit=self.currentMetricIndex, type='metric')
+            if self.current_metric_index:
+                self.window_list[index-1].change_unit_label(
+                    unit=self.current_metric_index, type='metric')
             else:
-                self.windowList[index-1].change_unit_label(
-                    unit=self.currentImperialIndex, type='imperial')
+                self.window_list[index-1].change_unit_label(
+                    unit=self.current_imperial_index, type='imperial')
 
-    def unitSendForConverting(self):
+    def unit_send_for_converting(self):
         index = self.ui.tabWidget.currentIndex()
         if index > 0:
-            if self.currentMetricIndex:
-                self.windowList[index-1].unitConvert(type='metric')
+            if self.current_metric_index:
+                self.window_list[index-1].unit_convert(type='metric')
             else:
-                self.windowList[index-1].unitConvert(type='imperial')
+                self.window_list[index-1].unit_convert(type='imperial')
 
     def tab_name_change(self):
         index = self.ui.tabWidget.currentIndex()
         if index > 0:
-            if self.windowList[index-1].change > 0:
-                self.ui.tabWidget.setTabText(index, self.nameList[index-1]+"*")
+            if self.window_list[index-1].change > 0:
+                self.ui.tabWidget.setTabText(
+                    index, self.name_list[index-1]+"*")
                 self.ui.tabWidget.setTabToolTip(
-                    index, f'{self.pathList[index-1]}')
+                    index, f'{self.path_list[index-1]}')
 
-            elif self.windowList[index-1].change == 0:
-                self.ui.tabWidget.setTabText(index, self.nameList[index-1])
+            elif self.window_list[index-1].change == 0:
+                self.ui.tabWidget.setTabText(index, self.name_list[index-1])
                 self.ui.tabWidget.setTabToolTip(
-                    index, f'{self.pathList[index-1]}')
+                    index, f'{self.path_list[index-1]}')
 
-    def sayThanks(self):
+    def say_thanks(self):
         webhook_id = 'your webhook id'
         webhook_token = 'your webhook token'
         webhook_url = f'https://discord.com/api/webhooks/{webhook_id}/{webhook_token}'
@@ -881,59 +888,60 @@ class MainWindow(QMainWindow):
         if self.ui.plainTextMessage.toPlainText():
             messeage = self.ui.plainTextMessage.toPlainText()
         else:
-            messeage = 'Dear Monirul Shawon, Thank you for...'      
+            messeage = 'Dear Monirul Shawon, Thank you for...'
 
         if self.ui.plainTextName.toPlainText():
             user = self.ui.plainTextName.toPlainText()
             note = {
-                "content" : f'{messeage}',
-                "username" : f'{user}'
+                "content": f'{messeage}',
+                "username": f'{user}'
             }
         else:
             note = {
-                "content" : f'{messeage}',
-                "username" : f'{self.name}'
+                "content": f'{messeage}',
+                "username": f'{self.name}'
             }
 
         try:
             requests.post(url=webhook_url, json=note, timeout=30)
-            self.ui.plainTextMessage.setPlaceholderText('Thank you for sending the notes. Your notes have been sent successfully.')
+            self.ui.plainTextMessage.setPlaceholderText(
+                'Thank you for sending the notes. Your notes have been sent successfully.')
             logger.info('Notes have been sent successfully')
         except:
-            self.ui.plainTextMessage.setPlaceholderText('Oops! Something went wrong. Try again.')
+            self.ui.plainTextMessage.setPlaceholderText(
+                'Oops! Something went wrong. Try again.')
             pass
-
 
     def example_1(self):
         example_path = (f"{self.currentDirectory}Demo/Example 1.trs", "")
-        self.openfile(demopath=example_path, isdemo=True)
+        self.open_file(demopath=example_path, isdemo=True)
 
     def example_2(self):
         example_path = (f"{self.currentDirectory}Demo/Example 2.trs", "")
-        self.openfile(demopath=example_path, isdemo=True)
+        self.open_file(demopath=example_path, isdemo=True)
 
     def example_3(self):
         example_path = (f"{self.currentDirectory}Demo/Example 3.trs", "")
-        self.openfile(demopath=example_path, isdemo=True)
+        self.open_file(demopath=example_path, isdemo=True)
 
     def example_4(self):
         example_path = (f"{self.currentDirectory}Demo/Example 4.trs", "")
-        self.openfile(demopath=example_path, isdemo=True)
+        self.open_file(demopath=example_path, isdemo=True)
 
     def example_5(self):
         example_path = (f"{self.currentDirectory}Demo/Example 5.trs", "")
-        self.openfile(demopath=example_path, isdemo=True)
+        self.open_file(demopath=example_path, isdemo=True)
 
     def example_6(self):
         example_path = (f"{self.currentDirectory}Demo/Example 6.trs", "")
-        self.openfile(demopath=example_path, isdemo=True)
+        self.open_file(demopath=example_path, isdemo=True)
 
 
 if __name__ == "__main__":
     start_time = time.time()
     app = QApplication(sys.argv)
     app.setStyle('Fusion')
-    
+
     window = MainWindow()
     window.show()
 
@@ -946,7 +954,6 @@ if __name__ == "__main__":
         window.resize(screensize[0]*.9, screensize[1]*.9)
         x = screensize[0]*0.05
         window.move(x, 3)
-
 
     startUpTime = time.time() - start_time
     logger.info('Statup time : %.3f seconds' % startUpTime)

@@ -19,4 +19,10 @@ Application startup time is improved
 * debug window is added
 * Added few other features
 
-
+## v1.1.2
+* up to 1000 nodes, members, supports, loads, and properties are now possible
+* setting unit before creating a new file
+* stress calculation is now available on the force page
+* showing force or stress value directly on the graph instead of a number is available by force checkbox
+* better font in debug window and naming convention in code
+* report bug fixes

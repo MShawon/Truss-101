@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainTrussEJGyIi.ui'
+## Form generated from reading UI file 'trussqtMGuB.ui'
 ##
-## Created by: Qt User Interface Compiler version 5.15.1
+## Created by: Qt User Interface Compiler version 5.15.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -90,7 +90,6 @@ class Ui_WizardPage(object):
         WizardPage.setStyleSheet(u"")
         self.gridLayout_7 = QGridLayout(WizardPage)
         self.gridLayout_7.setObjectName(u"gridLayout_7")
-        self.gridLayout_7.setVerticalSpacing(7)
         self.groupBox = QGroupBox(WizardPage)
         self.groupBox.setObjectName(u"groupBox")
         self.groupBox.setMaximumSize(QSize(16777215, 16777215))
@@ -462,9 +461,10 @@ class Ui_WizardPage(object):
 
         self.spinBox_nodes = QSpinBox(self.page_node)
         self.spinBox_nodes.setObjectName(u"spinBox_nodes")
-        self.spinBox_nodes.setMinimumSize(QSize(0, 30))
+        self.spinBox_nodes.setMinimumSize(QSize(55, 30))
         self.spinBox_nodes.setMaximumSize(QSize(50, 16777215))
         self.spinBox_nodes.setMinimum(2)
+        self.spinBox_nodes.setMaximum(1000)
         self.spinBox_nodes.setValue(2)
 
         self.gridLayout.addWidget(self.spinBox_nodes, 3, 1, 1, 1)
@@ -490,9 +490,10 @@ class Ui_WizardPage(object):
 
         self.spinBox_members = QSpinBox(self.page_member)
         self.spinBox_members.setObjectName(u"spinBox_members")
-        self.spinBox_members.setMinimumSize(QSize(0, 30))
+        self.spinBox_members.setMinimumSize(QSize(55, 30))
         self.spinBox_members.setMaximumSize(QSize(50, 16777215))
         self.spinBox_members.setMinimum(1)
+        self.spinBox_members.setMaximum(1000)
         self.spinBox_members.setValue(1)
 
         self.gridLayout_4.addWidget(self.spinBox_members, 2, 1, 1, 1)
@@ -578,9 +579,10 @@ class Ui_WizardPage(object):
 
         self.spinBox_supports = QSpinBox(self.page_supports)
         self.spinBox_supports.setObjectName(u"spinBox_supports")
-        self.spinBox_supports.setMinimumSize(QSize(0, 30))
+        self.spinBox_supports.setMinimumSize(QSize(55, 30))
         self.spinBox_supports.setMaximumSize(QSize(50, 16777215))
         self.spinBox_supports.setMinimum(2)
+        self.spinBox_supports.setMaximum(1000)
         self.spinBox_supports.setValue(2)
 
         self.gridLayout_5.addWidget(self.spinBox_supports, 2, 1, 1, 1)
@@ -662,9 +664,10 @@ class Ui_WizardPage(object):
 
         self.spinBox_loads = QSpinBox(self.page_loads)
         self.spinBox_loads.setObjectName(u"spinBox_loads")
-        self.spinBox_loads.setMinimumSize(QSize(0, 30))
+        self.spinBox_loads.setMinimumSize(QSize(55, 30))
         self.spinBox_loads.setMaximumSize(QSize(50, 16777215))
         self.spinBox_loads.setMinimum(1)
+        self.spinBox_loads.setMaximum(1000)
         self.spinBox_loads.setValue(1)
 
         self.gridLayout_3.addWidget(self.spinBox_loads, 2, 1, 1, 1)
@@ -734,10 +737,11 @@ class Ui_WizardPage(object):
         self.gridLayout_6.setContentsMargins(0, 5, -1, -1)
         self.spinBox_property = QSpinBox(self.page_properties)
         self.spinBox_property.setObjectName(u"spinBox_property")
-        self.spinBox_property.setMinimumSize(QSize(0, 30))
+        self.spinBox_property.setMinimumSize(QSize(55, 30))
         self.spinBox_property.setMaximumSize(QSize(50, 16777215))
         self.spinBox_property.setButtonSymbols(QAbstractSpinBox.UpDownArrows)
         self.spinBox_property.setMinimum(1)
+        self.spinBox_property.setMaximum(1000)
         self.spinBox_property.setValue(1)
 
         self.gridLayout_6.addWidget(self.spinBox_property, 3, 1, 1, 1)
@@ -1023,6 +1027,102 @@ class Ui_WizardPage(object):
         self.page_forces.setObjectName(u"page_forces")
         self.gridLayout_10 = QGridLayout(self.page_forces)
         self.gridLayout_10.setObjectName(u"gridLayout_10")
+        self.label_18 = QLabel(self.page_forces)
+        self.label_18.setObjectName(u"label_18")
+        self.label_18.setMinimumSize(QSize(0, 35))
+        self.label_18.setFont(font3)
+
+        self.gridLayout_10.addWidget(self.label_18, 0, 0, 1, 1)
+
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.gridLayout_10.addItem(self.horizontalSpacer, 0, 1, 1, 1)
+
+        self.checkBox_nodes = QCheckBox(self.page_forces)
+        self.checkBox_nodes.setObjectName(u"checkBox_nodes")
+        self.checkBox_nodes.setMinimumSize(QSize(80, 0))
+        self.checkBox_nodes.setMaximumSize(QSize(100, 16777215))
+        font6 = QFont()
+        font6.setFamily(u"Segoe UI Semibold")
+        self.checkBox_nodes.setFont(font6)
+        self.checkBox_nodes.setChecked(True)
+
+        self.gridLayout_10.addWidget(self.checkBox_nodes, 0, 2, 1, 1)
+
+        self.checkBox_members = QCheckBox(self.page_forces)
+        self.checkBox_members.setObjectName(u"checkBox_members")
+        self.checkBox_members.setMinimumSize(QSize(100, 0))
+        self.checkBox_members.setMaximumSize(QSize(100, 16777215))
+        self.checkBox_members.setFont(font6)
+        self.checkBox_members.setChecked(True)
+
+        self.gridLayout_10.addWidget(self.checkBox_members, 0, 3, 1, 1)
+
+        self.checkBox_forces = QCheckBox(self.page_forces)
+        self.checkBox_forces.setObjectName(u"checkBox_forces")
+        self.checkBox_forces.setMinimumSize(QSize(75, 0))
+        self.checkBox_forces.setMaximumSize(QSize(100, 16777215))
+        self.checkBox_forces.setFont(font6)
+        self.checkBox_forces.setChecked(True)
+
+        self.gridLayout_10.addWidget(self.checkBox_forces, 0, 4, 1, 1)
+
+        self.checkBox_loads = QCheckBox(self.page_forces)
+        self.checkBox_loads.setObjectName(u"checkBox_loads")
+        self.checkBox_loads.setMinimumSize(QSize(75, 0))
+        self.checkBox_loads.setMaximumSize(QSize(100, 16777215))
+        self.checkBox_loads.setFont(font6)
+        self.checkBox_loads.setChecked(True)
+
+        self.gridLayout_10.addWidget(self.checkBox_loads, 0, 5, 1, 1)
+
+        self.checkBox_reactions = QCheckBox(self.page_forces)
+        self.checkBox_reactions.setObjectName(u"checkBox_reactions")
+        self.checkBox_reactions.setMinimumSize(QSize(80, 0))
+        self.checkBox_reactions.setFont(font6)
+        self.checkBox_reactions.setChecked(True)
+
+        self.gridLayout_10.addWidget(self.checkBox_reactions, 0, 6, 1, 1)
+
+        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.gridLayout_10.addItem(self.horizontalSpacer_2, 0, 7, 1, 1)
+
+        self.line_8 = QFrame(self.page_forces)
+        self.line_8.setObjectName(u"line_8")
+        self.line_8.setFrameShape(QFrame.HLine)
+        self.line_8.setFrameShadow(QFrame.Sunken)
+
+        self.gridLayout_10.addWidget(self.line_8, 1, 0, 1, 1)
+
+        self.label_17 = QLabel(self.page_forces)
+        self.label_17.setObjectName(u"label_17")
+        self.label_17.setFont(font4)
+
+        self.gridLayout_10.addWidget(self.label_17, 2, 0, 1, 1)
+
+        self.splitter = QSplitter(self.page_forces)
+        self.splitter.setObjectName(u"splitter")
+        self.splitter.setOrientation(Qt.Horizontal)
+        self.splitter.setOpaqueResize(True)
+        self.splitter.setChildrenCollapsible(False)
+        self.radioButton_force = QRadioButton(self.splitter)
+        self.radioButton_force.setObjectName(u"radioButton_force")
+        font7 = QFont()
+        font7.setFamily(u"Perpetua Titling MT")
+        font7.setPointSize(8)
+        font7.setBold(True)
+        font7.setWeight(75)
+        self.radioButton_force.setFont(font7)
+        self.radioButton_force.setChecked(True)
+        self.splitter.addWidget(self.radioButton_force)
+        self.radioButton_stress = QRadioButton(self.splitter)
+        self.radioButton_stress.setObjectName(u"radioButton_stress")
+        self.radioButton_stress.setFont(font7)
+        self.splitter.addWidget(self.radioButton_stress)
+
+        self.gridLayout_10.addWidget(self.splitter, 3, 0, 1, 1)
+
         self.tableWidget_result = QTableWidget(self.page_forces)
         if (self.tableWidget_result.columnCount() < 4):
             self.tableWidget_result.setColumnCount(4)
@@ -1053,7 +1153,7 @@ class Ui_WizardPage(object):
         self.tableWidget_result.horizontalHeader().setStretchLastSection(True)
         self.tableWidget_result.verticalHeader().setVisible(False)
 
-        self.gridLayout_10.addWidget(self.tableWidget_result, 3, 1, 1, 1)
+        self.gridLayout_10.addWidget(self.tableWidget_result, 4, 0, 1, 1)
 
         self.label_unit_stress = QLabel(self.page_forces)
         self.label_unit_stress.setObjectName(u"label_unit_stress")
@@ -1061,79 +1161,14 @@ class Ui_WizardPage(object):
         self.label_unit_stress.setMaximumSize(QSize(16777215, 40))
         self.label_unit_stress.setFont(font2)
 
-        self.gridLayout_10.addWidget(self.label_unit_stress, 4, 1, 1, 1)
-
-        self.checkBox_loads = QCheckBox(self.page_forces)
-        self.checkBox_loads.setObjectName(u"checkBox_loads")
-        self.checkBox_loads.setMinimumSize(QSize(80, 0))
-        self.checkBox_loads.setMaximumSize(QSize(100, 16777215))
-        font6 = QFont()
-        font6.setFamily(u"Segoe UI Semibold")
-        self.checkBox_loads.setFont(font6)
-        self.checkBox_loads.setChecked(True)
-
-        self.gridLayout_10.addWidget(self.checkBox_loads, 0, 5, 1, 1)
-
-        self.checkBox_reactions = QCheckBox(self.page_forces)
-        self.checkBox_reactions.setObjectName(u"checkBox_reactions")
-        self.checkBox_reactions.setMinimumSize(QSize(80, 0))
-        self.checkBox_reactions.setFont(font6)
-        self.checkBox_reactions.setChecked(True)
-
-        self.gridLayout_10.addWidget(self.checkBox_reactions, 0, 6, 1, 1)
-
-        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.gridLayout_10.addItem(self.horizontalSpacer_2, 0, 7, 1, 1)
-
-        self.label_18 = QLabel(self.page_forces)
-        self.label_18.setObjectName(u"label_18")
-        self.label_18.setMinimumSize(QSize(0, 35))
-        self.label_18.setFont(font3)
-
-        self.gridLayout_10.addWidget(self.label_18, 0, 1, 1, 1)
-
-        self.label_17 = QLabel(self.page_forces)
-        self.label_17.setObjectName(u"label_17")
-        self.label_17.setFont(font4)
-
-        self.gridLayout_10.addWidget(self.label_17, 2, 1, 1, 1)
-
-        self.checkBox_nodes = QCheckBox(self.page_forces)
-        self.checkBox_nodes.setObjectName(u"checkBox_nodes")
-        self.checkBox_nodes.setMinimumSize(QSize(80, 0))
-        self.checkBox_nodes.setMaximumSize(QSize(100, 16777215))
-        self.checkBox_nodes.setFont(font6)
-        self.checkBox_nodes.setChecked(True)
-
-        self.gridLayout_10.addWidget(self.checkBox_nodes, 0, 3, 1, 1)
-
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.gridLayout_10.addItem(self.horizontalSpacer, 0, 2, 1, 1)
-
-        self.checkBox_members = QCheckBox(self.page_forces)
-        self.checkBox_members.setObjectName(u"checkBox_members")
-        self.checkBox_members.setMinimumSize(QSize(100, 0))
-        self.checkBox_members.setMaximumSize(QSize(100, 16777215))
-        self.checkBox_members.setFont(font6)
-        self.checkBox_members.setChecked(True)
-
-        self.gridLayout_10.addWidget(self.checkBox_members, 0, 4, 1, 1)
-
-        self.line_8 = QFrame(self.page_forces)
-        self.line_8.setObjectName(u"line_8")
-        self.line_8.setFrameShape(QFrame.HLine)
-        self.line_8.setFrameShadow(QFrame.Sunken)
-
-        self.gridLayout_10.addWidget(self.line_8, 1, 1, 1, 1)
+        self.gridLayout_10.addWidget(self.label_unit_stress, 5, 0, 1, 1)
 
         self.graphLayout_result = QVBoxLayout()
         self.graphLayout_result.setSpacing(0)
         self.graphLayout_result.setObjectName(u"graphLayout_result")
         self.graphLayout_result.setContentsMargins(-1, -1, -1, 0)
 
-        self.gridLayout_10.addLayout(self.graphLayout_result, 2, 2, 3, 6)
+        self.gridLayout_10.addLayout(self.graphLayout_result, 2, 1, 4, 7)
 
         self.stackedWidget.addWidget(self.page_forces)
         self.page_influenceLine = QWidget()
@@ -1187,10 +1222,10 @@ class Ui_WizardPage(object):
         self.label_27 = QLabel(self.page_influenceLine)
         self.label_27.setObjectName(u"label_27")
         self.label_27.setMaximumSize(QSize(69, 42))
-        font7 = QFont()
-        font7.setFamily(u"MS Shell Dlg 2")
-        font7.setPointSize(10)
-        self.label_27.setFont(font7)
+        font8 = QFont()
+        font8.setFamily(u"MS Shell Dlg 2")
+        font8.setPointSize(10)
+        self.label_27.setFont(font8)
 
         self.horizontalLayout.addWidget(self.label_27)
 
@@ -1211,7 +1246,7 @@ class Ui_WizardPage(object):
         self.label_28 = QLabel(self.page_influenceLine)
         self.label_28.setObjectName(u"label_28")
         self.label_28.setMaximumSize(QSize(69, 42))
-        self.label_28.setFont(font7)
+        self.label_28.setFont(font8)
 
         self.horizontalLayout.addWidget(self.label_28)
 
@@ -1302,11 +1337,11 @@ class Ui_WizardPage(object):
         self.label_21.setObjectName(u"label_21")
         self.label_21.setMinimumSize(QSize(150, 0))
         self.label_21.setMaximumSize(QSize(150, 31))
-        font8 = QFont()
-        font8.setPointSize(10)
-        font8.setBold(False)
-        font8.setWeight(50)
-        self.label_21.setFont(font8)
+        font9 = QFont()
+        font9.setPointSize(10)
+        font9.setBold(False)
+        font9.setWeight(50)
+        self.label_21.setFont(font9)
         self.label_21.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
 
         self.horizontalLayout_2.addWidget(self.label_21)
@@ -1315,10 +1350,10 @@ class Ui_WizardPage(object):
         self.projectName.setObjectName(u"projectName")
         self.projectName.setMinimumSize(QSize(300, 0))
         self.projectName.setMaximumSize(QSize(630, 35))
-        font9 = QFont()
-        font9.setFamily(u"SansSerif")
-        font9.setPointSize(10)
-        self.projectName.setFont(font9)
+        font10 = QFont()
+        font10.setFamily(u"SansSerif")
+        font10.setPointSize(10)
+        self.projectName.setFont(font10)
 
         self.horizontalLayout_2.addWidget(self.projectName)
 
@@ -1331,7 +1366,7 @@ class Ui_WizardPage(object):
         self.label_22.setObjectName(u"label_22")
         self.label_22.setMinimumSize(QSize(150, 0))
         self.label_22.setMaximumSize(QSize(150, 31))
-        self.label_22.setFont(font8)
+        self.label_22.setFont(font9)
         self.label_22.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
 
         self.horizontalLayout_3.addWidget(self.label_22)
@@ -1340,7 +1375,7 @@ class Ui_WizardPage(object):
         self.userName.setObjectName(u"userName")
         self.userName.setMinimumSize(QSize(100, 0))
         self.userName.setMaximumSize(QSize(630, 35))
-        self.userName.setFont(font9)
+        self.userName.setFont(font10)
 
         self.horizontalLayout_3.addWidget(self.userName)
 
@@ -1578,6 +1613,17 @@ class Ui_WizardPage(object):
         self.tableWidget_displacement.setSortingEnabled(__sortingEnabled4)
 
         self.label_unit_displacement.setText(QCoreApplication.translate("WizardPage", u"* Unit of displacement : inch (in)", None))
+        self.label_18.setText(QCoreApplication.translate("WizardPage", u"Member Forces and Support Reactions", None))
+        self.checkBox_nodes.setText(QCoreApplication.translate("WizardPage", u"Nodes", None))
+        self.checkBox_members.setText(QCoreApplication.translate("WizardPage", u"Members", None))
+        self.checkBox_forces.setText(QCoreApplication.translate("WizardPage", u"Forces", None))
+        self.checkBox_loads.setText(QCoreApplication.translate("WizardPage", u"Loads", None))
+        self.checkBox_reactions.setText(QCoreApplication.translate("WizardPage", u"Reactions", None))
+        self.label_17.setText(QCoreApplication.translate("WizardPage", u"Member tension(T) and compression(C) are shown \n"
+"in the graph as well as support reactions. The \n"
+"brightness of colors shows their relative strength.", None))
+        self.radioButton_force.setText(QCoreApplication.translate("WizardPage", u"Force", None))
+        self.radioButton_stress.setText(QCoreApplication.translate("WizardPage", u"Stress", None))
         ___qtablewidgetitem26 = self.tableWidget_result.horizontalHeaderItem(0)
         ___qtablewidgetitem26.setText(QCoreApplication.translate("WizardPage", u"Member", None));
         ___qtablewidgetitem27 = self.tableWidget_result.horizontalHeaderItem(1)
@@ -1594,14 +1640,6 @@ class Ui_WizardPage(object):
         self.tableWidget_result.setSortingEnabled(__sortingEnabled5)
 
         self.label_unit_stress.setText(QCoreApplication.translate("WizardPage", u"* Unit of force: kip (k)", None))
-        self.checkBox_loads.setText(QCoreApplication.translate("WizardPage", u"Loads", None))
-        self.checkBox_reactions.setText(QCoreApplication.translate("WizardPage", u"Reactions", None))
-        self.label_18.setText(QCoreApplication.translate("WizardPage", u"Member Forces and Support Reactions", None))
-        self.label_17.setText(QCoreApplication.translate("WizardPage", u"Member tension(T) and compression(C) are shown \n"
-"in the graph as well as support reactions. The \n"
-"brightness of colors shows their relative strength.", None))
-        self.checkBox_nodes.setText(QCoreApplication.translate("WizardPage", u"Nodes", None))
-        self.checkBox_members.setText(QCoreApplication.translate("WizardPage", u"Members", None))
         self.label_25.setText(QCoreApplication.translate("WizardPage", u"Influence Line for a Unit Load", None))
         self.label_26.setText(QCoreApplication.translate("WizardPage", u"Member : ", None))
         self.label_24.setText(QCoreApplication.translate("WizardPage", u"Moving load only in a straight line is \n"
