@@ -18,8 +18,8 @@ A desktop application to solve statically determinate and indeterminate 2D truss
 
 ## Where to download?
 <p align='left'>
-  <a href="https://github.com/MShawon/Truss-101/releases/download/1.1.1/Truss.101_win_Setup_v1.1.1.exe">
-  <img src="https://img.shields.io/badge/v1.1.1-Download%20Truss%20101-green?logo=github&logoWidth=10&flat&logoColor=black" width="450" height="55">
+  <a href="https://github.com/MShawon/Truss-101/releases/download/1.1.2/Truss.101_win_Setup_v1.1.2.exe">
+  <img src="https://img.shields.io/badge/v1.1.2-Download%20Truss%20101-green?logo=github&logoWidth=10&flat&logoColor=black" width="450" height="55">
   </a>
 </p>
 
@@ -39,6 +39,7 @@ A desktop application to solve statically determinate and indeterminate 2D truss
   * Tabulated
   * Animation
 * Member forces and support reactions
+  * Force and stress
   * Graphs showing members relative strength
   * Tension, compression value in Tabulated form
 * Influence line for a unit load
@@ -59,7 +60,7 @@ A desktop application to solve statically determinate and indeterminate 2D truss
 [![YouTube video 2](https://github.com/MShawon/Truss-101/blob/gh-pages/tutorial2.png?raw=True)](https://www.youtube.com/watch?v=7H7eLLeZys8)
 
 # TO DO
-* 3D truss
+* Release cross-platform compatible code
 
 # License
 * This software is under GPL v3 license. See more <a href="https://github.com/MShawon/Truss-101/blob/main/LICENSE">https://github.com/MShawon/Truss-101/blob/main/LICENSE</a>
