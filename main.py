@@ -1,7 +1,7 @@
 """
 GPL-3.0 License
 
-Copyright (C) 2020-2021 Monirul Shawon
+Copyright (C) 2020-2022 Monirul Shawon
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 
-import ctypes
 import getpass
 import logging
 import os
@@ -27,20 +26,16 @@ import sys
 import time
 
 import requests
-import urllib3
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
-from pyupdater.client import Client, FileDownloader
-from pyupdater.client.downloader import url_quote
 
-from client_config import ClientConfig
 from supports import *
 from truss import MainPage
 from ui_main import Ui_MainWindow
 from ui_units import Ui_MainWindow2
 
-#logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+# logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 logger = logging.getLogger('Truss 101')
 
@@ -48,53 +43,6 @@ date = '<span style="color:#b19a66;">%m/%d/%Y</span> <span style="color:#56a187;
 
 my_system = platform.uname()
 user = getpass.getuser()
-
-log = logging.getLogger(__name__)
-
-
-def monkey_response(self):
-    """
-    GitHub replaces space with dot(.) in filename
-    pyupdater use url_quote to create file url
-    hence this monkey patch replace space(%20) with dot(.)
-    """
-    data = None
-    max_download_retries = self.max_download_retries
-    for url in self.urls:
-        # Create url for resource
-        file_url = url + url_quote(self.filename)
-        file_url = file_url.replace('%20', '.')
-        print(file_url)
-        log.debug("Url for request: %s", file_url)
-        try:
-            data = self.http_pool.urlopen(
-                "GET", file_url, preload_content=False, retries=max_download_retries
-            )
-        except urllib3.exceptions.SSLError:
-            log.debug("SSL cert not verified")
-            continue
-        except urllib3.exceptions.MaxRetryError:
-            log.debug("MaxRetryError")
-            continue
-        except Exception as e:
-            # Catch whatever else comes up and log it
-            # to help fix other http related issues
-            log.debug(str(e), exc_info=True)
-        else:
-            if data.status != 200:
-                log.debug("Received a non-200 response %d", data.status)
-                data = None
-            else:
-                break
-
-    if data is not None:
-        log.debug("Resource URL: %s", file_url)
-    else:
-        log.debug("Could not create resource URL.")
-    return data
-
-
-FileDownloader._create_response = monkey_response
 
 
 class CustomFormatter(logging.Formatter):
@@ -131,16 +79,14 @@ class QTextEditLogger(logging.Handler):
         font.setStyleHint(QFont.TypeWriter)
         self.widget.setFont(font)
 
-        self.widget.appendPlainText(
-            '#######################################\n')
+        self.widget.appendPlainText('#'*80 + '\n')
         self.widget.appendPlainText(f'System : {my_system.system}')
         self.widget.appendPlainText(f'Computer Name : {my_system.node}-{user}')
         self.widget.appendPlainText(f'Release : {my_system.release}')
         self.widget.appendPlainText(f'Version : {my_system.version}')
         self.widget.appendPlainText(f'Machine : {my_system.machine}')
         self.widget.appendPlainText(f'Processor : {my_system.processor}')
-        self.widget.appendPlainText(
-            '\n#######################################\n')
+        self.widget.appendPlainText('#'*80 + '\n')
 
     def emit(self, record):
         msg = self.format(record)
@@ -173,7 +119,7 @@ class AnotherWindow(QWidget):
 
     def save_log(self):
         logs = self.logTextBox.widget.toPlainText()
-        document = os.path.expanduser('~/Documents') + '\debug'
+        document = os.path.join(os.path.expanduser('~/Documents'), 'debug')
         filename = QFileDialog.getSaveFileName(
             self, 'Save file', document, "Log files (*.log)")
 
@@ -213,17 +159,17 @@ class MainWindow(QMainWindow):
 
         "++++++++++++++++++++++++++++++++++++++++++++++++++++++"
         self.APP_NAME = 'Truss 101'
-        self.APP_VERSION = '1.1.3'
-        self.APP_UPDATE_TIME = 'April 2021'
+        self.APP_VERSION = '1.1.4'
+        self.APP_UPDATE_TIME = 'April 2022'
         "++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 
         self.ui.statusbar.showMessage('Welcome to Truss 101')
 
         logger.info('Sys arguements : %s', str(sys.argv))
-        file = os.path.basename(sys.argv[0])
-        self.currentDirectory = sys.argv[0].replace(f'{file}', '')
-        self.currentDirectory = self.currentDirectory.replace('\\', '/')
-        logger.info('Current Directory : %s', self.currentDirectory)
+        pathname = os.path.dirname(sys.argv[0])
+
+        self.current_directory = os.path.abspath(pathname)
+        logger.info('Current Directory : %s', self.current_directory)
 
         self.ui.pushButton_new.clicked.connect(self.new_file)
         self.ui.pushButton_open.clicked.connect(self.open_file)
@@ -305,8 +251,6 @@ class MainWindow(QMainWindow):
         if len(sys.argv) > 1:
             openwith = (sys.argv[1], "")
             self.open_file(demopath=openwith)
-        else:
-            pass
 
     def debug_window(self):
         if self.debug.isVisible():
@@ -344,10 +288,8 @@ class MainWindow(QMainWindow):
 
             if self.oninit:
                 timeout = 5
-                ClientConfig.HTTP_TIMEOUT = 10
             else:
                 timeout = 20
-                ClientConfig.HTTP_TIMEOUT = 30
 
             x = requests.get(github_link, timeout=timeout)
             tag = x.json()['tag_name']
@@ -355,35 +297,7 @@ class MainWindow(QMainWindow):
             logger.info('Latest version : %s , Current Version : %s',
                         tag, self.APP_VERSION)
 
-            url = f'https://github.com/{username}/{repository}/releases/download/{tag}'
-
-            # url = 'http://127.0.0.1:8000/'
-
-            ClientConfig.UPDATE_URLS = [url]
-            logger.info('Update download urls : %s', ClientConfig.UPDATE_URLS)
-
-            def print_status_info(info):
-                total = info.get(u'total')
-                downloaded = info.get(u'downloaded')
-                status = info.get(u'status')
-                percentage = info.get(u'percent_complete')
-                logger.info('Downloaded : %s , Total : %s , Status : %s , Pecentage : %s ', str(
-                    downloaded), str(total), status, percentage)
-                self.ui.statusbar.showMessage(f"{status} {percentage}%")
-                if status == 'finished':
-                    self.ui.statusbar.showMessage('Update finished')
-
-            client = Client(ClientConfig())
-
-            client.refresh()
-            client.add_progress_hook(print_status_info)
-            logger.info('Progress hooks %s', client.progress_hooks)
-
-            self.app_update = client.update_check(
-                self.APP_NAME, self.APP_VERSION)
-            logger.info('App update : %s', self.app_update)
-
-            if self.app_update is not None:
+            if tag > self.APP_VERSION:
                 self.ui.statusbar.showMessage(f'Update available!')
                 body = body.splitlines()
                 changelog = [line + "<br>" for line in body]
@@ -405,22 +319,17 @@ class MainWindow(QMainWindow):
                 ret = msgBox.exec_()
 
                 if ret == QMessageBox.Yes:
-                    logger.info('Version %s downloading...', tag)
-                    self.app_update.download(background=True)
-
-                    self.timer = QTimer()
-                    self.timer.setInterval(40000)
-                    self.timer.timeout.connect(self.extract_update)
-                    self.timer.start()
-                else:
-                    logging.warning('App update ignored by user.')
-                    pass
+                    if my_system.system == 'Windows':
+                        QDesktopServices.openUrl(
+                            "https://github.com/MShawon/Truss-101/releases/latest")
+                    else:
+                        QDesktopServices.openUrl(
+                            "https://github.com/MShawon/Truss-101")
 
             else:
                 if self.oninit:
                     logger.info('There are currently no updates available.')
                     self.ui.statusbar.showMessage('Welcome to Truss 101')
-                    pass
                 else:
                     logger.info('There are currently no updates available.')
                     self.ui.statusbar.showMessage(
@@ -438,7 +347,6 @@ class MainWindow(QMainWindow):
             logging.critical(str(e))
             if self.oninit:
                 self.ui.statusbar.showMessage('Welcome to Truss 101')
-                pass
             else:
                 self.ui.statusbar.showMessage(
                     'Check your internet connections and try again.')
@@ -452,39 +360,13 @@ class MainWindow(QMainWindow):
                 msgBox.setInformativeText('Check your internet connections.')
                 msgBox.exec_()
 
-    def extract_update(self):
-        if self.app_update.is_downloaded():
-            msgBox = QMessageBox()
-            msgBox.setWindowFlags(
-                Qt.Dialog | Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.WindowCloseButtonHint)
-            msgBox.setIcon(QMessageBox.Information)
-            msgBox.setWindowTitle("Update")
-            msgBox.setText(
-                f"<font color='steelblue' size='5'>Update downloaded successfully.</font>")
-            msgBox.setInformativeText(
-                "Do you want to update now and restart?")
-            msgBox.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-            msgBox.button(QMessageBox.Yes).setText(
-                'Update')
-            msgBox.setDefaultButton(QMessageBox.Yes)
-            ret = msgBox.exec_()
-            if ret == QMessageBox.Yes:
-                self.timer.stop()
-                logger.info('New version downloaded. Extracting started...')
-                self.app_update.extract_restart()
-            else:
-                logging.warning(
-                    'New version downloaded. Extract ignored by user.')
-                self.timer.stop()
-                pass
-
     def about(self):
         self.msgBox = QMessageBox()
         self.msgBox.setWindowFlags(
             Qt.Dialog | Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.WindowCloseButtonHint)
         self.msgBox.setStyleSheet("background-color: rgb(255, 255, 255);")
 
-        icon = QIcon(f"{self.currentDirectory}/logo@4x.png")
+        icon = QIcon(os.path.join(self.current_directory, 'logo@4x.png'))
         self.msgBox.setIconPixmap(icon.pixmap(96, 96))
         self.msgBox.setText(
             f"<font color='steelblue' size='4'>Version : {self.APP_VERSION} ({self.APP_UPDATE_TIME})</font>")
@@ -502,7 +384,7 @@ class MainWindow(QMainWindow):
         self.msgBox.setWindowFlags(
             Qt.Dialog | Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.WindowCloseButtonHint)
         self.msgBox.setText(
-            f"""I'm currently a third year undergraduate student at Civil Engineering in Chittagong University of Engineering & Technology.""")
+            f"""I'm currently a fourth year undergraduate student at Civil Engineering in Chittagong University of Engineering & Technology.""")
         self.msgBox.setInformativeText(
             "<font color='steelblue' size='3'><b>LinkedIn : </b></font><a href='https://www.linkedin.com/in/monirulislam107/'>Monirul Islam</a>")
         self.msgBox.setWindowTitle("About Author")
@@ -514,9 +396,6 @@ class MainWindow(QMainWindow):
         self.ui2.setupUi(self.window_unit)
         self.ui2.stackedWidget.setCurrentWidget(self.ui2.page_imperial)
         self.window_unit.show()
-
-        self.activateWindow()
-        self.raise_()
 
         self.ui2.metricButton.clicked.connect(
             lambda: self.ui2.stackedWidget.setCurrentWidget(self.ui2.page_metric))
@@ -704,10 +583,7 @@ class MainWindow(QMainWindow):
         if index > 0:
             self.window_list[index-1].save_to_file()
             path = self.window_list[index-1].filename[0]
-            if '/' in path:
-                name = path.split('/')[-1][:-4]
-            else:
-                name = path.split('\\')[-1][:-4]
+            name = os.path.basename(path)[:-4]
 
             self.path_list[index-1] = path
             self.name_list[index-1] = name
@@ -723,14 +599,11 @@ class MainWindow(QMainWindow):
     def open_file(self, demopath=None, isdemo=None):
         demopath = demopath
         demo = isdemo
-        #demopath= (f"{self.currentDirectory}Demo/Example 6.trs", "")
+        #demopath= (os.path.join(self.current_directory, 'Demo', 'Example 6.trs'), "")
         self.window = MainPage(
             open=True, filename=demopath, demo=demo, logger=logger)
         path = self.window.filename[0]
-        if '/' in path:
-            name = path.split('/')[-1][:-4]
-        else:
-            name = path.split('\\')[-1][:-4]
+        name = os.path.basename(path)[:-4]
 
         logger.info('Opened file : %s', name)
         index = self.ui.tabWidget.count()
@@ -910,30 +783,41 @@ class MainWindow(QMainWindow):
         except:
             self.ui.plainTextMessage.setPlaceholderText(
                 'Oops! Something went wrong. Try again.')
-            pass
 
     def example_1(self):
-        example_path = (f"{self.currentDirectory}Demo/Example 1.trs", "")
+        example_path = (os.path.join(self.current_directory,
+                        'Demo', 'Example 1.trs'), "")
+        logger.info('Example Path : %s', example_path)
         self.open_file(demopath=example_path, isdemo=True)
 
     def example_2(self):
-        example_path = (f"{self.currentDirectory}Demo/Example 2.trs", "")
+        example_path = (os.path.join(self.current_directory,
+                        'Demo', 'Example 2.trs'), "")
+        logger.info('Example Path : %s', example_path)
         self.open_file(demopath=example_path, isdemo=True)
 
     def example_3(self):
-        example_path = (f"{self.currentDirectory}Demo/Example 3.trs", "")
+        example_path = (os.path.join(self.current_directory,
+                        'Demo', 'Example 3.trs'), "")
+        logger.info('Example Path : %s', example_path)
         self.open_file(demopath=example_path, isdemo=True)
 
     def example_4(self):
-        example_path = (f"{self.currentDirectory}Demo/Example 4.trs", "")
+        example_path = (os.path.join(self.current_directory,
+                        'Demo', 'Example 4.trs'), "")
+        logger.info('Example Path : %s', example_path)
         self.open_file(demopath=example_path, isdemo=True)
 
     def example_5(self):
-        example_path = (f"{self.currentDirectory}Demo/Example 5.trs", "")
+        example_path = (os.path.join(self.current_directory,
+                        'Demo', 'Example 5.trs'), "")
+        logger.info('Example Path : %s', example_path)
         self.open_file(demopath=example_path, isdemo=True)
 
     def example_6(self):
-        example_path = (f"{self.currentDirectory}Demo/Example 6.trs", "")
+        example_path = (os.path.join(self.current_directory,
+                        'Demo', 'Example 6.trs'), "")
+        logger.info('Example Path : %s', example_path)
         self.open_file(demopath=example_path, isdemo=True)
 
 
@@ -945,12 +829,11 @@ if __name__ == "__main__":
     window = MainWindow()
     window.show()
 
-    user32 = ctypes.windll.user32
-    screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
+    screen = app.primaryScreen()
+    screensize = (screen.size().width(), screen.size().height())
+
     logger.info('Screen size : %s', screensize)
-    if screensize[0] == 1280:
-        pass
-    else:
+    if screensize[0] != 1280:
         window.resize(screensize[0]*.9, screensize[1]*.9)
         x = screensize[0]*0.05
         window.move(x, 3)

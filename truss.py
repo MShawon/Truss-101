@@ -1,7 +1,7 @@
 """
 GPL-3.0 License
 
-Copyright (C) 2020-2021 Monirul Shawon
+Copyright (C) 2020-2022 Monirul Shawon
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,20 +17,15 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-from ui_truss import Ui_WizardPage
-from reportlab.platypus import (PageBreak, Paragraph, SimpleDocTemplate,
-                                Spacer, Table, TableStyle)
-from reportlab.pdfgen import canvas
-from reportlab.lib.utils import ImageReader
-from reportlab.lib.units import inch
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.lib import colors
-from io import BytesIO
 import datetime
 import os
 import pickle
 import re
+import subprocess
+import sys
 import tempfile
+from io import BytesIO
+from math import ceil
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -42,11 +37,18 @@ from numpy.linalg import norm
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import inch
+from reportlab.lib.utils import ImageReader
+from reportlab.pdfgen import canvas
+from reportlab.platypus import (Image, PageBreak, Paragraph, SimpleDocTemplate,
+                                Spacer, Table, TableStyle)
 
 from supports import *
+from ui_truss import Ui_WizardPage
 
 plt.style.use('seaborn-bright')
-
 
 
 class NumberedCanvas(canvas.Canvas):
@@ -55,11 +57,9 @@ class NumberedCanvas(canvas.Canvas):
         canvas.Canvas.__init__(self, *args, **kwargs)
         self._saved_page_states = []
 
-
     def showPage(self):
         self._saved_page_states.append(dict(self.__dict__))
         self._startPage()
-
 
     def save(self):
         """add page info to each page (page x of y)"""
@@ -69,7 +69,6 @@ class NumberedCanvas(canvas.Canvas):
             self.draw_page_number(num_pages)
             canvas.Canvas.showPage(self)
         canvas.Canvas.save(self)
-
 
     def draw_page_number(self, page_count):
         if self._pageNumber == 1:
@@ -104,11 +103,11 @@ class NumberedCanvas(canvas.Canvas):
         elif self._pageNumber == 2:
             im = ImageReader(buf_node)
             self.drawImage(im, inch*2.8, inch*4, width=5.1*inch, height=4*inch)
-        elif self._pageNumber == member_page:
+        elif self._pageNumber == member_page_start:
             im = ImageReader(buf_element)
             self.drawImage(im, inch*3.0, inch*6,
                            width=4.8*inch, height=3.7*inch)
-        elif self._pageNumber == support_page:
+        elif self._pageNumber == support_page_start:
             im = ImageReader(buf_support)
             self.drawImage(im, inch*3.4, inch*6.2,
                            width=4.5*inch, height=3.5*inch)
@@ -127,20 +126,19 @@ class NumberedCanvas(canvas.Canvas):
             t.wrapOn(self, 400, 100)
             t.drawOn(self, inch*4.5, inch*5)
 
-        elif self._pageNumber == page_count - stress_page:
+        elif self._pageNumber == page_count - stress_page_end:
             im = ImageReader(buf_bar_force)
             self.drawImage(im, inch*0.1, inch*3.5, width=8*inch, height=6*inch)
             im = ImageReader(buf_reaction)
             self.drawImage(im, inch*1, inch*0.1, width=6*inch, height=4*inch)
 
-        elif self._pageNumber == page_count - displacement_page:
+        elif self._pageNumber == page_count - displacement_page_end:
             im = ImageReader(buf_displacement)
             self.drawImage(im, inch*3.8, inch*6,
                            width=4.5*inch, height=3.5*inch)
         self.setFont("Helvetica", 7)
         self.drawRightString(inch, 0.75 * inch,
                              "Page %d of %d" % (self._pageNumber, page_count))
-
 
 
 class NavigationToolbar(NavigationToolbar):
@@ -164,12 +162,10 @@ class NavigationToolbar(NavigationToolbar):
     )
 
 
-
 class AlignDelegate(QStyledItemDelegate):
     def initStyleOption(self, option, index):
         super(AlignDelegate, self).initStyleOption(option, index)
         option.displayAlignment = Qt.AlignCenter
-
 
 
 class MainPage(QWizardPage):
@@ -187,10 +183,7 @@ class MainPage(QWizardPage):
 
         if self.demo:
             self.savedemo = True
-            if '/' in self.filename[0]:
-                self.name = self.filename[0].split("/")[-1]
-            else:
-                self.name = self.filename[0].split("\\")[-1]
+            self.name = os.path.basename(self.filename[0])
 
         'Unit conversion'
         self.current_metric_index = []
@@ -254,7 +247,7 @@ class MainPage(QWizardPage):
         self.ui.graphLayout_influenceLine.addWidget(
             self.graph_widget4.toolbar4)
         self.ui.graphLayout_influenceLine.addWidget(self.graph_widget4.canvas4)
-        ax4 = self.graph_widget4.figure4.add_subplot(211)
+        self.ax4 = self.graph_widget4.figure4.add_subplot(211)
         self.ax5 = self.graph_widget4.figure4.add_subplot(212)
 
         '''
@@ -563,7 +556,8 @@ class MainPage(QWizardPage):
                 unit=self.current_imperial_index, type='imperial')
             self.unit_convert(type='imperial')
         elif self.current_metric_index:
-            self.change_unit_label(unit=self.current_metric_index, type='metric')
+            self.change_unit_label(
+                unit=self.current_metric_index, type='metric')
             self.unit_convert(type='metric')
         self.change = 0
         self.save += 1
@@ -641,7 +635,6 @@ class MainPage(QWizardPage):
             self.ui.tableWidget_members.setColumnWidth(0, 80)
             self.ui.tableWidget_members.setColumnWidth(1, 80)
 
-
     def support_table(self):
         previous = self.ui.tableWidget_supports.rowCount()
         self.ui.tableWidget_supports.setRowCount(
@@ -655,7 +648,6 @@ class MainPage(QWizardPage):
             self.ui.tableWidget_supports.setCellWidget(
                 row+previous, 1, supports_cb)
             supports_cb.currentIndexChanged.connect(self.support)
-
 
     def property_table(self):
 
@@ -726,7 +718,6 @@ class MainPage(QWizardPage):
 
         self.member()
 
-
     def member(self):
         self.ui.tableWidget_members.setRowCount(
             self.ui.spinBox_members.value())
@@ -771,7 +762,6 @@ class MainPage(QWizardPage):
                           self.plot_displacement_final)
 
         self.support()
-
 
     def support(self):
         self.ui.tableWidget_supports.setRowCount(
@@ -864,7 +854,6 @@ class MainPage(QWizardPage):
         support_report = self.support_graph
         self.force()
 
-
     def force(self):
         self.forces = {}
         self.force_graph = {}
@@ -909,7 +898,6 @@ class MainPage(QWizardPage):
 
         self.assign_property()
 
-
     def assign_property(self):
         self.properties_list = {}
         self.properties = {}
@@ -946,7 +934,6 @@ class MainPage(QWizardPage):
 
         self.calculation()
         self.graph()
-
 
     def change_unit_label(self, unit=None, type=None):
         self.unit = unit
@@ -1042,7 +1029,6 @@ class MainPage(QWizardPage):
 
         self.old_label_unit_stress = self.ui.label_unit_stress.text()
 
-
     def unit_convert(self, type=None):
         self.change += 1
 
@@ -1114,7 +1100,8 @@ class MainPage(QWizardPage):
                 self.influence_line()
 
         else:
-            self.logger.debug('Imperial unit : %s', self.current_imperial_index)
+            self.logger.debug('Imperial unit : %s',
+                              self.current_imperial_index)
 
             # Length
             if self.current_imperial_index[0][0] == 0:
@@ -1168,7 +1155,6 @@ class MainPage(QWizardPage):
                 self.influence_line()
 
         self.force_or_stress()
-
 
     def calculation(self):
         if len(self.elements)+len(self.restrained_dofs) < self.ndofs:
@@ -1245,16 +1231,14 @@ class MainPage(QWizardPage):
                 self.K_final = np.delete(self.K, self.remove_indices, axis=0)
                 self.K_final = np.delete(
                     self.K_final, self.remove_indices, axis=1)
-                self.logger.debug('Global stiffness matrix : %s',self.K_final)
-
+                self.logger.debug('Global stiffness matrix : %s', self.K_final)
 
                 self.F_final = np.delete(self.F, self.remove_indices)
                 self.logger.debug("Force calculated : %s", self.F_final)
 
-
                 # Deflectiion global
                 self.D_global = np.linalg.inv(self.K_final).dot(self.F_final)
-                self.logger.debug('Global deflection : %s',self.D_global)
+                self.logger.debug('Global deflection : %s', self.D_global)
 
                 self.ui.label_stabality.setText('Stable')
                 self.ui.label_stabality.setStyleSheet(
@@ -1264,7 +1248,6 @@ class MainPage(QWizardPage):
                 self.ui.label_stabality.setText('Unstable')
                 self.ui.label_stabality.setStyleSheet("color: rgb(255,0,0);")
                 pass
-
 
     def displacement(self):
         if self.ui.label_stabality.text() == 'Stable':
@@ -1303,7 +1286,7 @@ class MainPage(QWizardPage):
 
             self.D_big = np.around(self.D_big*self.displacement_unit, 4)
             self.logger.debug('Deflection with zeros : %s', self.D_big)
-            
+
             self.ui.tableWidget_displacement.setRowCount(len(self.node_values))
 
             for i in range(1, len(self.node_values)+1):
@@ -1342,7 +1325,6 @@ class MainPage(QWizardPage):
             self.ui.checkBox_loads.setVisible(False)
             self.ui.checkBox_reactions.setVisible(False)
 
-
     def animation(self):
         self.count = 1
         self.done = 0
@@ -1352,10 +1334,8 @@ class MainPage(QWizardPage):
         self.timer.timeout.connect(self.animation_mechanism)
         self.timer.start()
 
-
     def stop_animation(self):
         self.timer.stop()
-
 
     def animation_mechanism(self):
         self.done += 1
@@ -1376,7 +1356,6 @@ class MainPage(QWizardPage):
         else:
             self.ui.stackedWidget.currentChanged.connect(
                 lambda: self.timer.stop())
-
 
     def reaction_calculation(self):
         self.K_reaction = np.delete(self.K, self.reaction_indices, axis=0)
@@ -1410,7 +1389,7 @@ class MainPage(QWizardPage):
                 self.R_graph[i] = self.node_values[(
                     j+1)/2], 0, self.R_global[i], f'left'
 
-        self.logger.debug('Reaction graph : %s',self.R_graph)
+        self.logger.debug('Reaction graph : %s', self.R_graph)
 
         D_r = np.zeros(4)
         self.bar_force = []
@@ -1448,10 +1427,10 @@ class MainPage(QWizardPage):
         self.logger.debug('bar_force : %s', self.bar_force)
 
         self.bar_stress = []
-        for key,value in self.properties.items():
+        for key, value in self.properties.items():
             force = self.bar_force[key-1]
             area = value[0][1]
-            stress  = round(((force/area) * self.stress_unit), 4)
+            stress = round(((force/area) * self.stress_unit), 4)
             self.bar_stress.append(stress)
 
         self.logger.debug('Stress : %s', self.bar_stress)
@@ -1502,12 +1481,11 @@ class MainPage(QWizardPage):
 
         self.stress_graph()
 
-
     def force_or_stress(self):
         try:
             if self.ui.radioButton_stress.isChecked():
                 self.ui.tableWidget_result.setHorizontalHeaderLabels(
-                        ['Member', 'Node', 'Stress', 'Direction'])
+                    ['Member', 'Node', 'Stress', 'Direction'])
 
                 if self.type == 'metric':
                     self.ui.label_unit_stress.setText(
@@ -1516,19 +1494,19 @@ class MainPage(QWizardPage):
                     self.ui.label_unit_stress.setText(
                         '* Unit of stress : Pound per square inch (psi)')
                 showme = self.bar_stress
-            
+
             else:
                 self.ui.tableWidget_result.setHorizontalHeaderLabels(
                     ['Member', 'Node', 'Force', 'Direction'])
-                        
+
                 self.ui.label_unit_stress.setText(self.old_label_unit_stress)
                 showme = self.bar_force
 
             for i, j in enumerate(showme):
                 value = QTableWidgetItem(str(abs(j)))
-                if j > 0 :
+                if j > 0:
                     value.setTextColor(QColor(10, 54, 157))
-                elif j < 0 :
+                elif j < 0:
                     value.setTextColor(QColor(255, 36, 0))
                 self.ui.tableWidget_result.setItem(i, 2, value)
 
@@ -1536,7 +1514,6 @@ class MainPage(QWizardPage):
 
         except:
             pass
-
 
     def graph(self):
         try:
@@ -1609,7 +1586,6 @@ class MainPage(QWizardPage):
 
         except:
             pass
-
 
     def displacement_graph(self):
         self.scale = self.ui.horizontalSlider.value()*self.displacement_factor
@@ -1695,7 +1671,6 @@ class MainPage(QWizardPage):
         except:
             pass
 
-
     def stress_graph(self):
         try:
             self.graph_widget3.figure3.clear()
@@ -1749,7 +1724,7 @@ class MainPage(QWizardPage):
                     else:
                         ax3.annotate(k, (np.mean(v[0]), np.mean(
                             v[1])), zorder=50, ha='center', va='center', size='10')
-                            
+
                 self.graph_widget3.canvas3.draw()
 
             # support draw
@@ -1803,8 +1778,9 @@ class MainPage(QWizardPage):
         except:
             pass
 
-
     def report_graph(self):
+        global buf_node, buf_element, buf_support
+
         fig, ax_r = plt.subplots()
         fig.tight_layout()
         if self.max_X > self.max_Y:
@@ -1812,7 +1788,6 @@ class MainPage(QWizardPage):
         else:
             ax_r.margins(0.35, 0.15)
 
-        global buf_node
         buf_node = BytesIO()
         ax_r.grid(True)
         ax_r.spines['right'].set_visible(False)
@@ -1828,7 +1803,6 @@ class MainPage(QWizardPage):
         buf_node.seek(0)
         self.graph_widget.canvas1.draw()
 
-        global buf_element
         buf_element = BytesIO()
         ax_r.grid(False)
         ax_r.axis('off')
@@ -1839,7 +1813,6 @@ class MainPage(QWizardPage):
         fig.savefig(buf_element, format="png", bbox_inches='tight', dpi=300)
         buf_element.seek(0)
 
-        global buf_support
         buf_support = BytesIO()
         # support draw
         for k, v in self.support_graph.items():
@@ -1872,378 +1845,8 @@ class MainPage(QWizardPage):
         fig.savefig(buf_support, format="png", bbox_inches='tight', dpi=300)
         buf_support.seek(0)
 
-
     def update_change(self):
         self.change += 1
-
-
-    def generate_report(self):
-        global member_page
-        global support_page
-        global stress_page
-        global displacement_page
-        
-        total_node = len(self.node_values)
-        total_member = len(self.member_values)
-        
-        if total_node < 27:
-            member_page = 3
-        else:
-            member_page = int((total_node - 27) / 37) + 4
-
-        if total_member < 33:
-            support_page = member_page + 1
-        else:
-            support_page = int((total_member - 33) / 37) + member_page + 2
-
-        if total_node < 34:
-            displacement_page = 0
-        else:
-            displacement_page = int((total_node - 33) / 37) + 1
-
-        stress_page = int(total_member / 37) + displacement_page + 2
-
-        self.report = True
-        if not self.demo:
-            self.save_to_file()
-        else:
-            self.savedemo = None
-            self.filename = list(self.filename)
-            self.filename[0] = f'{tempfile.gettempdir()}'+f'\\{self.name}'
-            self.filename = tuple(self.filename)
-            self.save_to_file()
-            self.savedemo = True
-
-        self.report_graph()
-        date = datetime.datetime.now().strftime("%A, %B %d, %Y at %I:%M %p %Z")
-        self.logger.debug('Date : %s', date)
-        
-        banner_1 = """
-        ..########..########....##..........##....######......######..<br/>
-        ........##........##..........##..##..........##..##........##..##........##<br/>
-        ........##........##..........##..##..........##..##..............##............<br/>
-        ........##........########....##..........##....######......######..<br/>
-        ........##........##......##......##..........##.......
-        .......##..............##<br/>
-        ........##........##........##....##..........##..##........##..##........##<br/>
-        ........##........##..........##....#######......######......######..
-        """
-        banner_2 = """
-        ........##..........#####............##..........<br/>
-        ....####........##......##......####..........<br/>
-        ........##......##..........##........##..........<br/>
-        ........##......##..........##........##..........<br/>
-        ........##......##..........##........##..........<br/>
-        ........##........##......##..........##..........<br/>
-        ....######......#####........######......<br/>
-        """
-
-        if self.ui.projectName.toPlainText():
-            project = self.ui.projectName.toPlainText()
-        else:
-            project = 'Project Truss'
-        if self.ui.userName.toPlainText():
-            username = self.ui.userName.toPlainText()
-        else:
-            username = 'Anonymous'
-
-        self.pdfname = self.filename[0].replace('trs', 'pdf')
-
-
-        self.logger.debug('Saved Filename : %s', self.filename[0])
-        self.logger.debug('Pdfname : %s', self.pdfname)
-
-        styles = getSampleStyleSheet()
-
-        doc = SimpleDocTemplate(self.pdfname)
-
-        #self.graph_widget4.figure4.savefig(f'{self.pdfname}.svg',bbox_inches='tight', format='svg', dpi=3000)
-
-        story = []
-        story.append(
-            Paragraph("<font size='25'>Truss Analysis Report</font>", styles['Title']))
-        story.append(Spacer(1, 105))
-        story.append(Paragraph(
-            f"<para alignment=center size=12 color='steelblue'><strong>Project Name :</strong> {project}</para>"))
-        story.append(Spacer(1, 3))
-        story.append(Paragraph(
-            f"<para alignment=center size=12 color='steelblue'><strong>User Name :</strong> {username}</para>"))
-        story.append(Spacer(1, 3))
-        story.append(Paragraph(
-            f"<para alignment=center size=12 color='steelblue'><strong>Created at :</strong> {date}</para>"))
-        story.append(Spacer(1, 100))
-        story.append(Paragraph(
-            "<font size='20'><b>This report was generated by using </b>-----</font>"))
-        story.append(Spacer(1, 30))
-        story.append(Paragraph(f"""<para color='green' alignment=center>
-        {banner_1}
-        </para>"""))
-        story.append(Spacer(1, 10))
-        story.append(Paragraph(f"""<para color='green' alignment=center>
-        {banner_2}
-        </para>"""))
-        story.append(Spacer(1, 100))
-        story.append(Paragraph("""N.B: This application has been developed for educational purposes only. 
-        Students or Educators are free to use this application."""))
-        story.append(PageBreak())
-
-        # Page 2 units
-        story.append(Paragraph(f"""<font size='20' color='steelblue'> Units : US Customary System of Units</font><br/><br/>
-        <b>Length:</b> {self.unit_report[0]}<br/>
-        <b>Applied Load:</b> {self.unit_report[1]}<br/>
-        <b>Memnber Forces:</b> {self.unit_report[2]}<br/>
-        <b>Modulus of Elasticity (E):</b> {self.unit_report[3]}<br/>
-        <b>Cross-sectional Area (A):</b> {self.unit_report[4]}<br/>
-        <b>Displacement :</b> {self.unit_report[-1]}<br/><br/><br/>
-        <font size='20' color='steelblue'>Truss Geometry : Nodes </font><br/><br/>
-        Nodes are the points in (x,y) co-ordinate.<br/><br/><br/>
-        """))
-        # node
-        data = [('Node', "X", "Y")]
-        for i, j in enumerate(self.X):
-            data.append((i+1, f'{j:.2f}', f'{self.Y[i]:.2f}'))
-        t = Table(data, hAlign='LEFT', repeatRows=1)
-        t.setStyle(TableStyle([
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-            ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
-            ('LINEBELOW', (0, 0), (2, 0), 2, colors.black),
-        ]))
-        story.append(t)
-        story.append(PageBreak())
-
-        # page 3 member
-        story.append(Paragraph(
-            """<font size='20' color='steelblue'>Truss Members </font><br/><br/>
-            Below is the diagram showing how members are connected.<br/><br/><br/>
-            """))
-        t = Table(self.details[:, 0:3].tolist(), hAlign='LEFT', repeatRows=1)
-        t.setStyle(TableStyle([
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-            ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
-            ('LINEBELOW', (0, 0), (2, 0), 2, colors.black),
-        ]))
-        story.append(t)
-        story.append(PageBreak())
-
-        # Page 4 Loads and supports
-        story.append(Paragraph("""<font size='20' color='steelblue'>Truss Loads and Supports </font><br/><br/>
-                Loads direction,magnitude,value as well as Supports are shown below with diagram and table.<br/><br/><br/>"""))
-        # load
-        data = [('Node', 'Magnitude\n(K)', 'angle\n(degree)')]
-        for v in self.force_graph.values():
-            data.append((v[-2], v[3], v[2]))
-        t = Table(data, hAlign='LEFT', repeatRows=1)
-        t.setStyle(TableStyle([
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-            ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
-            ('LINEBELOW', (0, 0), (2, 0), 2, colors.black),
-        ]))
-
-        story.append(t)
-        story.append(PageBreak())
-
-        # Page 5 details
-        story.append(Paragraph(
-            """<font size='20' color='steelblue'>Before doing matrices </font><br/><br/><br/>"""))
-        t = Table(self.details.tolist(), repeatRows=1)
-        t.setStyle(TableStyle([
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-            ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
-            ('LINEBELOW', (0, 0), (12, 0), 2, colors.black),
-            ('LINEABOVE', (0, 0), (12, 0), 2, colors.black),
-            ('BACKGROUND', (0, 0), (12, 0), colors.lightblue),
-            # ('NOSPLIT',(0,0),(-1,-1)),
-        ]))
-        story.append(t)
-        story.append(PageBreak())
-
-        # Page 6 Member stiffness
-        story.append(Paragraph("""<font size='20' color='steelblue'>Member Stiffness Matrices</font><br/><br/>
-            This stiffness matrix is for an element.  
-            The element attaches to two nodes and each of these nodes has two degrees of freedom.  
-            The rows and columns of the stiffness matrix correlate to those degrees of freedom.
-        """))
-        story.append(Spacer(1, 30))
-        member_matrices = [["k = EA / L", Paragraph('<para alignment=center size=15>c<super size=8>2</super></para>'), 'cs', Paragraph('<para alignment=center size=15>-c<super size=8>2</super></para>'), '-cs'],
-                           ["", 'cs', Paragraph('<para alignment=center size=15> s<super size=8>2</super></para>'), '-cs', Paragraph(
-                               '<para alignment=center size=15>-s<super size=8>2</super></para>')],
-                           ["", Paragraph('<para alignment=center size=15>-c<super size=8>2</super></para>'), '-cs', Paragraph(
-                               '<para alignment=center size=15>c<super size=8>2</super></para>'), 'cs'],
-                           ["", '-cs', Paragraph('<para alignment=center size=15>-s<super size=8>2</super></para>'),
-                            'cs', Paragraph('<para alignment=center size=15> s<super size=8>2</super></para>')],
-                           ]
-        t = Table(member_matrices, 4*[0.9*inch], 4*[0.3*inch])
-        t.setStyle(TableStyle([
-            ("SIZE", (0, 0), (-1, -1), 15),
-            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-            ('ALIGN', (0, 0), (0, 3), 'RIGHT'),
-            ('SPAN', (0, 0), (0, 3)),
-            ('LINEBEFORE', (1, 0), (1, 3), 2, colors.black),
-            ('LINEAFTER', (-1, 0), (-1, 3), 2, colors.black)
-        ]))
-        story.append(t)
-        story.append(Spacer(1, 30))
-        for k, v in self.report_k.items():
-            t = Table(v, 5*[1*inch], 5*[0.3*inch], hAlign='RIGHT')
-            t.setStyle(TableStyle([
-                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-                ('GRID', (0, 1), (-2, -1), 0.25, colors.black),
-                ('ALIGN', (-1, 0), (-1, -1), 'LEFT')
-            ]))
-            story.append(Paragraph(
-                f"<font size='15' color='steelblue'><u> Member {k} :</u></font><br/><br/>"))
-            story.append(t)
-            story.append(Spacer(1, 32))
-        if len(self.elements) not in [3, 7, 11, 15, 19, 23, 27, 31, 35, 39, 43.47, 51, 55, 59, 63, 67, 71, 75, 79, 83, 87, 91, 95, 99]:
-            story.append(PageBreak())
-
-        # page 7 Stiffness matrix(unconstrained)
-        story.append(Paragraph(f"""<font size='20' color='steelblue'>System or Global Stiffness Matrix (unconstrained)</font><br/><br/>
-            We add the degree of freedom for each member stiffness matrix into the same degree of freedom in the structural matrix.  
-            The resulting structural stiffness matrix is shown below.
-            (To fit on a page the matrix may split into 8 columns and row into several pages)
-        """))
-        story.append(Spacer(1, 30))
-        data = {}
-        for i in range(1, self.ndofs, 8):
-            d = [[j for j in range(i, i+8) if j < self.ndofs+1]]
-            for k, v in enumerate(np.around(self.K[:, [j for j in range(i-1, i+7) if j < self.ndofs]], 2).tolist()):
-                v.append(k+1)
-                d.append(v)
-            data[i] = d
-
-        for value in data.values():
-            t = Table(value, repeatRows=1)
-            t.setStyle(TableStyle([
-                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-                ('GRID', (0, 1), (-2, -1), 0.25, colors.black),
-                ('ALIGN', (-1, 0), (-1, -1), 'LEFT'),
-            ]))
-            story.append(t)
-            story.append(PageBreak())
-
-        # Page 8 stiffness matrix (constrained)
-        story.append(Paragraph(f"""<font size='20' color='steelblue'>System or Global Stiffness Matrix (constrained)</font><br/><br/>
-            We have boundary conditions at supports.  Our assumption is that these joints will not move in the constrained direction.  
-            We remove these from our matrix.  The constrained displacements are dof <br/>{self.restrained_dofs}.<br/>
-            The resulting matrix is:
-            (To fit on a page the matrix may split into 8 columns and row into several pages)<br/><br/>
-        """))
-        story.append(Spacer(1, 20))
-        data = {}
-        for i in range(1, len(self.reaction_indices), 8):
-            d = [(self.reaction_indices[i-1:i+7]+1).tolist()]
-            constrained = np.around(self.K[:, [j for j in range(
-                i-1, i+7) if j < len(self.reaction_indices)]], 2).tolist()
-            for k, v in enumerate(constrained):
-                if k+1 not in self.restrained_dofs:
-                    v.append(k+1)
-                    d.append(v)
-            data[i] = d
-
-        for value in data.values():
-            t = Table(value, repeatRows=1)
-            t.setStyle(TableStyle([
-                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-                ('GRID', (0, 1), (-2, -1), 0.25, colors.black),
-                ('ALIGN', (-1, 0), (-1, -1), 'LEFT'),
-            ]))
-            story.append(t)
-            story.append(PageBreak())
-
-        # Page 9 Force_final
-        story.append(Paragraph(f"""<font size='20' color='steelblue'>Force Matrix</font><br/><br/> 
-            The constrained displacements are dof {self.restrained_dofs}.
-            Like System stiffness matrix we remove these from our force matrix.
-            The resulting matrix is:<br/><br/><br/><br/>
-        """))
-        data = list(zip(self.F_final, self.reaction_indices+1))
-        t = Table(data)
-        t.setStyle(TableStyle([
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-            ('GRID', (0, 0), (0, -1), 0.5, colors.black),
-        ]))
-        story.append(t)
-        story.append(PageBreak())
-
-        global buf_bar_force
-        buf_bar_force = BytesIO()
-        self.ui.checkBox_nodes.setChecked(False)
-        self.ui.checkBox_forces.setChecked(False)
-        self.ui.checkBox_loads.setChecked(False)
-        self.ui.checkBox_reactions.setChecked(False)
-        self.graph_widget3.figure3.savefig(buf_bar_force, format='png', bbox_inches='tight', dpi=300)
-        buf_bar_force.seek(0)
-
-        global buf_reaction
-        buf_reaction = BytesIO()
-        self.ui.checkBox_members.setChecked(False)
-        self.ui.checkBox_reactions.setChecked(True)
-        self.graph_widget3.figure3.savefig(buf_reaction, format='png', dpi=300)
-        buf_reaction.seek(0)
-
-        self.ui.checkBox_nodes.setChecked(True)
-        self.ui.checkBox_members.setChecked(True)
-        self.ui.checkBox_forces.setChecked(True)
-        self.ui.checkBox_loads.setChecked(True)
-        self.ui.checkBox_reactions.setChecked(True)
-
-        # Page 10 Member Force
-        story.append(Paragraph("""<font size='20' color='steelblue'>Member Forces and Support Reactions</font><br/>
-            <br/>&sigma; = E/L {-c&nbsp; -s &nbsp;c &nbsp;s} q  <br/>We use this equation to compute the member Force of 
-            each element.Support reactions are shown in the diagram.<br/><br/><br/>
-        """))
-        story.append(PageBreak())
-
-        data = [('Member', 'Node', 'Force', 'Stress', 'Direction')]
-        for i, j in enumerate(self.bar_force):
-            if j > 0:
-                data.append(
-                    (i+1, f"{self.elements[i+1][0]}-{self.elements[i+1][1]}", j, self.bar_stress[i], 'tension'))
-            else:
-                data.append(
-                    (i+1, f"{self.elements[i+1][0]}-{self.elements[i+1][1]}", j, self.bar_stress[i], 'compression'))
-        t = Table(data, hAlign='LEFT', repeatRows=1)
-        t.setStyle(TableStyle([
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-            ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
-            ('LINEBELOW', (0, 0), (4, 0), 2, colors.black),
-            #('NOSPLIT',(0, 0), (-1, -1))
-        ]))
-
-        story.append(t)
-        story.append(PageBreak())
-
-        # Page 11 nodal displacement1
-        story.append(Paragraph("""<font size='20' color='steelblue'>Nodal Displacements</font><br/><br/>
-        The horizontal(x) and vertical(y) displacements are shown below.<br/><br/><br/>"""))
-        data = [('Node', 'x\ndisplacement', 'y\ndisplacement')]
-        for i in range(1, int(self.ndofs/2)+1):
-            data.append(
-                (i, f'{self.D_big[2*i-2]:.3f}', f'{self.D_big[2*i-1]:.3f}'))
-        t = Table(data, hAlign='LEFT', repeatRows=1)
-        t.setStyle(TableStyle([
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-            ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
-            ('LINEBELOW', (0, 0), (2, 0), 2, colors.black),
-        ]))
-        story.append(t)
-
-        global buf_displacement
-        buf_displacement = BytesIO()
-        self.ui.horizontalSlider.setValue(30)
-        self.graph_widget2.figure2.savefig(
-            buf_displacement, format='png', bbox_inches='tight', dpi=300)
-        buf_displacement.seek(0)
-
-        doc.build(story, canvasmaker=NumberedCanvas)
-
-        os.startfile(self.pdfname)
-
 
     """
     Influence line
@@ -2276,10 +1879,11 @@ class MainPage(QWizardPage):
             slope_required = (self.ending_Y - self.starting_Y) / \
                 (self.ending_X - self.starting_X)
 
-            self.logger.debug('Moving load starting node : %s', self.starting_value)
-            self.logger.debug('Moving node ending node : %s', self.ending_value)
+            self.logger.debug(
+                'Moving load starting node : %s', self.starting_value)
+            self.logger.debug('Moving node ending node : %s',
+                              self.ending_value)
             self.logger.debug('Slope required : %s', slope_required)
-
 
             if self.starting_X < self.ending_X:
                 sorted_node = dict(
@@ -2306,7 +1910,7 @@ class MainPage(QWizardPage):
                         continue
 
             self.logger.debug('Moving node : %s', self.moving_node)
-            
+
             self.moving_position = [key for key in self.moving_node.keys()]
             self.logger.debug('Moving position : %s', self.moving_position)
 
@@ -2374,7 +1978,8 @@ class MainPage(QWizardPage):
                     D_r[2] = self.D_big_unit[toNode*2-2]
                     D_r[3] = self.D_big_unit[toNode*2-1]
 
-                    sigma = np.round((Ck*np.dot(tau, D_r))*self.bar_force_unit, 4)
+                    sigma = np.round((Ck*np.dot(tau, D_r)) *
+                                     self.bar_force_unit, 4)
 
                     self.influence.append(sigma)
 
@@ -2383,7 +1988,7 @@ class MainPage(QWizardPage):
             for i in self.influence_list:
                 for j in range(len(self.member_values)):
                     self.force_influence[j+1].append(i[j])
-                    
+
             self.logger.debug('Force influence : %s', self.force_influence)
 
             self.ui.comboBox_influence.clear()
@@ -2392,7 +1997,6 @@ class MainPage(QWizardPage):
 
         except:
             pass
-
 
     def influence_table(self):
         """
@@ -2404,19 +2008,16 @@ class MainPage(QWizardPage):
                 len(self.moving_node))
             currentIndex = int(self.ui.comboBox_influence.currentText())
 
-            for key, value in self.force_influence.items():
-                if key == currentIndex:
-                    for index, (position, result) in enumerate(zip(self.moving_position, value)):
-                        self.ui.tableWidget_influenceLine.setItem(
-                            index, 0, QTableWidgetItem(str(position)))
-                        self.ui.tableWidget_influenceLine.setItem(
-                            index, 1, QTableWidgetItem(str(result)))
+            for index, (position, result) in enumerate(zip(self.moving_position, self.force_influence[currentIndex])):
+                self.ui.tableWidget_influenceLine.setItem(
+                    index, 0, QTableWidgetItem(str(position)))
+                self.ui.tableWidget_influenceLine.setItem(
+                    index, 1, QTableWidgetItem(str(result)))
 
             self.influence_graph(member=currentIndex)
         except:
             self.movingload_graph()
             pass
-
 
     def movingload_graph(self):
         """
@@ -2424,33 +2025,33 @@ class MainPage(QWizardPage):
         """
         try:
             self.graph_widget4.figure4.clear()
-            ax4 = self.graph_widget4.figure4.add_subplot(211)
+            self.ax4 = self.graph_widget4.figure4.add_subplot(211)
             self.ax5 = self.graph_widget4.figure4.add_subplot(212)
 
-            ax4.axis('off')
+            self.ax4.axis('off')
             self.ax5.axis('off')
 
             # node plot
-            ax4.scatter(self.X, self.Y, c='whitesmoke',
-                        s=200, edgecolors='k', zorder=9)
+            self.ax4.scatter(self.X, self.Y, c='whitesmoke',
+                             s=200, edgecolors='k', zorder=9)
             for i, _ in enumerate(self.X):
-                ax4.annotate(
+                self.ax4.annotate(
                     i+1, (self.X[i], self.Y[i]), zorder=10, ha='center', va='center', size='8')
             # creating space to adjust with influence line
-            ax4.scatter(self.max_X*1.05, 0, s=0)
+            self.ax4.scatter(self.max_X*1.05, 0, s=0)
             self.graph_widget4.canvas4.draw()
 
             # member plot
             for k, v in self.plot_final.items():
-                ax4.plot(v[0], v[1], linewidth=1.2, c='k')
+                self.ax4.plot(v[0], v[1], linewidth=1.2, c='k')
 
-                ax4.annotate(k, (np.mean(v[0]), np.mean(
+                self.ax4.annotate(k, (np.mean(v[0]), np.mean(
                     v[1])), zorder=50, ha='center', va='center', size='10', c='red')
             self.graph_widget4.canvas4.draw()
 
             # moving load path
-            ax4.plot(self.load_path[0], self.load_path[1],
-                     zorder=10, linewidth=2, c='red')
+            self.ax4.plot(self.load_path[0], self.load_path[1],
+                          zorder=10, linewidth=2, c='red')
             self.graph_widget4.canvas4.draw()
 
             self.graph_widget4.figure4.tight_layout()
@@ -2458,8 +2059,7 @@ class MainPage(QWizardPage):
         except:
             pass
 
-
-    def influence_graph(self, member):
+    def influence_graph(self, member=1):
         """
         influence line graph
         """
@@ -2540,6 +2140,455 @@ class MainPage(QWizardPage):
         except:
             pass
 
+    def generate_report(self):
+        global member_page_start, support_page_start, stress_page_end, displacement_page_end
+        global buf_bar_force, buf_reaction, buf_displacement
+
+        total_node = len(self.node_values)
+        total_member = len(self.member_values)
+
+        member_page_start = ceil((total_node-27)/37) + 2 + 1
+
+        support_page_start = ceil(
+            (total_member - 33) / 37) + member_page_start + 1
+
+        influence_page_total = ceil(
+            len(self.force_influence[1])/115) * total_member
+        if influence_page_total:
+            influence_page_total += 1
+
+        displacement_page_end = ceil(
+            (total_node - 33) / 37) + influence_page_total
+
+        stress_page_end = ceil(total_member / 37) + displacement_page_end + 1
+
+        self.report = True
+        if not self.demo:
+            self.save_to_file()
+        else:
+            self.savedemo = None
+            self.filename = list(self.filename)
+            self.filename[0] = os.path.join(tempfile.gettempdir(), self.name)
+            self.filename = tuple(self.filename)
+            self.save_to_file()
+            self.savedemo = True
+
+        self.report_graph()
+        date = datetime.datetime.now().strftime("%A, %B %d, %Y at %I:%M %p %Z")
+        self.logger.debug('Date : %s', date)
+
+        banner_1 = """
+        ..########..########....##..........##....######......######..<br/>
+        ........##........##..........##..##..........##..##........##..##........##<br/>
+        ........##........##..........##..##..........##..##..............##............<br/>
+        ........##........########....##..........##....######......######..<br/>
+        ........##........##......##......##..........##.......
+        .......##..............##<br/>
+        ........##........##........##....##..........##..##........##..##........##<br/>
+        ........##........##..........##....#######......######......######..
+        """
+        banner_2 = """
+        ........##..........#####............##..........<br/>
+        ....####........##......##......####..........<br/>
+        ........##......##..........##........##..........<br/>
+        ........##......##..........##........##..........<br/>
+        ........##......##..........##........##..........<br/>
+        ........##........##......##..........##..........<br/>
+        ....######......#####........######......<br/>
+        """
+
+        if self.ui.projectName.toPlainText():
+            project = self.ui.projectName.toPlainText()
+        else:
+            project = 'Project Truss'
+        if self.ui.userName.toPlainText():
+            username = self.ui.userName.toPlainText()
+        else:
+            username = 'Anonymous'
+
+        self.pdfname = self.filename[0].replace('trs', 'pdf')
+
+        self.logger.debug('Saved Filename : %s', self.filename[0])
+        self.logger.debug('Pdfname : %s', self.pdfname)
+
+        styles = getSampleStyleSheet()
+
+        doc = SimpleDocTemplate(self.pdfname)
+
+        #self.graph_widget4.figure4.savefig(f'{self.pdfname}.svg',bbox_inches='tight', format='svg', dpi=3000)
+
+        story = []
+        story.append(
+            Paragraph("<font size='25'>Truss Analysis Report</font>", styles['Title']))
+        story.append(Spacer(1, 105))
+        story.append(Paragraph(
+            f"<para alignment=center size=12 color='steelblue'><strong>Project Name :</strong> {project}</para>"))
+        story.append(Spacer(1, 3))
+        story.append(Paragraph(
+            f"<para alignment=center size=12 color='steelblue'><strong>User Name :</strong> {username}</para>"))
+        story.append(Spacer(1, 3))
+        story.append(Paragraph(
+            f"<para alignment=center size=12 color='steelblue'><strong>Created at :</strong> {date}</para>"))
+        story.append(Spacer(1, 100))
+        story.append(Paragraph(
+            "<font size='20'><b>This report was generated by using </b>-----</font>"))
+        story.append(Spacer(1, 30))
+        story.append(Paragraph(f"""<para color='green' alignment=center>
+        {banner_1}
+        </para>"""))
+        story.append(Spacer(1, 10))
+        story.append(Paragraph(f"""<para color='green' alignment=center>
+        {banner_2}
+        </para>"""))
+        story.append(Spacer(1, 100))
+        story.append(Paragraph("""N.B: This application has been developed for educational purposes only. 
+        Students or Educators are free to use this application."""))
+        story.append(PageBreak())
+
+        # Page 2 units
+        story.append(Paragraph(f"""<font size='20' color='steelblue'> Units : US Customary System of Units</font><br/><br/>
+        <b>Length:</b> {self.unit_report[0]}<br/>
+        <b>Applied Load:</b> {self.unit_report[1]}<br/>
+        <b>Memnber Forces:</b> {self.unit_report[2]}<br/>
+        <b>Modulus of Elasticity (E):</b> {self.unit_report[3]}<br/>
+        <b>Cross-sectional Area (A):</b> {self.unit_report[4]}<br/>
+        <b>Displacement :</b> {self.unit_report[-1]}<br/><br/><br/>
+        <font size='20' color='steelblue'>Truss Geometry : Nodes </font><br/><br/>
+        Nodes are the points in (x,y) co-ordinate.<br/><br/><br/>
+        """))
+        # node
+        data = [('Node', "X", "Y")]
+        for i, j in enumerate(self.X):
+            data.append((i+1, f'{j:.2f}', f'{self.Y[i]:.2f}'))
+        t = Table(data, hAlign='LEFT', repeatRows=1)
+        t.setStyle(TableStyle([
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+            ('LINEBELOW', (0, 0), (2, 0), 2, colors.black),
+        ]))
+        story.append(t)
+        story.append(PageBreak())
+
+        # page 3 member
+        story.append(Paragraph(
+            """<font size='20' color='steelblue'>Truss Members </font><br/><br/>
+            Below is the diagram showing how members are connected.<br/><br/><br/>
+            """))
+        t = Table(self.details[:, 0:3].tolist(), hAlign='LEFT', repeatRows=1)
+        t.setStyle(TableStyle([
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+            ('LINEBELOW', (0, 0), (2, 0), 2, colors.black),
+        ]))
+        story.append(t)
+        story.append(PageBreak())
+
+        # Page 4 Loads and supports
+        story.append(Paragraph("""<font size='20' color='steelblue'>Truss Loads and Supports </font><br/><br/>
+                Loads direction,magnitude,value as well as Supports are shown below with diagram and table.<br/><br/><br/>"""))
+        # load
+        data = [
+            ('Node', f'Magnitude\n{self.unit_report[1][-4:]}', 'angle\n(degree)')]
+        for v in self.force_graph.values():
+            data.append((v[-2], v[3], v[2]))
+        t = Table(data, hAlign='LEFT', repeatRows=1)
+        t.setStyle(TableStyle([
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+            ('LINEBELOW', (0, 0), (2, 0), 2, colors.black),
+        ]))
+
+        story.append(t)
+        story.append(PageBreak())
+
+        # Page 5 details
+        story.append(Paragraph(
+            """<font size='20' color='steelblue'>Before doing matrices </font><br/><br/><br/>"""))
+        t = Table(self.details.tolist(), repeatRows=1)
+        t.setStyle(TableStyle([
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+            ('LINEBELOW', (0, 0), (12, 0), 2, colors.black),
+            ('LINEABOVE', (0, 0), (12, 0), 2, colors.black),
+            ('BACKGROUND', (0, 0), (12, 0), colors.lightblue),
+            # ('NOSPLIT',(0,0),(-1,-1)),
+        ]))
+        story.append(t)
+        story.append(PageBreak())
+
+        # Page 6 Member stiffness
+        story.append(Paragraph("""<font size='20' color='steelblue'>Member Stiffness Matrices</font><br/><br/>
+            This stiffness matrix is for an element.  
+            The element attaches to two nodes and each of these nodes has two degrees of freedom.  
+            The rows and columns of the stiffness matrix correlate to those degrees of freedom.
+        """))
+        story.append(Spacer(1, 30))
+        member_matrices = [["k = EA / L", Paragraph('<para alignment=center size=15>c<super size=8>2</super></para>'), 'cs', Paragraph('<para alignment=center size=15>-c<super size=8>2</super></para>'), '-cs'],
+                           ["", 'cs', Paragraph('<para alignment=center size=15> s<super size=8>2</super></para>'), '-cs', Paragraph(
+                               '<para alignment=center size=15>-s<super size=8>2</super></para>')],
+                           ["", Paragraph('<para alignment=center size=15>-c<super size=8>2</super></para>'), '-cs', Paragraph(
+                               '<para alignment=center size=15>c<super size=8>2</super></para>'), 'cs'],
+                           ["", '-cs', Paragraph('<para alignment=center size=15>-s<super size=8>2</super></para>'),
+                            'cs', Paragraph('<para alignment=center size=15> s<super size=8>2</super></para>')],
+                           ]
+        t = Table(member_matrices, 4*[0.9*inch], 4*[0.3*inch])
+        t.setStyle(TableStyle([
+            ("SIZE", (0, 0), (-1, -1), 15),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('ALIGN', (0, 0), (0, 3), 'RIGHT'),
+            ('SPAN', (0, 0), (0, 3)),
+            ('LINEBEFORE', (1, 0), (1, 3), 2, colors.black),
+            ('LINEAFTER', (-1, 0), (-1, 3), 2, colors.black)
+        ]))
+        story.append(t)
+        story.append(Spacer(1, 30))
+        for k, v in self.report_k.items():
+            t = Table(v, 5*[1*inch], 5*[0.3*inch], hAlign='RIGHT')
+            t.setStyle(TableStyle([
+                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                ('GRID', (0, 1), (-2, -1), 0.25, colors.black),
+                ('ALIGN', (-1, 0), (-1, -1), 'LEFT')
+            ]))
+            story.append(Paragraph(
+                f"<font size='15' color='steelblue'><u> Member {k} :</u></font><br/><br/>"))
+            story.append(t)
+            story.append(Spacer(1, 32))
+
+        # [3, 7, 11, 15, 19, 23, 27, 31, 35, 39, 43, 47, 51, ...]
+        if len(self.elements) not in [i+3 for i in range(0, 1000, 4)]:
+            story.append(PageBreak())
+
+        # page 7 Stiffness matrix(unconstrained)
+        story.append(Paragraph(f"""<font size='20' color='steelblue'>System or Global Stiffness Matrix (unconstrained)</font><br/><br/>
+            We add the degree of freedom for each member stiffness matrix into the same degree of freedom in the structural matrix.  
+            The resulting structural stiffness matrix is shown below.
+            (To fit on a page the matrix may split into 8 columns and row into several pages)
+        """))
+        story.append(Spacer(1, 30))
+        data = {}
+        for i in range(1, self.ndofs, 8):
+            d = [[j for j in range(i, i+8) if j < self.ndofs+1]]
+            for k, v in enumerate(np.around(self.K[:, [j for j in range(i-1, i+7) if j < self.ndofs]], 2).tolist()):
+                v.append(k+1)
+                d.append(v)
+            data[i] = d
+
+        for value in data.values():
+            t = Table(value, repeatRows=1)
+            t.setStyle(TableStyle([
+                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                ('GRID', (0, 1), (-2, -1), 0.25, colors.black),
+                ('ALIGN', (-1, 0), (-1, -1), 'LEFT'),
+            ]))
+            story.append(t)
+            story.append(PageBreak())
+
+        # Page 8 stiffness matrix (constrained)
+        story.append(Paragraph(f"""<font size='20' color='steelblue'>System or Global Stiffness Matrix (constrained)</font><br/><br/>
+            We have boundary conditions at supports.  Our assumption is that these joints will not move in the constrained direction.  
+            We remove these from our matrix.  The constrained displacements are dof <br/>{self.restrained_dofs}.<br/>
+            The resulting matrix is:
+            (To fit on a page the matrix may split into 8 columns and row into several pages)<br/><br/>
+        """))
+        story.append(Spacer(1, 20))
+        data = {}
+        for i in range(1, len(self.reaction_indices), 8):
+            d = [(self.reaction_indices[i-1:i+7]+1).tolist()]
+
+            constrained = np.around(self.K_final[:, [j for j in range(
+                i-1, i+7) if j < len(self.reaction_indices)]], 2).tolist()
+
+            for k, v in enumerate(constrained):
+                v.append(self.reaction_indices[k]+1)
+                d.append(v)
+            data[i] = d
+
+        for value in data.values():
+            t = Table(value, repeatRows=1)
+            t.setStyle(TableStyle([
+                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                ('GRID', (0, 1), (-2, -1), 0.25, colors.black),
+                ('ALIGN', (-1, 0), (-1, -1), 'LEFT'),
+            ]))
+            story.append(t)
+            story.append(PageBreak())
+
+        # Page 9 Force_final
+        story.append(Paragraph(f"""<font size='20' color='steelblue'>Force Matrix</font><br/><br/> 
+            The constrained displacements are dof {self.restrained_dofs}.
+            Like System stiffness matrix we remove these from our force matrix.
+            The resulting matrix is:<br/><br/><br/><br/>
+        """))
+        data = list(zip(self.F_final, self.reaction_indices+1))
+        t = Table(data)
+        t.setStyle(TableStyle([
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('GRID', (0, 0), (0, -1), 0.5, colors.black),
+        ]))
+        story.append(t)
+        story.append(PageBreak())
+
+        buf_bar_force = BytesIO()
+        self.ui.checkBox_nodes.setChecked(False)
+        self.ui.checkBox_forces.setChecked(False)
+        self.ui.checkBox_loads.setChecked(False)
+        self.ui.checkBox_reactions.setChecked(False)
+        self.graph_widget3.figure3.savefig(
+            buf_bar_force, format='png', bbox_inches='tight', dpi=300)
+        buf_bar_force.seek(0)
+
+        buf_reaction = BytesIO()
+        self.ui.checkBox_members.setChecked(False)
+        self.ui.checkBox_reactions.setChecked(True)
+        self.graph_widget3.figure3.savefig(buf_reaction, format='png', dpi=300)
+        buf_reaction.seek(0)
+
+        self.ui.checkBox_nodes.setChecked(True)
+        self.ui.checkBox_members.setChecked(True)
+        self.ui.checkBox_forces.setChecked(True)
+        self.ui.checkBox_loads.setChecked(True)
+        self.ui.checkBox_reactions.setChecked(True)
+
+        # Page 10 Member Force
+        story.append(Paragraph("""<font size='20' color='steelblue'>Member Forces and Support Reactions</font><br/>
+            <br/>&sigma; = E/L {-c&nbsp; -s &nbsp;c &nbsp;s} q  <br/>We use this equation to compute the member Force of 
+            each element.Support reactions are shown in the diagram.<br/><br/><br/>
+        """))
+        story.append(PageBreak())
+
+        data = [('Member', 'Node', 'Force', 'Stress', 'Direction')]
+        for i, j in enumerate(self.bar_force):
+            if j > 0:
+                data.append(
+                    (i+1, f"{self.elements[i+1][0]}-{self.elements[i+1][1]}", j, self.bar_stress[i], 'tension'))
+            else:
+                data.append(
+                    (i+1, f"{self.elements[i+1][0]}-{self.elements[i+1][1]}", j, self.bar_stress[i], 'compression'))
+        t = Table(data, hAlign='LEFT', repeatRows=1)
+        t.setStyle(TableStyle([
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+            ('LINEBELOW', (0, 0), (4, 0), 2, colors.black),
+            #('NOSPLIT',(0, 0), (-1, -1))
+        ]))
+
+        story.append(t)
+        story.append(PageBreak())
+
+        # Page 11 nodal displacement1
+        story.append(Paragraph("""<font size='20' color='steelblue'>Nodal Displacements</font><br/><br/>
+        The horizontal(x) and vertical(y) displacements are shown below.<br/><br/><br/>"""))
+        data = [('Node', 'x\ndisplacement', 'y\ndisplacement')]
+        for i in range(1, int(self.ndofs/2)+1):
+            data.append(
+                (i, f'{self.D_big[2*i-2]:.3f}', f'{self.D_big[2*i-1]:.3f}'))
+        t = Table(data, hAlign='LEFT', repeatRows=1)
+        t.setStyle(TableStyle([
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+            ('LINEBELOW', (0, 0), (2, 0), 2, colors.black),
+        ]))
+        story.append(t)
+
+        buf_displacement = BytesIO()
+        self.ui.horizontalSlider.setValue(30)
+        self.graph_widget2.figure2.savefig(
+            buf_displacement, format='png', bbox_inches='tight', dpi=300)
+        buf_displacement.seek(0)
+
+        story.append(PageBreak())
+
+        # Page 12 Influence Line Diagram
+        if self.influence_list:
+            story.append(
+                Paragraph("<font size='25' color='steelblue'>Influence Line Diagram</font>", styles['Title']))
+            story.append(Spacer(1, 50))
+
+            moving_load = BytesIO()
+            self.ax5.set_visible(False)
+            self.graph_widget4.figure4.savefig(
+                moving_load, format='png', bbox_inches='tight', dpi=300)
+            moving_load.seek(0)
+            self.ax5.set_visible(True)
+
+            im = Image(moving_load, width=8*inch, height=6*inch)
+            story.append(im)
+
+            story.append(PageBreak())
+
+            data_header = ('Load \nPosition',
+                           f'Force\n{self.unit_report[2][-4:]}')
+
+            for member, influence in self.force_influence.items():
+                story.append(Paragraph(
+                    f"<font size='15' color='steelblue'><u> Member {member} :</u></font><br/><br/>"))
+
+                self.influence_graph(member=member)
+
+                influence_line = BytesIO()
+                self.ax4.set_visible(False)
+                self.graph_widget4.figure4.savefig(
+                    influence_line, format='png', bbox_inches='tight', dpi=300)
+                influence_line.seek(0)
+                self.ax4.set_visible(True)
+
+                im = Image(influence_line, width=8*inch, height=3*inch)
+                story.append(im)
+
+                data = []
+                factor = 1
+                if len(influence) < 116:
+                    divider = 23
+                else:
+                    divider = ceil(len(influence)/5)
+
+                for i in range(len(influence)):
+                    index = i % divider
+                    if index == 0 and i != 0:
+                        factor += 1
+                    if factor == 1:
+                        data.append(
+                            (i+1, f'{influence[i]:.3f}'))
+                    else:
+                        data[index] = data[index] + \
+                            (i+1, f'{influence[i]:.3f}')
+
+                data.insert(0, data_header*factor)
+
+                t = Table(data, hAlign='LEFT', repeatRows=1,)
+                t.setStyle(TableStyle([
+                    ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                    ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+                    ('LINEBELOW', (0, 0), (-1, 0), 2, colors.black),
+                    ('LINEBEFORE', (0, 0), (0, -1), 5, colors.ReportLabLightGreen),
+                    ('LINEAFTER', (1, 0), (1, -1), 5, colors.ReportLabLightGreen),
+                    ('LINEAFTER', (3, 0), (3, -1), 5, colors.ReportLabLightGreen),
+                    ('LINEAFTER', (5, 0), (5, -1), 5, colors.ReportLabLightGreen),
+                    ('LINEAFTER', (7, 0), (7, -1), 5, colors.ReportLabLightGreen),
+                    ('LINEAFTER', (9, 0), (9, -1), 5, colors.ReportLabLightGreen),
+                    ('LINEAFTER', (11, 0), (11, -1),
+                     5, colors.ReportLabLightGreen),
+                    ('LINEAFTER', (13, 0), (13, -1),
+                     5, colors.ReportLabLightGreen),
+                    ('LINEAFTER', (15, 0), (15, -1),
+                     5, colors.ReportLabLightGreen),
+                ]))
+                story.append(t)
+
+                story.append(PageBreak())
+
+        doc.build(story, canvasmaker=NumberedCanvas)
+
+        if sys.platform == "win32":
+            os.startfile(self.pdfname)
+        elif sys.platform == "darwin":
+            subprocess.call(["open", self.pdfname])
+        else:
+            subprocess.call(["xdg-open", self.pdfname])
 
     def closeEvent(self):
         try:
@@ -2555,12 +2604,25 @@ class MainPage(QWizardPage):
         plt.close('all')
 
 
-# if __name__ == "__main__":
-#     app = QApplication(sys.argv)
-#     app.setStyle('Fusion')
+if __name__ == "__main__":
+    import logging
 
-#     #window = MainPage(open=True, filename=(filepath,""))
-#     window = MainPage(open=True)
-#     window.show()
+    logger = logging.getLogger('truss 101')
+    logger.setLevel(logging.DEBUG)
 
-#     sys.exit(app.exec_())
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG)
+
+    formatter = logging.Formatter(
+        '[%(asctime)s] [ %(filename)s:%(lineno)d ] [ %(levelname)s ] %(message)s')
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
+
+    app = QApplication(sys.argv)
+    app.setStyle('Fusion')
+
+    #window = MainPage(open=True, filename=(filepath,""), logger=logger)
+    window = MainPage(open=True, logger=logger)
+    window.show()
+
+    sys.exit(app.exec_())
